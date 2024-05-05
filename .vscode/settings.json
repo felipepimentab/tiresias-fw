@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "cs47l63.h": "c",
+        "device.h": "c",
+        "bsp_driver_if.h": "c",
+        "devicetree.h": "c",
+        "gpio.h": "c",
+        "cs47l63_spec.h": "c",
+        "cs47l63_comm.h": "c",
+        "thread_stack.h": "c",
+        "spi.h": "c",
+        "kernel.h": "c",
+        "audio_sync_timer.h": "c",
+        "log.h": "c",
+        "zbus.h": "c"
+    }
+}

@@ -1,0 +1,232 @@
+#
+# Copyright (c) 2022 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+rsource "Kconfig.defaults"
+
+menu "Modules"
+
+config BUTTON_DEBOUNCE_MS
+	int "Button debounce time in ms"
+	default 50
+
+config AUDIO_SYNC_TIMER_USES_RTC
+	bool
+	default !BT_LL_ACS_NRF53
+	select NRFX_RTC0
+
+
+#----------------------------------------------------------------------------#
+menu "I2S"
+
+config I2S_LRCK_FREQ_HZ
+	int
+	default AUDIO_SAMPLE_RATE_HZ
+	help
+	 The sample rate of I2S. For now this is tied directly to
+	 AUDIO_SAMPLE_RATE_HZ
+	 Note that this setting is only valid in I2S master mode.
+
+config I2S_CH_NUM
+	int
+	default 2
+	help
+	 The I2S driver itself supports both mono and stereo.
+	 Parts of the implementation are configured for only stereo.
+
+endmenu # I2S
+
+#----------------------------------------------------------------------------#
+# menu "Log levels"
+
+# module = MODULE_AUDIO_USB
+# module-str = module-audio-usb
+# source "subsys/logging/Kconfig.template.log_config"
+
+# module = MODULE_BUTTON_HANDLER
+# module-str = module-button-handler
+# source "subsys/logging/Kconfig.template.log_config"
+
+# module = MODULE_HW_CODEC
+# module-str = module-hw-codec
+# source "subsys/logging/Kconfig.template.log_config"
+
+# module = MODULE_LED
+# module-str = module-led
+# source "subsys/logging/Kconfig.template.log_config"
+
+# module = MODULE_POWER
+# module-str = module-power
+# source "subsys/logging/Kconfig.template.log_config"
+
+# module = MODULE_SD_CARD
+# module-str = module-sd-card
+# source "subsys/logging/Kconfig.template.log_config"
+
+# module = MODULE_SD_CARD_PLAYBACK
+# module-str = module-sd-card-playback
+# source "subsys/logging/Kconfig.template.log_config"
+
+# module = MODULE_NRF5340_AUDIO_DK
+# module-str = module-nrf5340-audio_dk
+# source "subsys/logging/Kconfig.template.log_config"
+
+# endmenu # Log levels
+
+#----------------------------------------------------------------------------#
+menu "Stack sizes"
+
+config VOLUME_MSG_SUB_STACK_SIZE
+	int "Stack size for volume message subscribe thread"
+	default 768
+
+endmenu # Stack sizes
+
+#----------------------------------------------------------------------------#
+menu "Zbus"
+
+config VOLUME_MSG_SUB_QUEUE_SIZE
+	int "Queue size for volume message subscriber"
+	default 4
+
+endmenu # Zbus
+
+#----------------------------------------------------------------------------#
+# menuconfig SD_CARD_PLAYBACK
+# 	bool "Enable playback from SD card"
+# 	select EXPERIMENTAL
+# 	default n
+# 	select RING_BUFFER
+
+# if SD_CARD_PLAYBACK
+
+# config SD_CARD_PLAYBACK_STACK_SIZE
+# 	int "Stack size for the SD card playback thread"
+# 	default 4096
+
+# config SD_CARD_PLAYBACK_RING_BUF_SIZE
+# 	int "Size of the ring buffer for the SD card playback module"
+# 	default 960
+
+# config SD_CARD_PLAYBACK_THREAD_PRIORITY
+# 	int "Priority for the SD card playback thread"
+# 	default 7
+
+# endif # SD_CARD_PLAYBACK
+
+menu "Audio"
+
+choice AUDIO_FRAME_DURATION
+	prompt "Select frame duration - 7.5 ms frame duration is not tested"
+	default AUDIO_FRAME_DURATION_10_MS
+	help
+	  LC3 supports frame duration of 7.5 and 10 ms.
+	  If USB is selected as audio source, we should
+	  have a frame duration of 10 ms since USB sends 1ms at a time.
+
+config AUDIO_FRAME_DURATION_7_5_MS
+	bool "7.5 ms"
+
+config AUDIO_FRAME_DURATION_10_MS
+	bool "10 ms"
+endchoice
+
+config AUDIO_FRAME_DURATION_US
+	int
+	default 7500 if AUDIO_FRAME_DURATION_7_5_MS
+	default 10000 if AUDIO_FRAME_DURATION_10_MS
+	help
+	  Audio frame duration in µs.
+
+config AUDIO_MIN_PRES_DLY_US
+	int "The minimum presentation delay"
+	default 4000
+	help
+	  The minimum presentation delay in micro seconds determined by
+	  the audio system processing and the minimum buffering.
+
+config AUDIO_MAX_PRES_DLY_US
+	int "The maximum presentation delay"
+	default 60000
+	help
+	  The maximum presentation delay in micro seconds.
+
+choice AUDIO_SYSTEM_SAMPLE_RATE
+	prompt "System audio sample rate"
+	default AUDIO_SAMPLE_RATE_48000_HZ
+	help
+	  This configuration reflects the system sample rate, but the audio data may be resampled to
+	  another sample rate before encoding, and after decoding.
+
+config AUDIO_SAMPLE_RATE_16000_HZ
+	bool "16 kHz"
+	help
+	  Sample rate of 16kHz is currently only valid for I2S/line-in.
+
+config AUDIO_SAMPLE_RATE_24000_HZ
+	bool "24 kHz"
+	help
+	  Sample rate of 24kHz is currently only valid for I2S/line-in.
+
+config AUDIO_SAMPLE_RATE_48000_HZ
+	bool "48 kHz"
+	help
+	  Sample rate of 48kHz is valid for both I2S/line-in and USB.
+endchoice
+
+config AUDIO_SAMPLE_RATE_HZ
+	int
+	default 16000 if AUDIO_SAMPLE_RATE_16000_HZ
+	default 24000 if AUDIO_SAMPLE_RATE_24000_HZ
+	default 48000 if AUDIO_SAMPLE_RATE_48000_HZ
+	help
+	  I2S supports 16, 24, and 48 kHz sample rates for both input and output.
+	  USB supports only 48 kHz for input.
+
+choice AUDIO_BIT_DEPTH
+	prompt "Audio bit depth"
+	default AUDIO_BIT_DEPTH_16
+	help
+	  Select the bit depth for audio.
+
+config AUDIO_BIT_DEPTH_16
+	bool "16 bit audio"
+
+config AUDIO_BIT_DEPTH_32
+	bool "32 bit audio"
+endchoice
+
+config AUDIO_BIT_DEPTH_BITS
+	int
+	default 16 if AUDIO_BIT_DEPTH_16
+	default 32 if AUDIO_BIT_DEPTH_32
+	help
+	  Bit depth of one sample in storage.
+
+config AUDIO_BIT_DEPTH_OCTETS
+	int
+	default 2 if AUDIO_BIT_DEPTH_16
+	default 4 if AUDIO_BIT_DEPTH_32
+	help
+	  Bit depth of one sample in storage given in octets.
+
+config AUDIO_MIN_PRES_DLY_US
+	int "The minimum presentation delay"
+	default 4000
+	help
+	  The minimum allowable presentation delay in microseconds.
+	  This needs to allow time for decoding and internal routing.
+	  For 48kHz sampling rate and 96kbps bitrate this is about 4000 us.
+
+config AUDIO_MAX_PRES_DLY_US
+	int "The maximum presentation delay"
+	default 60000
+	help
+	  The maximum allowable presentation delay in microseconds.
+	  Increasing this will also increase the FIFO buffers to allow buffering.
+
+endmenu # Audio
+
+endmenu # Modules
