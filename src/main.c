@@ -9,6 +9,7 @@
 #include <zephyr/shell/shell.h>
 #include <zephyr/zbus/zbus.h>\
 
+
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 

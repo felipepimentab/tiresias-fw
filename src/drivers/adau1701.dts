@@ -1,0 +1,32 @@
+/dts-v1/;
+/ {
+    soc {
+        i2c0: i2c@40003000 {  // Assuming I2C0 on your SoC, update the address as per your SoC's specification
+            compatible = "nordic,nrf-twi";
+            status = "okay";
+            scl-pin = <SCL_PIN>; // Replace with actual SCL pin number
+            sda-pin = <SDA_PIN>; // Replace with actual SDA pin number
+            clock-frequency = <400000>; // 400 kHz I2C frequency
+
+            adau1701: adau1701@34 {
+                compatible = "adi,adau1701";
+                reg = <0x34>; // I2C address for ADAU1701
+                label = "ADAU1701";
+
+                pll-control = <0x4002>;
+                core-clock-enable = <0x081C>;
+
+                program-memory-start-address = <0x1000>; // Example start address, adjust as per your configuration
+                parameter-memory-start-address = <0x2000>; // Example start address, adjust as per your configuration
+
+                volume-register-address = <0x4004>; // Replace with actual register address for volume control
+                mute-register-address = <0x4005>;   // Replace with actual register address for mute control
+            };
+        };
+    };
+
+    aliases {
+        i2c0-alias = &i2c0;
+        adau1701-alias = &adau1701;
+    };
+};
