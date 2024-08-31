@@ -13,5 +13,6 @@
         "audio_sync_timer.h": "c",
         "log.h": "c",
         "zbus.h": "c"
-    }
+    },
+    "editor.tabSize": 2,
 }
