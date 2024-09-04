@@ -20,9 +20,9 @@
 #ifndef __SIGMASTUDIOFW_H__
 #define __SIGMASTUDIOFW_H__
 
-#include <zephyr/drivers/i2c.h>
-
 #include "adau1701.h"
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/kernel.h>
 
 /*
  * TODO: Update for your system's data type
@@ -43,7 +43,10 @@ extern const struct i2c_dt_spec dev_i2c;
  */
 #define SIGMA_WRITE_REGISTER(devAddress, address, dataLength, data)                                                    \
   {                                                                                                                    \
-    i2c_write_dt(&dev_i2c, data, dataLength);                                                                          \
+    int ret = i2c_burst_write_dt(&dev_i2c, address, data, dataLength);                                                 \
+    if (ret < 0) {                                                                                                     \
+      printk("Failed to write to ADAU1701 register 0x%02x\n\r", address);                                              \
+    }                                                                                                                  \
   }
 
 /*
@@ -51,7 +54,10 @@ extern const struct i2c_dt_spec dev_i2c;
  */
 #define SIGMA_WRITE_REGISTER_BLOCK(devAddress, address, length, pData)                                                 \
   {                                                                                                                    \
-    i2c_burst_write_dt(&dev_i2c, address, pData, length);                                                              \
+    int ret = i2c_burst_write_dt(&dev_i2c, address, pData, length);                                                    \
+    if (ret < 0) {                                                                                                     \
+      printk("Failed to write block to ADAU1701 starting at register 0x%02x\n\r", address);                            \
+    }                                                                                                                  \
   }
 
 /*
@@ -67,13 +73,16 @@ extern const struct i2c_dt_spec dev_i2c;
  */
 #define SIGMA_READ_REGISTER(devAddress, address, length, pData)                                                        \
   {                                                                                                                    \
-    i2c_burst_read_dt(&dev_i2c, address, pData, length);                                                               \
+    int ret = i2c_burst_read_dt(&dev_i2c, address, pData, length);                                                     \
+    if (ret < 0) {                                                                                                     \
+      printk("Failed to read from ADAU1701 register 0x%02x\n\r", address);                                             \
+    }                                                                                                                  \
   }
 
 /*
  * Set a register field's value
  */
-#define SIGMA_SET_REGSITER_FIELD(regVal, fieldVal, fieldMask, fieldShift)                                              \
+#define SIGMA_SET_REGISTER_FIELD(regVal, fieldVal, fieldMask, fieldShift)                                              \
   {                                                                                                                    \
     (regVal) = (((regVal) & (~(fieldMask))) | (((fieldVal) << (fieldShift)) & (fieldMask)));                           \
   }
@@ -81,27 +90,20 @@ extern const struct i2c_dt_spec dev_i2c;
 /*
  * Get the value of a register field
  */
-#define SIGMA_GET_REGSITER_FIELD(regVal, fieldMask, fieldShift)                                                        \
-  {                                                                                                                    \
-    ((regVal) & (fieldMask)) >> (fieldShift);                                                                          \
-  }
+#define SIGMA_GET_REGISTER_FIELD(regVal, fieldMask, fieldShift) (((regVal) & (fieldMask)) >> (fieldShift))
 
 /*
  * Convert a floating-point value to SigmaDSP (5.23) fixed point format
  *    This optional macro is intended for systems having special implementation
  *    requirements (for example: limited memory size or endianness)
  */
-#define SIGMASTUDIOTYPE_FIXPOINT_CONVERT(_value)                                                                       \
-  { /*TODO: IMPLEMENT MACRO*/                                                                                          \
-  }
+#define SIGMASTUDIOTYPE_FIXPOINT_CONVERT(_value) ((int32_t)((_value) * (1 << 23)))
 
 /*
  * Convert integer data to system compatible format
  *    This optional macro is intended for systems having special implementation
  *    requirements (for example: limited memory size or endianness)
  */
-#define SIGMASTUDIOTYPE_INTEGER_CONVERT(_value)                                                                        \
-  { /*TODO: IMPLEMENT MACRO*/                                                                                          \
-  }
+#define SIGMASTUDIOTYPE_INTEGER_CONVERT(_value) ((int32_t)(_value))
 
 #endif /* __SIGMASTUDIOFW_H__ */

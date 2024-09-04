@@ -12,7 +12,9 @@
         "kernel.h": "c",
         "audio_sync_timer.h": "c",
         "log.h": "c",
-        "zbus.h": "c"
+        "zbus.h": "c",
+        "i2c.h": "c"
     },
     "editor.tabSize": 2,
+    "C_Cpp.errorSquiggles": "disabled",
 }

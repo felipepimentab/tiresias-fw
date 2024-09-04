@@ -8,6 +8,11 @@
 extern "C" {
 #endif
 
+// Declaration of the I2C device configuration
+extern const struct i2c_dt_spec dev_i2c;
+
+// Function declarations
+
 /**
  * @brief Initialize the ADAU1701 DSP.
  *
@@ -83,18 +88,52 @@ int adau1701_soft_reset(void);
 int adau1701_power_down(void);
 
 /**
- * @brief Sets the volume on the ADAU1701.
+ * @brief Set the volume level on the ADAU1701.
  *
- * @param volume Volume level to be set.
+ * This function sets the output volume of the ADAU1701.
+ *
+ * @param volume The volume level to set (0-255, for example).
  */
 void adau1701_set_volume(uint8_t volume);
 
 /**
- * @brief Mutes or unmutes the ADAU1701.
+ * @brief Mute or unmute the ADAU1701.
  *
- * @param mute If true, mutes the ADAU1701; if false, unmutes it.
+ * This function mutes or unmutes the ADAU1701.
+ *
+ * @param mute true to mute, false to unmute.
  */
 void adau1701_mute(bool mute);
+
+/**
+ * @brief Set the volume level with a fade effect.
+ *
+ * This function gradually changes the volume to a target level, providing a fade effect.
+ *
+ * @param target_volume The target volume level to reach.
+ * @param fade_steps The number of steps over which to fade the volume.
+ */
+void adau1701_set_volume_fade(uint8_t target_volume, uint16_t fade_steps);
+
+/**
+ * @brief Perform a safeload write to the ADAU1701.
+ *
+ * This function safely writes a block of data to the ADAU1701 using the safeload mechanism.
+ *
+ * @param reg_addr The register address to write to using safeload.
+ * @param data Pointer to the data buffer to write.
+ * @param len Number of bytes to write.
+ */
+void adau1701_safeload_write(uint16_t reg_addr, const uint8_t* data, size_t len);
+
+/**
+ * @brief Configure the ADAU1701 for I2S or TDM mode.
+ *
+ * This function configures the ADAU1701's serial ports for I2S or TDM operation.
+ *
+ * @param mode The mode to set (e.g., I2S, TDM).
+ */
+void adau1701_configure_i2s_tdm(uint8_t mode);
 
 #ifdef __cplusplus
 }
