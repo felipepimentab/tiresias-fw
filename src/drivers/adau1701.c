@@ -31,6 +31,8 @@
 /** @brief I2C device configuration structure */
 const struct i2c_dt_spec dev_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 
+// Init
+
 int adau1701_init(void)
 {
   if (!device_is_ready(dev_i2c.bus)) {
@@ -48,9 +50,7 @@ int adau1701_init(void)
   return 0;
 }
 
-/*
- * Write operations
- */
+// Write operations
 
 int adau1701_direct_write_byte(uint16_t addr, uint8_t value)
 {
@@ -82,9 +82,7 @@ int adau1701_safeload_write(uint16_t param_addr, const uint8_t value)
   return ret;
 }
 
-/*
- * Read operations
- */
+// Read operations
 
 int adau1701_read_byte(uint16_t addr, uint8_t* value)
 {
@@ -104,9 +102,7 @@ int adau1701_read_block(uint16_t start_addr, uint8_t* data, size_t len)
   return ret;
 }
 
-/*
- * Other
- */
+// Other
 
 int adau1701_soft_reset(void)
 {
