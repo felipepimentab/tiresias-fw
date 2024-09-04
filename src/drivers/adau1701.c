@@ -48,20 +48,15 @@ int adau1701_init(void)
   return 0;
 }
 
+/*
+ * Write operations
+ */
+
 int adau1701_direct_write_byte(uint16_t addr, uint8_t value)
 {
   int ret = i2c_reg_write_byte_dt(&dev_i2c, addr, value);
   if (ret < 0) {
     printk("Failed to write to ADAU1701 register 0x%02x\n\r", addr);
-  }
-  return ret;
-}
-
-int adau1701_read_byte(uint16_t addr, uint8_t* value)
-{
-  int ret = i2c_reg_read_byte_dt(&dev_i2c, addr, value);
-  if (ret < 0) {
-    printk("Failed to read from ADAU1701 register 0x%02x\n\r", addr);
   }
   return ret;
 }
@@ -75,16 +70,7 @@ int adau1701_direct_write_block(uint16_t start_addr, const uint8_t* data, size_t
   return ret;
 }
 
-int adau1701_read_block(uint16_t start_addr, uint8_t* data, size_t len)
-{
-  int ret = i2c_burst_read_dt(&dev_i2c, start_addr, data, len);
-  if (ret < 0) {
-    printk("Failed to read block from ADAU1701 starting at register 0x%02x\n\r", start_addr);
-  }
-  return ret;
-}
-
-int adau1701_safeload_write_byte(uint16_t param_addr, const uint8_t value)
+int adau1701_safeload_write(uint16_t param_addr, const uint8_t value)
 {
   if (param_addr > 1023) {
     printk("Address %02x is outside of range for Parameter RAM (0x0000 to 0x03FF)\n\r", param_addr);
@@ -96,17 +82,31 @@ int adau1701_safeload_write_byte(uint16_t param_addr, const uint8_t value)
   return ret;
 }
 
-int adau1701_safeload_write_block(uint16_t param_addr, const uint8_t* data, size_t len)
+/*
+ * Read operations
+ */
+
+int adau1701_read_byte(uint16_t addr, uint8_t* value)
 {
-  if (param_addr > 1023) {
-    printk("Address 0x%02x is outside of range for Parameter RAM (0x0000 to 0x03FF)\n\r", param_addr);
-    return -1;
+  int ret = i2c_reg_read_byte_dt(&dev_i2c, addr, value);
+  if (ret < 0) {
+    printk("Failed to read from ADAU1701 register 0x%02x\n\r", addr);
   }
-  // Safeload logic
-  int ret = adau1701_direct_write_block(param_addr, data, len);
-  // Safeload logic
   return ret;
 }
+
+int adau1701_read_block(uint16_t start_addr, uint8_t* data, size_t len)
+{
+  int ret = i2c_burst_read_dt(&dev_i2c, start_addr, data, len);
+  if (ret < 0) {
+    printk("Failed to read block from ADAU1701 starting at register 0x%02x\n\r", start_addr);
+  }
+  return ret;
+}
+
+/*
+ * Other
+ */
 
 int adau1701_soft_reset(void)
 {
