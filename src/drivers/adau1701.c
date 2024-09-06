@@ -28,36 +28,6 @@
 /** @brief Enable passthrough mode for debug */
 #define DEBUG_PASSTHROUGH true
 
-#define SAFELOAD_DATA_REGISTER_0 2064
-#define SAFELOAD_DATA_REGISTER_1 2065
-#define SAFELOAD_DATA_REGISTER_2 2066
-#define SAFELOAD_DATA_REGISTER_3 2067
-#define SAFELOAD_DATA_REGISTER_4 2068
-#define SAFELOAD_ADDRESS_REGISTER_0 2069
-#define SAFELOAD_ADDRESS_REGISTER_1 2070
-#define SAFELOAD_ADDRESS_REGISTER_2 2071
-#define SAFELOAD_ADDRESS_REGISTER_3 2072
-#define SAFELOAD_ADDRESS_REGISTER_4 2073
-
-#define CORE_CONTROL_REGISTER 2074
-#define IST_BIT 0x0020 // Initiate Safeload Transfer (D5)
-#define ADM_BIT 0x0010 // Mute ADCs (D4)
-#define DAM_BIT 0x0008 // Mute DACs (D3)
-#define CR_BIT 0x0004 // Clear internal register to 0 (D2)
-
-#define ADAU1701_CTRL_REG_WIDTH_BYTES 2 // Control Registers' width (16 bits)
-#define ADAU1701_PARAM_RAM_WIDTH_BYTES 4 // Parameter RAM width (32 bits)
-#define ADAU1701_DATA_RAM_WIDTH_BYTES 5 // Program RAM width (40 bits)
-
-typedef uint8_t reg_word_t[ADAU1701_CTRL_REG_WIDTH_BYTES]; // Register word (16 bits)
-typedef uint8_t param_word_t[ADAU1701_PARAM_RAM_WIDTH_BYTES]; // Parameter word (32 bits)
-typedef uint8_t data_word_t[ADAU1701_DATA_RAM_WIDTH_BYTES]; // Program word (40 bits)
-typedef uint16_t sub_addr_t; // Internal address/sub address (16 bits)
-
-#define NULL_2_BYTES { 0x00, 0x00 }
-#define NULL_4_BYTES { 0x00, 0x00, 0x00, 0x00 }
-#define NULL_5_BYTES { 0x00, 0x00, 0x00, 0x00, 0x00 }
-
 /** @brief I2C device configuration structure */
 const struct i2c_dt_spec dev_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 
@@ -90,8 +60,7 @@ int adau1701_write(sub_addr_t sub_addr, uint8_t* data, size_t data_len)
   uint8_t buf[2 + data_len]; // Buffer to hold the address (2 bytes) and the data
 
   // Split the 16-bit address into two bytes
-  buf[0] = (sub_addr >> 8) & 0xFF; // High byte of the sub address
-  buf[1] = sub_addr & 0xFF; // Low byte of the sub address
+  split_addr(sub_addr, &buf);
 
   // Copy data to the buffer after the address
   for (size_t i = 0; i < data_len; i++) {
@@ -112,21 +81,16 @@ int adau1701_block_write(sub_addr_t start_addr, uint8_t* data, size_t len)
   int ret;
   uint8_t addr_buf[2];
   struct i2c_msg msg[2];
-
   // Split the 16-bit start address into two bytes
-  addr_buf[0] = (start_addr >> 8) & 0xFF; // High byte of the start address
-  addr_buf[1] = start_addr & 0xFF; // Low byte of the start address
-
+  split_addr(start_addr, &addr_buf);
   // First message: send the 16-bit address
   msg[0].buf = addr_buf;
   msg[0].len = 2; // 16-bit address means 2 bytes
   msg[0].flags = I2C_MSG_WRITE;
-
   // Second message: send the data block
   msg[1].buf = data;
   msg[1].len = len;
   msg[1].flags = I2C_MSG_WRITE | I2C_MSG_STOP;
-
   // Perform the I2C transfer: write the address and data in two messages
   ret = i2c_transfer_dt(&dev_i2c, msg, 2);
   if (ret < 0) {
@@ -146,38 +110,32 @@ int adau1701_safeload_write(sub_addr_t* param_addrs, data_word_t* data, uint8_t 
   if (num_registers > 5) {
     return -1; // Error: Too many registers
   }
-
   for (uint8_t i = 0; i < num_registers; i++) {
     reg_word_t addr_data;
-    addr_data[0] = (param_addrs[i] >> 8) & 0xFF; // High byte
-    addr_data[1] = param_addrs[i] & 0xFF; // Low byte
+    // Split the 16-bit address into two bytes
+    split_addr(param_addrs[i], &addr_data);
     // Write the parameter RAM address to the safeload address register
     ret = adau1701_write_register(SAFELOAD_ADDRESS_REGISTER_0 + i, addr_data);
     if (ret < 0) {
       return ret;
     }
-
     // Write the 28-bit data to the corresponding safeload data register
     ret = adau1701_write(SAFELOAD_DATA_REGISTER_0 + i, data[i], ADAU1701_DATA_RAM_WIDTH_BYTES);
     if (ret < 0) {
       return ret;
     }
   }
-
   // Set the initiate safeload transfer bit in the core control register
   reg_word_t core_control_value;
   ret = adau1701_read_register(CORE_CONTROL_REGISTER, &core_control_value, ADAU1701_CTRL_REG_WIDTH_BYTES);
   if (ret < 0) {
     return ret; // Error reading core control register
   }
-
   core_control_value[1] |= IST_BIT;
-
   ret = adau1701_write_register(CORE_CONTROL_REGISTER, core_control_value);
   if (ret < 0) {
     return ret; // Error writing to core control register
   }
-
   return ret;
 }
 
@@ -187,11 +145,7 @@ int adau1701_read_register(sub_addr_t reg_addr, reg_word_t* value, size_t len)
 {
   int ret;
   uint8_t addr_buf[2];
-
-  // Split the 16-bit register address into two bytes (high and low byte)
-  addr_buf[0] = (reg_addr >> 8) & 0xFF; // High byte of the register address
-  addr_buf[1] = reg_addr & 0xFF; // Low byte of the register address
-
+  split_addr(reg_addr, &addr_buf);
   // First, write the 16-bit address, then read the data from that address
   ret = i2c_write_read_dt(&dev_i2c, addr_buf, sizeof(addr_buf), value, len); // Read the data into the value buffer
   if (ret < 0) {
@@ -210,21 +164,22 @@ int adau1701_mute(bool mute)
   if (ret < 0) {
     return ret; // Error reading core control register
   }
-
-  // TODO: Re-do this convertion
-  uint16_t val = (core_control_value[0] << 8) | core_control_value[1];
   if (mute) {
-    val = val & ~(ADM_BIT | DAM_BIT);
+    core_control_value[1] &= ~(ADM_BIT | DAM_BIT | CR_BIT);
   } else {
-    val = val | (ADM_BIT | DAM_BIT);
+    core_control_value[1] |= (ADM_BIT | DAM_BIT | CR_BIT);
   }
-  core_control_value[0] = (val >> 8) & 0xFF;
-  core_control_value[1] = val & 0xFF;
-
   ret = adau1701_write_register(CORE_CONTROL_REGISTER, core_control_value);
   if (ret < 0) {
     return ret; // Error writing to core control register
   }
-
   return ret;
+}
+
+// Conversions
+void split_addr(uint16_t word, reg_word_t* byte)
+{
+  *byte[0] = (word >> 8) & 0xFF; // High byte
+  *byte[1] = word & 0xFF; // Low byte
+  return;
 }
