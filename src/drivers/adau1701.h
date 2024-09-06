@@ -17,6 +17,7 @@
 #ifndef ADAU1701_H
 #define ADAU1701_H
 
+#include "adau_1701_IC_1_REG.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <zephyr/drivers/i2c.h>
@@ -32,22 +33,20 @@
 #define SAFELOAD_ADDRESS_REGISTER_2 2071
 #define SAFELOAD_ADDRESS_REGISTER_3 2072
 #define SAFELOAD_ADDRESS_REGISTER_4 2073
-#define CORE_CONTROL_REGISTER 2074
 
-#define IST_BIT 0x0020 ///< Initiate Safeload Transfer (D5)
-#define ADM_BIT 0x0010 ///< Mute ADCs (D4)
-#define DAM_BIT 0x0008 ///< Mute DACs (D3)
-#define CR_BIT 0x0004 ///< Clear internal register to 0 (D2)
+#define CORE_CONTROL_REGISTER_ADDRESS REG_COREREGISTER_IC_1_ADDR
+#define IST_BIT 0x0020 /** @brief Initiate Safeload Transfer (D5) */
+#define ADM_BIT 0x0010 /** @brief Mute ADCs (D4) */
+#define DAM_BIT 0x0008 /** @brief Mute DACs (D3) */
+#define CR_BIT 0x0004 /** @brief Clear internal register to 0 (D2) */
 
-#define ADAU1701_CTRL_REG_WIDTH_BYTES 2 ///< Control Registers' width (16 bits)
-#define ADAU1701_PARAM_RAM_WIDTH_BYTES 4 ///< Parameter RAM width (32 bits)
-#define ADAU1701_DATA_RAM_WIDTH_BYTES 5 ///< Program RAM width (40 bits)
-
-typedef uint8_t reg_word_t[ADAU1701_CTRL_REG_WIDTH_BYTES]; ///< Register word (16 bits)
-typedef uint8_t param_word_t[ADAU1701_PARAM_RAM_WIDTH_BYTES]; ///< Parameter word (32 bits)
-typedef uint8_t data_word_t[ADAU1701_DATA_RAM_WIDTH_BYTES]; ///< Program word (40 bits)
-typedef uint16_t sub_addr_t; ///< Internal address/sub-address (16 bits)
-
+#define ADAU1701_CTRL_REG_WIDTH_BYTES 2 /** @brief Control Registers' width (16 bits) */
+#define ADAU1701_PARAM_RAM_WIDTH_BYTES 4 /** @brief Parameter RAM width (32 bits) */
+#define ADAU1701_DATA_RAM_WIDTH_BYTES 5 /** @brief Program RAM width (40 bits) */
+typedef uint8_t reg_word_t[ADAU1701_CTRL_REG_WIDTH_BYTES]; /** @brief Register word (16 bits) */
+typedef uint8_t param_word_t[ADAU1701_PARAM_RAM_WIDTH_BYTES]; /** @brief Parameter word (32 bits) */
+typedef uint8_t data_word_t[ADAU1701_DATA_RAM_WIDTH_BYTES]; /** @brief Program word (40 bits) */
+typedef uint16_t sub_addr_t; /** @brief Internal address/sub-address (16 bits) */
 #define NULL_2_BYTES { 0x00, 0x00 }
 #define NULL_4_BYTES { 0x00, 0x00, 0x00, 0x00 }
 #define NULL_5_BYTES { 0x00, 0x00, 0x00, 0x00, 0x00 }

@@ -127,12 +127,12 @@ int adau1701_safeload_write(sub_addr_t* param_addrs, data_word_t* data, uint8_t 
   }
   // Set the initiate safeload transfer bit in the core control register
   reg_word_t core_control_value;
-  ret = adau1701_read_register(CORE_CONTROL_REGISTER, &core_control_value, ADAU1701_CTRL_REG_WIDTH_BYTES);
+  ret = adau1701_read_register(CORE_CONTROL_REGISTER_ADDRESS, &core_control_value, ADAU1701_CTRL_REG_WIDTH_BYTES);
   if (ret < 0) {
     return ret; // Error reading core control register
   }
   core_control_value[1] |= IST_BIT;
-  ret = adau1701_write_register(CORE_CONTROL_REGISTER, core_control_value);
+  ret = adau1701_write_register(CORE_CONTROL_REGISTER_ADDRESS, core_control_value);
   if (ret < 0) {
     return ret; // Error writing to core control register
   }
@@ -160,7 +160,7 @@ int adau1701_mute(bool mute)
 {
   int ret;
   reg_word_t core_control_value;
-  ret = adau1701_read_register(CORE_CONTROL_REGISTER, &core_control_value, ADAU1701_CTRL_REG_WIDTH_BYTES);
+  ret = adau1701_read_register(CORE_CONTROL_REGISTER_ADDRESS, &core_control_value, ADAU1701_CTRL_REG_WIDTH_BYTES);
   if (ret < 0) {
     return ret; // Error reading core control register
   }
@@ -169,7 +169,7 @@ int adau1701_mute(bool mute)
   } else {
     core_control_value[1] |= (ADM_BIT | DAM_BIT | CR_BIT);
   }
-  ret = adau1701_write_register(CORE_CONTROL_REGISTER, core_control_value);
+  ret = adau1701_write_register(CORE_CONTROL_REGISTER_ADDRESS, core_control_value);
   if (ret < 0) {
     return ret; // Error writing to core control register
   }
