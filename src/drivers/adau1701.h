@@ -1,147 +1,143 @@
 /**
  * @file adau1701.h
- * @brief Header file for ADAU1701 DSP Driver
+ * @brief ADAU1701 DSP Driver Header
  *
- * This header file defines the interface for controlling the ADAU1701
- * digital signal processor (DSP) using I2C communication via the Zephyr RTOS.
- * The provided functions allow for initialization, register read/write operations,
- * safeload parameter updates, soft reset, power down, and volume control.
+ * This header file defines the ADAU1701 DSP driver interface using I2C communication. It contains
+ * function prototypes for initialization, safeload updates, register read/write operations,
+ * soft reset, power down, and volume/mute control of the ADAU1701 digital signal processor (DSP).
  *
- * @note Ensure the ADAU1701 is configured correctly for I2C communication,
- *       and the appropriate I2C address is used.
+ * @note This driver assumes the ADAU1701 is configured for I2C communication.
  */
 
 #ifndef ADAU1701_H
 #define ADAU1701_H
 
-#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <zephyr/drivers/i2c.h>
-#include <zephyr/types.h>
+#include <zephyr/kernel.h>
 
-/** @brief Initializes the ADAU1701 DSP.
+/**
+ * @brief ADAU1701 control and data width constants
+ */
+#define ADAU1701_CTRL_REG_WIDTH_BYTES 2 /**< Control Registers' width (16 bits) */
+#define ADAU1701_PARAM_RAM_WIDTH_BYTES 4 /**< Parameter RAM width (32 bits) */
+#define ADAU1701_DATA_RAM_WIDTH_BYTES 5 /**< Program RAM width (40 bits) */
+
+/**
+ * @brief ADAU1701 safeload and core control register addresses
+ */
+#define SAFELOAD_DATA_REGISTER_0 2064
+#define SAFELOAD_DATA_REGISTER_1 2065
+#define SAFELOAD_DATA_REGISTER_2 2066
+#define SAFELOAD_DATA_REGISTER_3 2067
+#define SAFELOAD_DATA_REGISTER_4 2068
+#define SAFELOAD_ADDRESS_REGISTER_0 2069
+#define SAFELOAD_ADDRESS_REGISTER_1 2070
+#define SAFELOAD_ADDRESS_REGISTER_2 2071
+#define SAFELOAD_ADDRESS_REGISTER_3 2072
+#define SAFELOAD_ADDRESS_REGISTER_4 2073
+#define CORE_CONTROL_REGISTER 2074
+
+/**
+ * @brief ADAU1701 control bits for core control register
+ */
+#define IST_BIT 0x0020 /**< Initiate Safeload Transfer (D5) */
+#define ADM_BIT 0x0010 /**< Mute ADCs (D4) */
+#define DAM_BIT 0x0008 /**< Mute DACs (D3) */
+#define CR_BIT 0x0004 /**< Clear internal register to 0 (D2) */
+
+/**
+ * @brief Typedefs for register, parameter, and data words
+ */
+typedef uint8_t reg_word_t[ADAU1701_CTRL_REG_WIDTH_BYTES]; /**< Register word (16 bits) */
+typedef uint8_t param_word_t[ADAU1701_PARAM_RAM_WIDTH_BYTES]; /**< Parameter word (32 bits) */
+typedef uint8_t data_word_t[ADAU1701_DATA_RAM_WIDTH_BYTES]; /**< Program word (40 bits) */
+typedef uint16_t sub_addr_t; /**< Internal address/sub address (16 bits) */
+
+/**
+ * @brief Initialize the ADAU1701 DSP.
  *
- * This function initializes the ADAU1701 DSP by checking if the I2C bus is ready.
- * It optionally downloads the SigmaStudio program to configure the DSP.
+ * This function initializes the ADAU1701 DSP, ensures that the I2C device is ready,
+ * and optionally loads the default SigmaStudio program if DEBUG_PASSTHROUGH is not enabled.
  *
- * @return 0 on success, or a negative error code on failure.
+ * @return 0 on success, negative value on failure.
  */
 int adau1701_init(void);
 
-/** @brief Writes a single byte to an ADAU1701 register.
+/**
+ * @brief Write data to the ADAU1701 DSP.
  *
- * This function writes a single byte value to the specified register address of the ADAU1701 DSP.
+ * This function writes a block of data to a specific subaddress in the ADAU1701 DSP.
  *
- * @param addr  The register address to write to.
- * @param value The byte value to write to the register.
+ * @param sub_addr The 16-bit subaddress where the data should be written.
+ * @param data Pointer to the data to be written.
+ * @param data_len Length of the data to be written in bytes.
  *
- * @return 0 on success, or a negative error code on failure.
+ * @return 0 on success, negative value on failure.
  */
-int adau1701_direct_write_byte(uint16_t addr, uint8_t value);
+int adau1701_write(sub_addr_t sub_addr, uint8_t* data, size_t data_len);
 
-/** @brief Writes a block of data to consecutive ADAU1701 registers.
+/**
+ * @brief Write a block of data to the ADAU1701 DSP.
  *
- * This function writes a block of data starting from the specified register address
- * of the ADAU1701 DSP. The data is written using I2C burst mode.
+ * This function writes a block of data to a specific subaddress in burst mode.
  *
- * @param start_addr The starting register address.
- * @param data       A pointer to the data block to be written.
- * @param len        The length of the data block to be written.
+ * @param start_addr The 16-bit subaddress to start writing.
+ * @param data Pointer to the block of data to be written.
+ * @param len Length of the data block in bytes.
  *
- * @return 0 on success, or a negative error code on failure.
+ * @return 0 on success, negative value on failure.
  */
-int adau1701_direct_write_block(uint16_t start_addr, const uint8_t* data, size_t len);
+int adau1701_block_write(sub_addr_t start_addr, uint8_t* data, size_t len);
 
-/** @brief Writes a single value to a safeload parameter register.
+/**
+ * @brief Write to a register in the ADAU1701 DSP.
  *
- * This function writes a single value to a safeload parameter register on the ADAU1701 DSP.
- * Safeloading is used to safely update DSP parameters during runtime without causing
- * audio glitches.
+ * This function writes a 16-bit value to a specific register in the ADAU1701 DSP.
  *
- * @param param_addr The safeload parameter register address.
- * @param value      The value to write to the safeload parameter register.
+ * @param reg_addr The 16-bit register address.
+ * @param data The 16-bit data to be written.
  *
- * @return 0 on success, or a negative error code on failure.
+ * @return 0 on success, negative value on failure.
  */
-int adau1701_safeload_write(uint16_t param_addr, const uint8_t value);
+int adau1701_write_register(sub_addr_t reg_addr, reg_word_t data);
 
-/** @brief Reads a single byte from an ADAU1701 register.
+/**
+ * @brief Perform a safeload write operation in the ADAU1701 DSP.
  *
- * This function reads a single byte value from the specified register address
- * of the ADAU1701 DSP.
+ * This function writes multiple 40-bit program words to the parameter RAM using the safeload mechanism.
  *
- * @param addr  The register address to read from.
- * @param value A pointer to the byte variable to store the read value.
+ * @param param_addrs Array of 16-bit parameter addresses.
+ * @param data Array of 40-bit program words to be written.
+ * @param num_registers Number of registers to be written (maximum 5).
  *
- * @return 0 on success, or a negative error code on failure.
+ * @return 0 on success, negative value on failure.
  */
-int adau1701_read_byte(uint16_t addr, uint8_t* value);
+int adau1701_safeload_write(sub_addr_t* param_addrs, data_word_t* data, uint8_t num_registers);
 
-/** @brief Reads a block of data from consecutive ADAU1701 registers.
+/**
+ * @brief Read data from an ADAU1701 DSP register.
  *
- * This function reads a block of data starting from the specified register address
- * of the ADAU1701 DSP. The data is read using I2C burst mode.
+ * This function reads data from a specific register address in the ADAU1701 DSP.
  *
- * @param start_addr The starting register address.
- * @param data       A pointer to the buffer to store the read data.
- * @param len        The length of the data block to be read.
+ * @param reg_addr The 16-bit register address to be read.
+ * @param value Pointer to the buffer where the read value will be stored.
+ * @param len Length of the data to be read in bytes.
  *
- * @return 0 on success, or a negative error code on failure.
+ * @return 0 on success, negative value on failure.
  */
-int adau1701_read_block(uint16_t start_addr, uint8_t* data, size_t len);
+int adau1701_read_register(sub_addr_t reg_addr, reg_word_t* value, size_t len);
 
-/** @brief Performs a soft reset on the ADAU1701 DSP.
+/**
+ * @brief Mute or unmute the ADAU1701 DSP.
  *
- * This function performs a soft reset on the ADAU1701 DSP by writing to the
- * CORE register. The reset mutes the DAC and ADC channels.
+ * This function controls the mute functionality of the ADAU1701 by modifying the core control register.
  *
- * @return 0 on success, or a negative error code on failure.
+ * @param mute True to mute the DSP, false to unmute.
+ *
+ * @return 0 on success, negative value on failure.
  */
-int adau1701_soft_reset(void);
+int adau1701_mute(bool mute);
 
-/** @brief Powers down the ADAU1701 DSP.
- *
- * This function powers down the ADAU1701 DSP by writing to the analog power down register.
- * It turns off the DACs and ADCs, placing the DSP in a low-power state.
- *
- * @return 0 on success, or a negative error code on failure.
- */
-int adau1701_power_down(void);
-
-/** @brief Sets the volume level on the ADAU1701 DSP.
- *
- * This function sets the volume level on the ADAU1701 DSP by writing to the
- * appropriate volume control register.
- *
- * @param volume The volume level to set (typically 0-255).
- */
-void adau1701_set_volume(uint8_t volume);
-
-/** @brief Mutes or unmutes the ADAU1701 DSP.
- *
- * This function mutes or unmutes the ADAU1701 DSP by writing to the appropriate
- * register. Muting is achieved by setting the MUTE bits in the CORE register.
- *
- * @param mute Set to `true` to mute, or `false` to unmute.
- */
-void adau1701_mute(bool mute);
-
-/** @brief Sets the volume with a fade effect on the ADAU1701 DSP.
- *
- * This function smoothly changes the volume level from the current level to the target
- * level over a specified number of steps, creating a fade effect.
- *
- * @param target_volume The target volume level to reach.
- * @param fade_steps    The number of steps to use for the fade effect.
- */
-void adau1701_set_volume_fade(uint8_t target_volume, uint16_t fade_steps);
-
-/** @brief Configures the ADAU1701 DSP for I2S or TDM mode.
- *
- * This function configures the ADAU1701 DSP for either I2S or TDM mode by writing
- * to the appropriate serial output register.
- *
- * @param mode The mode to set (e.g., I2S or TDM configuration value).
- */
-void adau1701_configure_i2s_tdm(uint8_t mode);
-
-#endif /* ADAU1701_H */
+#endif // ADAU1701_H

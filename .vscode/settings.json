@@ -13,7 +13,14 @@
         "audio_sync_timer.h": "c",
         "log.h": "c",
         "zbus.h": "c",
-        "i2c.h": "c"
+        "i2c.h": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c"
     },
     "editor.tabSize": 2,
     "C_Cpp.errorSquiggles": "disabled",

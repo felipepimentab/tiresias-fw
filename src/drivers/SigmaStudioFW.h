@@ -41,24 +41,12 @@ extern const struct i2c_dt_spec dev_i2c;
 /*
  * Write to a single Device register
  */
-#define SIGMA_WRITE_REGISTER(devAddress, address, dataLength, data)                                                    \
-  {                                                                                                                    \
-    int ret = i2c_burst_write_dt(&dev_i2c, address, data, dataLength);                                                 \
-    if (ret < 0) {                                                                                                     \
-      printk("Failed to write to ADAU1701 register 0x%02x\n\r", address);                                              \
-    }                                                                                                                  \
-  }
+#define SIGMA_WRITE_REGISTER(devAddress, address, dataLength, data)
 
 /*
  * Write to multiple Device registers
  */
-#define SIGMA_WRITE_REGISTER_BLOCK(devAddress, address, length, pData)                                                 \
-  {                                                                                                                    \
-    int ret = i2c_burst_write_dt(&dev_i2c, address, pData, length);                                                    \
-    if (ret < 0) {                                                                                                     \
-      printk("Failed to write block to ADAU1701 starting at register 0x%02x\n\r", address);                            \
-    }                                                                                                                  \
-  }
+#define SIGMA_WRITE_REGISTER_BLOCK(devAddress, address, length, pData)
 
 /*
  * Writes delay (in ms)
@@ -71,13 +59,7 @@ extern const struct i2c_dt_spec dev_i2c;
 /*
  * Read device registers
  */
-#define SIGMA_READ_REGISTER(devAddress, address, length, pData)                                                        \
-  {                                                                                                                    \
-    int ret = i2c_burst_read_dt(&dev_i2c, address, pData, length);                                                     \
-    if (ret < 0) {                                                                                                     \
-      printk("Failed to read from ADAU1701 register 0x%02x\n\r", address);                                             \
-    }                                                                                                                  \
-  }
+#define SIGMA_READ_REGISTER(devAddress, address, length, pData)
 
 /*
  * Set a register field's value
