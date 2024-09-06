@@ -43,7 +43,7 @@ int adau1701_init(void)
   }
 
 #if DEBUG_PASSTHROUGH
-  //
+  adau1701_mute(false);
 #else
   // Use the default SigmaStudio program for initialization
   default_download_IC_1();
