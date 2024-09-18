@@ -1,0 +1,183 @@
+Cell Name         = Single 1
+Parameter Name    = TargetGainGainS200AlgGrowStep1
+Parameter Address = 8256
+Parameter Value   = 1
+Parameter Data :
+0x00, 0x80, 0x00, 0x00, 
+
+
+
+Cell Name         = Single 1
+Parameter Name    = CurrentGainGainS200AlgGrowStep1
+Parameter Address = 8264
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = Single 1
+Parameter Name    = StepSizeGainS200AlgGrowStep1
+Parameter Address = 8260
+Parameter Value   = 1.00135803222656E-05
+Parameter Data :
+0x00, 0x00, 0x00, 0x54, 
+
+
+
+Cell Name         = Level1
+Parameter Name    = SingleBandLevelDetwOutDisp3rdgen1TCONST
+Parameter Address = 8228
+Parameter Value   = 0.00240135192871094
+Parameter Data :
+0x00 ,	0x00 ,	0x4E ,	0xB0 ,	
+
+
+
+Cell Name         = Level1
+Parameter Name    = SingleBandLevelDetwOutDisp3rdgen1hold
+Parameter Address = 8232
+Parameter Value   = 480
+Parameter Data :
+0x00 ,	0x00 ,	0x01 ,	0xE0 ,	
+
+
+
+Cell Name         = Level1
+Parameter Name    = SingleBandLevelDetwOutDisp3rdgen1decay
+Parameter Address = 8236
+Parameter Value   = 0.000216960906982422
+Parameter Data :
+0x00 ,	0x00 ,	0x07 ,	0x1C ,	
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = dataLoadStart_SafeLoad
+Parameter Address = 8196
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = dataLoad1_SafeLoad
+Parameter Address = 8200
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = dataLoad2_SafeLoad
+Parameter Address = 8204
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = dataLoad3_SafeLoad
+Parameter Address = 8208
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = dataLoadEnd_SafeLoad
+Parameter Address = 8212
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = addressLoad_SafeLoad
+Parameter Address = 8216
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = numLoad_SafeLoad
+Parameter Address = 8220
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = NonModRamAlloc
+Parameter Address = 8192
+Parameter Value   = 2047
+Parameter Data :
+0x00, 0x00, 0x07, 0xFF, 
+
+
+
+Cell Name         = None - Framework
+Parameter Name    = Coefficient_Offset_SalfeLoad
+Parameter Address = 8224
+Parameter Value   = 8196
+Parameter Data :
+0x00, 0x00, 0x20, 0x04, 
+
+
+
+Parameter data for: IC 1-Sigma (Hexadecimal format starting at parameter address 0)
+See also adau_1787.hex file
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+
+Parameter data for: IC 1-Sigma (Binary format starting at parameter address 0)
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+
+Parameter data for: IC 1-Fast (Hexadecimal format starting at parameter address 0)
+See also adau_1787.hex file
+
+Parameter data for: IC 1-Fast (Binary format starting at parameter address 0)
+
