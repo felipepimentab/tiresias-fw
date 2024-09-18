@@ -12,6 +12,8 @@
 // You can also visit the nRF DeviceTree extension documentation at https://docs.nordicsemi.com/bundle/nrf-connect-vscode/page/guides/ncs_configure_app.html#devicetree-support-in-the-extension
 
 &i2c1 {
+  clock-frequency = <I2C_BITRATE_FAST_PLUS>; // 1000 kbps
+
   adau_1701: adau_1701@68 {
     compatible = "adi,adau1701", "i2c-device";
     status = "okay";
@@ -21,5 +23,11 @@
     // dvdd-supply = <&vdd_3v3_reg>;
     // adi,pll-mode-gpios = <&gpio 24 0 &gpio 25 0>;
     // adi,pin-config = <0x4 0x7 0x5 0x5 0x4 0x4 0x4 0x4 0x4 0x4 0x4 0x4>;
+  };
+  adau_1787: adau_1787@28 {
+    compatible = "adi,adau1787", "i2c-device";
+    status = "okay";
+    reg = <0x28>;
+    label = "adau_1787"
   };
 };
