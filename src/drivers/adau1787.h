@@ -28,8 +28,10 @@
 #define SAFELOAD_DATA_REGISTER_3 0x0003 /** @brief Register address for Safeload Data 3 */
 #define SAFELOAD_DATA_REGISTER_4 0x0004 /** @brief Register address for Safeload Data 4 */
 #define SAFELOAD_DATA_REGISTER_5 0x0005 /** @brief Register address for Safeload Data 5 */
-#define SAFELOAD_TARGET_ADDRESS_REGISTER 0x0006 /** @brief Register address for Safeload target address (offset of -1) */
-#define SAFELOAD_NUMBER_OF_WORDS_REGISTER 0x0007  /** @brief Register address for Number of words to write/safeload trigger */
+#define SAFELOAD_TARGET_ADDRESS_REGISTER                                                                               \
+  0x0006 /** @brief Register address for Safeload target address (offset of -1) */
+#define SAFELOAD_NUMBER_OF_WORDS_REGISTER                                                                              \
+  0x0007 /** @brief Register address for Number of words to write/safeload trigger */
 
 #define CORE_CONTROL_REGISTER_ADDRESS REG_COREREGISTER_IC_1_ADDR
 #define IST_BIT 0x0020 /** @brief Initiate Safeload Transfer (D5) */
@@ -39,10 +41,11 @@
 
 #define ADAU1787_CTRL_REG_WIDTH_BYTES 2 /** @brief Control Registers' width (16 bits) */
 #define ADAU1787_PARAM_RAM_WIDTH_BYTES 4 /** @brief Parameter RAM width (32 bits) */
-#define ADAU1787_PROGRAM_RAM_WIDTH_BYTES 5 /** @brief Program RAM width (40 bits) */
+#define ADAU1787_PROG_RAM_WIDTH_BYTES 5 /** @brief Program RAM width (40 bits) */
+#define ADAU1787_DATA_RAM_WIDTH_BYTES 4
 typedef uint8_t reg_word_t[ADAU1787_CTRL_REG_WIDTH_BYTES]; /** @brief Register word (16 bits) */
 typedef uint8_t param_word_t[ADAU1787_PARAM_RAM_WIDTH_BYTES]; /** @brief Parameter word (32 bits) */
-typedef uint8_t program_word_t[ADAU1787_PROGRAM_RAM_WIDTH_BYTES]; /** @brief Program word (40 bits) */
+typedef uint8_t prog_word_t[ADAU1787_PROG_RAM_WIDTH_BYTES]; /** @brief Program word (40 bits) */
 typedef uint16_t sub_addr_t; /** @brief Internal address/sub-address (16 bits) */
 #define NULL_2_BYTES { 0x00, 0x00 }
 #define NULL_4_BYTES { 0x00, 0x00, 0x00, 0x00 }
@@ -98,7 +101,7 @@ int adau1787_write_register(sub_addr_t reg_addr, reg_word_t data);
  * @param num_registers Number of registers to write.
  * @return 0 if successful, negative error code otherwise.
  */
-int adau1787_safeload_write(sub_addr_t* param_addrs, program_word_t* data, uint8_t num_registers);
+int adau1787_safeload_write(sub_addr_t* param_addrs, prog_word_t* data, uint8_t num_registers);
 
 /**
  * @brief Read a register from the ADAU1787.

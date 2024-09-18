@@ -1,3 +1,27 @@
+/**
+ * @file adau1787.c
+ * @brief ADAU1787 DSP Driver Implementation
+ *
+ * This file contains the implementation of functions for controlling the ADAU1787
+ * digital signal processor (DSP) using I2C communication via the Zephyr RTOS.
+ * The functions provided include initialization, register read/write operations,
+ * safeload parameter updates, soft reset, power down, and volume control.
+ *
+ * The driver is intended to work with the SigmaStudio framework and can be
+ * customized based on the specific needs of the application.
+ *
+ * @note This driver assumes the ADAU1787 is configured for I2C communication.
+ * Ensure the correct I2C address is set according to the hardware configuration.
+ */
+
+#include "adau1787.h"
+#include "SigmaStudioFW.h"
+#include "adau_1787_IC_1_FAST_.h"
+#include "adau_1787_IC_1_FAST_PARAM.h"
+#include "adau_1787_IC_1_FAST_REG.h"
+#include "adau_1787_IC_1_SIGMA.h"
+#include "adau_1787_IC_1_SIGMA_PARAM.h"
+#include "adau_1787_IC_1_SIGMA_REG.h"
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/kernel.h>
 
@@ -81,7 +105,7 @@ int adau1787_write_register(sub_addr_t reg_addr, reg_word_t data)
   return adau1787_write(reg_addr, data, ADAU1787_CTRL_REG_WIDTH_BYTES);
 }
 
-int adau1787_safeload_write(sub_addr_t* param_addrs, data_word_t* data, uint8_t num_registers)
+int adau1787_safeload_write(sub_addr_t* param_addrs, prog_word_t* data, uint8_t num_registers)
 {
   int ret;
   if (num_registers > 5) {
@@ -97,7 +121,7 @@ int adau1787_safeload_write(sub_addr_t* param_addrs, data_word_t* data, uint8_t 
       return ret;
     }
     // Write the 28-bit data to the corresponding safeload data register
-    ret = adau1787_write(SAFELOAD_DATA_REGISTER_0 + i, data[i], ADAU1787_DATA_RAM_WIDTH_BYTES);
+    ret = adau1787_write(SAFELOAD_DATA_REGISTER_0 + i, data[i], ADAU1787_PROG_RAM_WIDTH_BYTES);
     if (ret < 0) {
       return ret;
     }
