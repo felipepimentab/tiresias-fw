@@ -16,7 +16,7 @@
 
 #include "adau1787.h"
 #include "SigmaStudioFW.h"
-#include "adau_1787_IC_1_FAST_.h"
+#include "adau_1787_IC_1_FAST.h"
 #include "adau_1787_IC_1_FAST_PARAM.h"
 #include "adau_1787_IC_1_FAST_REG.h"
 #include "adau_1787_IC_1_SIGMA.h"

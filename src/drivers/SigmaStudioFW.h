@@ -20,7 +20,8 @@
 #ifndef __SIGMASTUDIOFW_H__
 #define __SIGMASTUDIOFW_H__
 
-#include "adau1701.h"
+// #include "adau1701.h"
+#include "adau1787.h"
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/kernel.h>
 
@@ -43,7 +44,7 @@ extern const struct i2c_dt_spec dev_i2c;
  */
 #define SIGMA_WRITE_REGISTER(devAddress, address, dataLength, data)                                                    \
   {                                                                                                                    \
-    adau1701_block_write(address, data, dataLength);                                                                   \
+    adau1787_block_write(address, data, dataLength);                                                                   \
   }
 
 /*
@@ -51,7 +52,7 @@ extern const struct i2c_dt_spec dev_i2c;
  */
 #define SIGMA_WRITE_REGISTER_BLOCK(devAddress, address, length, pData)                                                 \
   {                                                                                                                    \
-    adau1701_block_write(address, pData, length);                                                                      \
+    adau1787_block_write(address, pData, length);                                                                      \
   }
 
 /*

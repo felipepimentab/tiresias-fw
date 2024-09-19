@@ -10,8 +10,10 @@
 #include <zephyr/shell/shell.h>
 #include <zephyr/zbus/zbus.h>
 
-#include "drivers/adau1701.h"
+// #include "drivers/adau1701.h"
+#include "drivers/adau1787.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 
-int main(void) { adau1701_init(); }
+// int main(void) { adau1701_init(); }
+int main(void) { adau1787_init(); }

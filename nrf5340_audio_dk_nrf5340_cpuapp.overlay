@@ -28,6 +28,6 @@
     compatible = "adi,adau1787", "i2c-device";
     status = "okay";
     reg = <0x28>;
-    label = "adau1787"
+    label = "adau1787";
   };
 };
