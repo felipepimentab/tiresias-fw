@@ -23,27 +23,27 @@
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/kernel.h>
 
-#define SAFELOAD_DATA_REGISTER_1 0x0001 /** @brief Register address for Safeload Data 1 */
-#define SAFELOAD_DATA_REGISTER_2 0x0002 /** @brief Register address for Safeload Data 2 */
-#define SAFELOAD_DATA_REGISTER_3 0x0003 /** @brief Register address for Safeload Data 3 */
-#define SAFELOAD_DATA_REGISTER_4 0x0004 /** @brief Register address for Safeload Data 4 */
-#define SAFELOAD_DATA_REGISTER_5 0x0005 /** @brief Register address for Safeload Data 5 */
-#define SAFELOAD_TARGET_ADDRESS_REGISTER                                                                               \
+#define SAFELOAD_DATA_REG_1 0x0001 /** @brief Register address for Safeload Data 1 */
+#define SAFELOAD_DATA_REG_2 0x0002 /** @brief Register address for Safeload Data 2 */
+#define SAFELOAD_DATA_REG_3 0x0003 /** @brief Register address for Safeload Data 3 */
+#define SAFELOAD_DATA_REG_4 0x0004 /** @brief Register address for Safeload Data 4 */
+#define SAFELOAD_DATA_REG_5 0x0005 /** @brief Register address for Safeload Data 5 */
+#define SAFELOAD_TARGET_ADDR_REG                                                                               \
   0x0006 /** @brief Register address for Safeload target address (offset of -1) */
-#define SAFELOAD_NUMBER_OF_WORDS_REGISTER                                                                              \
+#define SAFELOAD_N_WORDS_REG                                                                              \
   0x0007 /** @brief Register address for Number of words to write/safeload trigger */
 
-#define CORE_CONTROL_REGISTER_ADDRESS REG_COREREGISTER_IC_1_ADDR
-#define IST_BIT 0x0020 /** @brief Initiate Safeload Transfer (D5) */
-#define ADM_BIT 0x0010 /** @brief Mute ADCs (D4) */
-#define DAM_BIT 0x0008 /** @brief Mute DACs (D3) */
-#define CR_BIT 0x0004 /** @brief Clear internal register to 0 (D2) */
+#define ADC_DAC_HP_PWR REG_ADC_DAC_HP_PWR_IC_1_Sigma_ADDR /** @brief ADC, DAC, Headphone Power Controls Register Address */
+#define PLL_MB_PGA_PWR REG_PLL_MB_PGA_PWR_IC_1_Sigma_ADDR /** @brief PLL, Microphone Bias, and PGA Power Controls Register Address */
+#define DMIC_PWR REG_DMIC_PWR_IC_1_Sigma_ADDR /** @brief Digital Microphone Power Controls Register Address */
+#define SAI_CLK_PWR REG_SAI_CLK_PWR_IC_1_Sigma_ADDR /** @brief Serial Port, PDM Output, and Digital Microphone CLK Power Controls Register Address */
+#define DSP_PWR REG_DSP_PWR_IC_1_Sigma_ADDR /** @brief DSP Power Controls Register Address */
 
-#define ADAU1787_CTRL_REG_WIDTH_BYTES 2 /** @brief Control Registers' width (16 bits) */
+#define ADAU1787_CTRL_REG_WIDTH_BYTES 1 /** @brief Control Registers' width (8 bits) */
 #define ADAU1787_PARAM_RAM_WIDTH_BYTES 4 /** @brief Parameter RAM width (32 bits) */
 #define ADAU1787_PROG_RAM_WIDTH_BYTES 5 /** @brief Program RAM width (40 bits) */
 #define ADAU1787_DATA_RAM_WIDTH_BYTES 4
-typedef uint8_t reg_word_t[ADAU1787_CTRL_REG_WIDTH_BYTES]; /** @brief Register word (16 bits) */
+typedef uint8_t reg_word_t; /** @brief Register word (8 bits) */
 typedef uint8_t param_word_t[ADAU1787_PARAM_RAM_WIDTH_BYTES]; /** @brief Parameter word (32 bits) */
 typedef uint8_t prog_word_t[ADAU1787_PROG_RAM_WIDTH_BYTES]; /** @brief Program word (40 bits) */
 typedef uint16_t sub_addr_t; /** @brief Internal address/sub-address (16 bits) */
