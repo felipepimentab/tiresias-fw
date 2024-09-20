@@ -1535,14 +1535,14 @@
             <Address>49212</Address>
             <AddrIncr>0</AddrIncr>
             <Size>1</Size>
-            <Data>0xFD, </Data>
+            <Data>0x50, </Data>
         </Register>
         <Register>
             <Name>IC 1.DAC_VOL1</Name>
             <Address>49213</Address>
             <AddrIncr>0</AddrIncr>
             <Size>1</Size>
-            <Data>0xFD, </Data>
+            <Data>0x50, </Data>
         </Register>
         <Register>
             <Name>IC 1.SDSP_CTRL2</Name>
@@ -1626,118 +1626,6 @@
             <Size>1</Size>
             <Data>0x00, </Data>
         </Register>
-        <Program>
-            <Name>Program Data</Name>
-            <Address>53248</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x04, 0x80, 0x00, 0x00, 0x04, 0x80, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Program>
-        <Parameter>
-            <Name>Bank A Parameter 0</Name>
-            <Address>53504</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank A Parameter 1</Name>
-            <Address>53760</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank A Parameter 2</Name>
-            <Address>54016</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank A Parameter 3</Name>
-            <Address>54272</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank A Parameter 4</Name>
-            <Address>54528</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank B Parameter 0</Name>
-            <Address>54784</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank B Parameter 1</Name>
-            <Address>55040</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank B Parameter 2</Name>
-            <Address>55296</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank B Parameter 3</Name>
-            <Address>55552</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank B Parameter 4</Name>
-            <Address>55808</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank C Parameter 0</Name>
-            <Address>56064</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank C Parameter 1</Name>
-            <Address>56320</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank C Parameter 2</Name>
-            <Address>56576</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank C Parameter 3</Name>
-            <Address>56832</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
-        <Parameter>
-            <Name>Bank C Parameter 4</Name>
-            <Address>57088</Address>
-            <AddrIncr>0</AddrIncr>
-            <Size>16</Size>
-            <Data>0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, </Data>
-        </Parameter>
         <Register>
             <Name>IC 1_Fast.FDSP_RUN</Name>
             <Address>49249</Address>
@@ -1745,5 +1633,8 @@
             <Size>1</Size>
             <Data>0x01, </Data>
         </Register>
+    </IC>
+    <IC>
+        <Name>IC 2</Name>
     </IC>
 </Schematic>

@@ -1,7 +1,7 @@
 /*
  * File:           E:\adau-1787-dsp-program\adau_1787_IC_1_SIGMA_PARAM.h
  *
- * Created:        Tuesday, September 17, 2024 5:56:29 PM
+ * Created:        Friday, September 20, 2024 2:49:24 PM
  * Description:    adau_1787:IC 1-Sigma parameter RAM definitions.
  *
  * This software is distributed in the hope that it will be useful,

@@ -1,8 +1,8 @@
 /*
- * File:           defines.h
+ * File:           E:\adau-1787-dsp-program\adau_1787_IC_2_PARAM.h
  *
  * Created:        Friday, September 20, 2024 2:49:24 PM
- * Description:    adau_1787 IC default download data definitions.
+ * Description:    adau_1787:IC 2 parameter RAM definitions.
  *
  * This software is distributed in the hope that it will be useful,
  * but is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
@@ -16,17 +16,8 @@
  *
  * Copyright ©2024 Analog Devices, Inc. All rights reserved.
  */
-#ifndef __DEFINES_H__
-#define __DEFINES_H__
-
-#define BufferSize_IC_1_SIGMA     	1156
-#define NumTransactions_IC_1_SIGMA	210
-
-#define BufferSize_IC_1_FAST     	6
-#define NumTransactions_IC_1_FAST	2
-
-#define BufferSize_IC_2     	0
-#define NumTransactions_IC_2	0
+#ifndef __ADAU_1787_IC_2_PARAM_H__
+#define __ADAU_1787_IC_2_PARAM_H__
 
 
 #endif

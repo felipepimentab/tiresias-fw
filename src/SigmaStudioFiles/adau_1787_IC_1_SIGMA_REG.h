@@ -1,7 +1,7 @@
 /*
  * File:           E:\adau-1787-dsp-program\adau_1787_IC_1_SIGMA_REG.h
  *
- * Created:        Tuesday, September 17, 2024 5:56:29 PM
+ * Created:        Friday, September 20, 2024 2:49:24 PM
  * Description:    adau_1787:IC 1-Sigma control register definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -308,12 +308,12 @@
 /* DAC_VOL0  - Registers (IC 1_Sigma) */
 #define REG_DAC_VOL0_IC_1_Sigma_ADDR              0xC03C
 #define REG_DAC_VOL0_IC_1_Sigma_BYTE              1
-#define REG_DAC_VOL0_IC_1_Sigma_VALUE             0xFD
+#define REG_DAC_VOL0_IC_1_Sigma_VALUE             0x50
 
 /* DAC_VOL1  - Registers (IC 1_Sigma) */
 #define REG_DAC_VOL1_IC_1_Sigma_ADDR              0xC03D
 #define REG_DAC_VOL1_IC_1_Sigma_BYTE              1
-#define REG_DAC_VOL1_IC_1_Sigma_VALUE             0xFD
+#define REG_DAC_VOL1_IC_1_Sigma_VALUE             0x50
 
 /* DAC_ROUTE0  - Registers (IC 1_Sigma) */
 #define REG_DAC_ROUTE0_IC_1_Sigma_ADDR            0xC03E
@@ -1788,12 +1788,12 @@
 #define R56_DAC1_MUTE_IC_1_Sigma_SHIFT            7
 
 /* DAC_VOL0 (IC 1_Sigma) */
-#define R57_DAC0_VOL_IC_1_Sigma                   0xFD   /* 11111101b	[7:0] */
+#define R57_DAC0_VOL_IC_1_Sigma                   0x50   /* 01010000b	[7:0] */
 #define R57_DAC0_VOL_IC_1_Sigma_MASK              0xFF
 #define R57_DAC0_VOL_IC_1_Sigma_SHIFT             0
 
 /* DAC_VOL1 (IC 1_Sigma) */
-#define R58_DAC1_VOL_IC_1_Sigma                   0xFD   /* 11111101b	[7:0] */
+#define R58_DAC1_VOL_IC_1_Sigma                   0x50   /* 01010000b	[7:0] */
 #define R58_DAC1_VOL_IC_1_Sigma_MASK              0xFF
 #define R58_DAC1_VOL_IC_1_Sigma_SHIFT             0
 

@@ -1,7 +1,7 @@
 /*
  * File:           E:\adau-1787-dsp-program\adau_1787_IC_1_SIGMA.h
  *
- * Created:        Tuesday, September 17, 2024 5:56:29 PM
+ * Created:        Friday, September 20, 2024 2:49:24 PM
  * Description:    adau_1787:IC 1-Sigma program data.
  *
  * This software is distributed in the hope that it will be useful,
@@ -1180,12 +1180,12 @@ ADI_REG_TYPE R206_ADC_DAC_HP_PWR_IC_1_Sigma_Default[REG_ADC_DAC_HP_PWR_IC_1_Sigm
 
 /* Register Default - IC 1.DAC_VOL0 */
 ADI_REG_TYPE R207_DAC_VOL0_IC_1_Sigma_Default[REG_DAC_VOL0_IC_1_Sigma_BYTE] = {
-0xFD
+0x50
 };
 
 /* Register Default - IC 1.DAC_VOL1 */
 ADI_REG_TYPE R208_DAC_VOL1_IC_1_Sigma_Default[REG_DAC_VOL1_IC_1_Sigma_BYTE] = {
-0xFD
+0x50
 };
 
 /* Register Default - IC 1.SDSP_CTRL2 */
