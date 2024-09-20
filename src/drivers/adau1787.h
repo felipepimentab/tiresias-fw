@@ -88,7 +88,7 @@ int adau1787_block_write(sub_addr_t start_addr, uint8_t* data, size_t len);
  * @param data Data to write (2 bytes).
  * @return 0 if successful, negative error code otherwise.
  */
-int adau1787_write_register(sub_addr_t reg_addr, reg_word_t data);
+int adau1787_write_register(sub_addr_t reg_addr, reg_word_t* data);
 
 /**
  * @brief Perform a safeload write to the ADAU1787.

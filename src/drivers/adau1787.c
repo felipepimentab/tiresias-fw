@@ -43,12 +43,10 @@ int adau1787_init(void)
     return -1;
   }
 
-#if DEBUG_PASSTHROUGH
-  adau1787_mute(false);
-#else
   // Use the default SigmaStudio program for initialization
-  default_download_IC_1();
-#endif
+  // default_download_IC_1_Sigma();
+
+  
 
   return 0;
 }
@@ -61,7 +59,7 @@ int adau1787_write(sub_addr_t sub_addr, uint8_t* data, size_t data_len)
   uint8_t buf[2 + data_len]; // Buffer to hold the address (2 bytes) and the data
 
   // Split the 16-bit address into two bytes
-  split_addr(sub_addr, &buf);
+  split_addr(sub_addr, buf);
 
   // Copy data to the buffer after the address
   for (size_t i = 0; i < data_len; i++) {
@@ -83,7 +81,7 @@ int adau1787_block_write(sub_addr_t start_addr, uint8_t* data, size_t len)
   uint8_t addr_buf[2];
   struct i2c_msg msg[2];
   // Split the 16-bit start address into two bytes
-  split_addr(start_addr, &addr_buf);
+  split_addr(start_addr, addr_buf);
   // First message: send the 16-bit address
   msg[0].buf = addr_buf;
   msg[0].len = 2; // 16-bit address means 2 bytes
@@ -100,43 +98,14 @@ int adau1787_block_write(sub_addr_t start_addr, uint8_t* data, size_t len)
   return ret;
 }
 
-int adau1787_write_register(sub_addr_t reg_addr, reg_word_t data)
+int adau1787_write_register(sub_addr_t reg_addr, reg_word_t* data)
 {
   return adau1787_write(reg_addr, data, ADAU1787_CTRL_REG_WIDTH_BYTES);
 }
 
 int adau1787_safeload_write(sub_addr_t* param_addrs, prog_word_t* data, uint8_t num_registers)
 {
-  int ret;
-  if (num_registers > 5) {
-    return -1; // Error: Too many registers
-  }
-  for (uint8_t i = 0; i < num_registers; i++) {
-    reg_word_t addr_data;
-    // Split the 16-bit address into two bytes
-    split_addr(param_addrs[i], &addr_data);
-    // Write the parameter RAM address to the safeload address register
-    ret = adau1787_write_register(SAFELOAD_ADDRESS_REGISTER_0 + i, addr_data);
-    if (ret < 0) {
-      return ret;
-    }
-    // Write the 28-bit data to the corresponding safeload data register
-    ret = adau1787_write(SAFELOAD_DATA_REGISTER_0 + i, data[i], ADAU1787_PROG_RAM_WIDTH_BYTES);
-    if (ret < 0) {
-      return ret;
-    }
-  }
-  // Set the initiate safeload transfer bit in the core control register
-  reg_word_t core_control_value;
-  ret = adau1787_read_register(CORE_CONTROL_REGISTER_ADDRESS, &core_control_value, ADAU1787_CTRL_REG_WIDTH_BYTES);
-  if (ret < 0) {
-    return ret; // Error reading core control register
-  }
-  core_control_value[1] |= IST_BIT;
-  ret = adau1787_write_register(CORE_CONTROL_REGISTER_ADDRESS, core_control_value);
-  if (ret < 0) {
-    return ret; // Error writing to core control register
-  }
+  int ret = 0;
   return ret;
 }
 
@@ -146,7 +115,7 @@ int adau1787_read_register(sub_addr_t reg_addr, reg_word_t* value, size_t len)
 {
   int ret;
   uint8_t addr_buf[2];
-  split_addr(reg_addr, &addr_buf);
+  split_addr(reg_addr, addr_buf);
   // First, write the 16-bit address, then read the data from that address
   ret = i2c_write_read_dt(&adau1787_i2c, addr_buf, sizeof(addr_buf), value, len); // Read the data into the value buffer
   if (ret < 0) {
@@ -159,28 +128,14 @@ int adau1787_read_register(sub_addr_t reg_addr, reg_word_t* value, size_t len)
 
 int adau1787_mute(bool mute)
 {
-  int ret;
-  reg_word_t core_control_value;
-  ret = adau1787_read_register(CORE_CONTROL_REGISTER_ADDRESS, &core_control_value, ADAU1787_CTRL_REG_WIDTH_BYTES);
-  if (ret < 0) {
-    return ret; // Error reading core control register
-  }
-  if (mute) {
-    core_control_value[1] &= ~(ADM_BIT | DAM_BIT | CR_BIT);
-  } else {
-    core_control_value[1] |= (ADM_BIT | DAM_BIT | CR_BIT);
-  }
-  ret = adau1787_write_register(CORE_CONTROL_REGISTER_ADDRESS, core_control_value);
-  if (ret < 0) {
-    return ret; // Error writing to core control register
-  }
+  int ret = 0;
   return ret;
 }
 
 // Conversions
-void split_addr(uint16_t word, reg_word_t* byte)
+void split_addr(uint16_t word, uint8_t* byte)
 {
-  *byte[0] = (word >> 8) & 0xFF; // High byte
-  *byte[1] = word & 0xFF; // Low byte
+  byte[0] = (word >> 8) & 0xFF; // High byte
+  byte[1] = word & 0xFF; // Low byte
   return;
 }
