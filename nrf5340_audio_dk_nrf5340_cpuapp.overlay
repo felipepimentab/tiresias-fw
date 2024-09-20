@@ -12,12 +12,35 @@
 // You can also visit the nRF DeviceTree extension documentation at https://docs.nordicsemi.com/bundle/nrf-connect-vscode/page/guides/ncs_configure_app.html#devicetree-support-in-the-extension
 
 &i2c1 {
-  //clock-frequency = <I2C_BITRATE_FAST_PLUS>; // 1000 kbps
-
+  status = "okay";
+  compatible = "nordic,nrf-twim";
+  label = "I2C_1";
+  pinctrl-0 = <&i2c1_default>;
+  pinctrl-1 = <&i2c1_sleep>;
+  pinctrl-names = "default", "sleep";
+  clock-frequency = <I2C_BITRATE_STANDARD>;
+  
   adau_1787: adau_1787@28 {
     compatible = "adi,adau1787", "i2c-device";
     status = "okay";
     reg = <0x28>;
     label = "adau1787";
   };
+};
+
+&pinctrl {
+	i2c1_default: i2c1_default{
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 0, 5)>,
+				<NRF_PSEL(TWIM_SCL, 0, 4)>;
+		};
+	};
+
+	i2c1_sleep: i2c1_sleep{
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 0, 5)>,
+				<NRF_PSEL(TWIM_SCL, 0, 4)>;
+			low-power-enable;
+		};
+	};
 };

@@ -25,6 +25,10 @@
 #define DEVICE_ARCHITECTURE_IC_1_SIGMA            "ADAU1787S"
 #define DEVICE_ADDR_IC_1_SIGMA                    0x50
 
+#ifndef REG_POWER_EN_DELAY_IC_1_Sigma_BYTE
+#define REG_POWER_EN_DELAY_IC_1_Sigma_BYTE 1
+#endif
+
 /* DSP Ram Data */
 #define NON_MODULO_RAM__SIZE_IC_1_Sigma 4
 #define NON_MODULO_RAM__ADDR_IC_1_Sigma 32756

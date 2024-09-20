@@ -24,18 +24,40 @@
 #include "adau_1787_IC_1_SIGMA_REG.h"
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/kernel.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <drivers/i2c.h>
+#include <device.h>
 
 /** @brief I2C Device Tree Specification for ADAU1787 */
 #define I2C_NODE DT_NODELABEL(adau_1787)
 
 /** @brief Enable passthrough mode for debug */
-#define DEBUG_PASSTHROUGH true
+#define SSTUDIO_DEFAULT_DOWNLOAD false
 
 /** @brief I2C device configuration structure for ADAU1787 */
 const struct i2c_dt_spec adau1787_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 
 int adau1787_init(void)
 {
+    printk("The I2C scanner started\n");
+    const struct device *i2c_dev;
+    int error;
+
+    i2c_dev = device_get_binding("I2C_1");
+    if (!i2c_dev) {
+        printk("Binding failed.");
+        return;
+    }
+
+    /* Demonstration of runtime configuration */
+    i2c_configure(i2c_dev, I2C_SPEED_SET(I2C_SPEED_STANDARD));
+    printk("Value of NRF_TWIM2->PSEL.SCL : %d \n",NRF_TWIM1->PSEL.SCL);
+    printk("Value of NRF_TWIM2->PSEL.SDA : %d \n",NRF_TWIM1->PSEL.SDA);
+    printk("Value of NRF_TWIM2->FREQUENCY: %d \n",NRF_TWIM1->FREQUENCY);
+    printk("26738688 -> 100k\n");
+  int ret = 0;
   k_msleep(200); // Wait for power-up
 
   if (!device_is_ready(adau1787_i2c.bus)) {
@@ -43,12 +65,14 @@ int adau1787_init(void)
     return -1;
   }
 
-  // Use the default SigmaStudio program for initialization
-  // default_download_IC_1_Sigma();
+#if SSTUDIO_DEFAULT_DOWNLOAD
+  default_download_IC_1_Sigma();
+#else
+  reg_word_t* test_data;
+  ret = adau1787_read_register(DSP_PWR, test_data, 1);
+#endif
 
-  
-
-  return 0;
+  return ret;
 }
 
 // Write operations
@@ -65,6 +89,8 @@ int adau1787_write(sub_addr_t sub_addr, uint8_t* data, size_t data_len)
   for (size_t i = 0; i < data_len; i++) {
     buf[2 + i] = data[i];
   }
+
+  printk("Buffer: [%x, %x, %x]\n\r", buf[0], buf[1], buf[2]);
 
   // Use the Zephyr I2C API to send the buffer over I2C
   ret = i2c_write_dt(&adau1787_i2c, buf, sizeof(buf));
