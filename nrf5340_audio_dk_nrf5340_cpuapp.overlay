@@ -20,6 +20,7 @@
   pinctrl-names = "default", "sleep";
   clock-frequency = <I2C_BITRATE_STANDARD>;
   zephyr,concat-buf-size = <4092>;
+  zephyr,flash-buf-max-size = <4092>;
 
   adau_1787: adau_1787@28 {
     compatible = "adi,adau1787", "i2c-device";
