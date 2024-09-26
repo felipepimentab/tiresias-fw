@@ -24,20 +24,20 @@
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/kernel.h>
 
-/** @brief Register address for Safeload Data 1 */
-#define SAFELOAD_DATA_REG_1 0x0001
-/** @brief Register address for Safeload Data 2 */
-#define SAFELOAD_DATA_REG_2 0x0002
-/** @brief Register address for Safeload Data 3 */
-#define SAFELOAD_DATA_REG_3 0x0003
-/** @brief Register address for Safeload Data 4 */
-#define SAFELOAD_DATA_REG_4 0x0004
-/** @brief Register address for Safeload Data 5 */
-#define SAFELOAD_DATA_REG_5 0x0005
-/** @brief Register address for Safeload target address (offset of -1) */
-#define SAFELOAD_TARGET_ADDR_REG 0x0006
-/** @brief Register address for Number of words to write/safeload trigger */
-#define SAFELOAD_N_WORDS_REG 0x0007
+/** @brief Parameter RAM address for Safeload Data 1 */
+#define SAFELOAD_DATA_1 0x0001
+/** @brief Parameter RAM address for Safeload Data 2 */
+#define SAFELOAD_DATA_2 0x0002
+/** @brief Parameter RAM address for Safeload Data 3 */
+#define SAFELOAD_DATA_3 0x0003
+/** @brief Parameter RAM address for Safeload Data 4 */
+#define SAFELOAD_DATA_4 0x0004
+/** @brief Parameter RAM address for Safeload Data 5 */
+#define SAFELOAD_DATA_5 0x0005
+/** @brief Parameter RAM address for Safeload target address (offset of -1) */
+#define SAFELOAD_TARGET_ADDR 0x0006
+/** @brief Parameter RAM address for Number of words to write/safeload trigger */
+#define SAFELOAD_NUM_WORDS 0x0007
 
 /** @brief ADC, DAC, Headphone Power Controls Register Address */
 #define ADC_DAC_HP_PWR REG_ADC_DAC_HP_PWR_IC_1_Sigma_ADDR
@@ -109,16 +109,22 @@ int adau1787_write(sub_addr_t start_addr, uint8_t* data, size_t data_len);
 int adau1787_write_register(sub_addr_t reg_addr, reg_word_t* data);
 
 /**
- * @brief Perform a safeload write to the ADAU1787.
+ * @brief Perform a Safeload Write Operation to the ADAU1787 DSP.
  *
- * Safeload allows for safely writing parameters to the ADAU1787 without causing audio artifacts.
+ * This function performs a safeload write to the ADAU1787's parameter RAM.
+ * The safeload operation consists of writing up to five 4-byte words (32-bit
+ * words) into predefined safeload data registers, setting the target
+ * address in the parameter RAM, and indicating the number of words to be
+ * updated. Once the safeload write is triggered, the DSP core safely
+ * transfers the data during the next available audio frame.
  *
- * @param param_addrs Array of parameter addresses to write to.
- * @param data Array of data words to write.
- * @param num_registers Number of registers to write.
- * @return 0 if successful, negative error code otherwise.
+ * @param target_addr The target address in the parameter RAM where data
+ *                    should be written. This address is offset by -1 internally.
+ * @param data Pointer to the buffer containing the 32-bit words to be written.
+ * @param num_words Number of 32-bit words to be written (maximum 5).
+ * @return 0 on success, or a negative error code on failure.
  */
-int adau1787_safeload_write(sub_addr_t* param_addrs, prog_word_t* data, uint8_t num_registers);
+int adau1787_safeload_write(sub_addr_t target_addr, uint8_t* data, size_t num_words);
 
 /**
  * @brief Read a register from the ADAU1787.
@@ -134,6 +140,8 @@ int adau1787_read_register(sub_addr_t reg_addr, reg_word_t* value);
  *
  * @param mute True to mute, false to unmute.
  * @return 0 if successful, negative error code otherwise.
+ *
+ * @note Not yet implemented
  */
 int adau1787_mute(bool mute);
 

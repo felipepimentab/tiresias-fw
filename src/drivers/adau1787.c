@@ -35,9 +35,6 @@
 /** @brief Enable passthrough mode for debug */
 #define SSTUDIO_DEFAULT_DOWNLOAD true
 
-/** @brief Maximum size for I2C buffer */
-#define I2C_MAX_BUF_SIZE 16
-
 /** @brief I2C device configuration structure for ADAU1787 */
 const struct i2c_dt_spec adau1787_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 
@@ -95,9 +92,39 @@ int adau1787_write_register(sub_addr_t reg_addr, reg_word_t* data)
   return adau1787_write(reg_addr, data, ADAU1787_CTRL_REG_WIDTH_BYTES);
 }
 
-int adau1787_safeload_write(sub_addr_t* param_addrs, prog_word_t* data, uint8_t num_registers)
+int adau1787_safeload_write(sub_addr_t target_addr, uint8_t* data, size_t num_words)
 {
   int ret = 0;
+
+  if (num_words > 5) {
+    printk("Too many words. Safeload supports a maximum of 5 4-byte words.\n\r");
+    return -1;
+  }
+
+  ret = adau1787_write(SAFELOAD_DATA_1, data, sizeof(data));
+  if (ret != 0) {
+    printk("Failed to write Safeload Data.\n\r");
+    return ret;
+  }
+
+  uint8_t target_addr_buf[4] = { 0x00, 0x00, 0x00, 0x00 };
+  split_addr(target_addr, target_addr_buf);
+
+  ret = adau1787_write(SAFELOAD_TARGET_ADDR, target_addr_buf, sizeof(target_addr_buf));
+  if (ret != 0) {
+    printk("Failed to write Safeload Target Address.\n\r");
+    return ret;
+  }
+
+  uint8_t num_words_buf[4] = { num_words, 0x00, 0x00, 0x00 };
+
+  k_usleep(21);
+
+  ret = adau1787_write(SAFELOAD_NUM_WORDS, num_words_buf, sizeof(num_words_buf));
+  if (ret != 0) {
+    printk("Failed to write Number of Safeload Words.\n\r");
+    return ret;
+  }
 
   return ret;
 }
