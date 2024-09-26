@@ -5,7 +5,7 @@
 #
 
 menu "Drivers"
-
+config CONFIG_I2C
 #----------------------------------------------------------------------------#
 menu "Thread priorities"
 

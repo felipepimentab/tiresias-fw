@@ -1,0 +1,4 @@
+0xC0, 0x61, 			/* (0) IC 1-Fast.FDSP_RUN */
+0x00, 
+0xC0, 0x61, 			/* (1) IC 1-Fast.FDSP_RUN */
+0x01, 
