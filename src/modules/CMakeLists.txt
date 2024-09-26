@@ -5,6 +5,7 @@
 #
 
 set(SRCS
+  ${CMAKE_CURRENT_SOURCE_DIR}/audio_codec.c
   ${CMAKE_CURRENT_SOURCE_DIR}/audio_i2s.c
   ${CMAKE_CURRENT_SOURCE_DIR}/audio_sync_timer.c
   
