@@ -13,8 +13,6 @@ Welcome to the **Tiresias Firmware** repository! This repository contains the so
 
 The firmware is designed for the Nordic Semiconductor's **nRF5340 SoC**, running the **Zephyr RTOS**, and integrating the Analog Devices' **ADAU1787 audio codec**.
 
-> Note: This project is currently designed to integrate the ADAU1701 audio codec as a step of the development proccess aiming to reach a _proof of concept_.
-
 ## 📚 Project Overview
 
 ### About the Tiresias Project
