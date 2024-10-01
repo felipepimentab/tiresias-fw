@@ -1,30 +1,3 @@
-Cell Name         = Single 1
-Parameter Name    = TargetGainGainS200AlgGrowStep1
-Parameter Address = 8256
-Parameter Value   = 1
-Parameter Data :
-0x00, 0x80, 0x00, 0x00, 
-
-
-
-Cell Name         = Single 1
-Parameter Name    = CurrentGainGainS200AlgGrowStep1
-Parameter Address = 8264
-Parameter Value   = 0
-Parameter Data :
-0x00, 0x00, 0x00, 0x00, 
-
-
-
-Cell Name         = Single 1
-Parameter Name    = StepSizeGainS200AlgGrowStep1
-Parameter Address = 8260
-Parameter Value   = 1.00135803222656E-05
-Parameter Data :
-0x00, 0x00, 0x00, 0x54, 
-
-
-
 Cell Name         = Level1
 Parameter Name    = SingleBandLevelDetwOutDisp3rdgen1TCONST
 Parameter Address = 8228
@@ -49,6 +22,60 @@ Parameter Address = 8236
 Parameter Value   = 0.000216960906982422
 Parameter Data :
 0x00 ,	0x00 ,	0x07 ,	0x1C ,	
+
+
+
+Cell Name         = Level1_2
+Parameter Name    = SingleBandLevelDetwOutDisp3rdgen2TCONST
+Parameter Address = 8256
+Parameter Value   = 0.00240135192871094
+Parameter Data :
+0x00 ,	0x00 ,	0x4E ,	0xB0 ,	
+
+
+
+Cell Name         = Level1_2
+Parameter Name    = SingleBandLevelDetwOutDisp3rdgen2hold
+Parameter Address = 8260
+Parameter Value   = 480
+Parameter Data :
+0x00 ,	0x00 ,	0x01 ,	0xE0 ,	
+
+
+
+Cell Name         = Level1_2
+Parameter Name    = SingleBandLevelDetwOutDisp3rdgen2decay
+Parameter Address = 8264
+Parameter Value   = 0.000216960906982422
+Parameter Data :
+0x00 ,	0x00 ,	0x07 ,	0x1C ,	
+
+
+
+Cell Name         = Single 1
+Parameter Name    = TargetGainGainS200AlgGrowStep1
+Parameter Address = 8284
+Parameter Value   = 1
+Parameter Data :
+0x00, 0x80, 0x00, 0x00, 
+
+
+
+Cell Name         = Single 1
+Parameter Name    = CurrentGainGainS200AlgGrowStep1
+Parameter Address = 8292
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = Single 1
+Parameter Name    = StepSizeGainS200AlgGrowStep1
+Parameter Address = 8288
+Parameter Value   = 1.00135803222656E-05
+Parameter Data :
+0x00, 0x00, 0x00, 0x54, 
 
 
 
@@ -154,8 +181,22 @@ See also adau_1787.hex file
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 
 Parameter data for: IC 1-Sigma (Binary format starting at parameter address 0)
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	

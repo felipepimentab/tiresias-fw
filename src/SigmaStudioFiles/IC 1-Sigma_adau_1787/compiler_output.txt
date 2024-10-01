@@ -7,18 +7,19 @@ Build date = 4/5/2022 at 11:20 AM
 (Note: Estimates are based on a 48 kHz sample rate)
 
 Instructions used:
-85	(out of a possible 512 )
+103	(out of a possible 512 )
 Modulo Data RAM used (X Memory):
-12	(out of a possible 2048 )
+17	(out of a possible 2048 )
 Non Modulo Data RAM used (X Memory):
 1	(out of a possible 2048 )
 Parameter RAM used (Y Memory):
-19	(out of a possible 2048 )
+26	(out of a possible 2048 )
 
 Instance                      		Cycles	Inst	Data	Coeff	Other
                               			(max)
 SafeLoadCode                  		20	20	1	8
 Level1                        		18	18	7	7
+Level1_2                      		18	18	5	7
 Beginning                     		17	17	0	1
 Single 1                      		16	16	3	3
 End                           		6	6	0	0
@@ -28,9 +29,9 @@ SDSP OUT1                     		2	2	0	0
 
 Subroutines called:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Total                      			85	85	13	19
+Total                      			103	103	18	26
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-(%)                          			17%	17%	1%	1%
+(%)                          			20%	20%	1%	1%
 
 Files written:  
 program_data.dat - load file for downloading code using ADI loader

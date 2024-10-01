@@ -127,6 +127,16 @@ int adau1787_write_register(sub_addr_t reg_addr, reg_word_t* data);
 int adau1787_safeload_write(sub_addr_t target_addr, uint8_t* data, size_t num_words);
 
 /**
+ * @brief Read from the ADAU1787.
+ *
+ * @param reg_addr The internal address to start reading from.
+ * @param value Pointer to buffer to store the read data.
+ * @param len Length of the data being read.
+ * @return 0 if successful, negative error code otherwise.
+ */
+int adau1787_read(sub_addr_t start_addr, uint8_t* value, size_t len);
+
+/**
  * @brief Read a register from the ADAU1787.
  *
  * @param reg_addr The register address to read from.

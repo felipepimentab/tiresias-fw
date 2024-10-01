@@ -17,25 +17,29 @@
 <NetList>
     <IC name=" IC 1-Sigma " type="ADAU1787SigmaIC">
         <Schematic>
-            <Algorithm name="ADAU1787SADCIN1" friendlyname="ADAU1787S ADC IN " cell="ADC IN1 " location="{X=5, Y=147} " Growth="4 " GrowthB="0 " FS="48000">
-                <Link pin="O_C43_A0_P3_out" dir="out" link="Link3" />
-                <Link pin="O_C43_A0_P4_out" dir="out" link="Link2" />
+            <Algorithm name="ADAU1787SADCIN1" friendlyname="ADAU1787S ADC IN " cell="ADC IN1 " location="{X=-45, Y=139} " Growth="4 " GrowthB="0 " FS="48000">
+                <Link pin="O_C43_A0_P3_out" dir="out" link="Link0" />
+                <Link pin="O_C43_A0_P4_out" dir="out" link="Link1" />
             </Algorithm>
-            <Algorithm name="SingleBandLevelDetwOutDisp3rdgen1" friendlyname="Single Band w Output Display 3rdGen " cell="Level1 " location="{X=164, Y=4} " Growth="0 " GrowthB="0">
-                <Link pin="I_C0_A0_P1_in" dir="in" link="Link3" />
-                <Link pin="O_C0_A0_P2_out" dir="out" link="Link4" />
+            <Algorithm name="SingleBandLevelDetwOutDisp3rdgen1" friendlyname="Single Band w Output Display 3rdGen " cell="Level1 " location="{X=41, Y=-29} " Growth="0 " GrowthB="0">
+                <Link pin="I_C0_A0_P1_in" dir="in" link="Link0" />
+                <Link pin="O_C0_A0_P2_out" dir="out" link="Link2" />
             </Algorithm>
-            <Algorithm name="GainS200AlgGrowStep1" friendlyname="Gain (Linear) - Growable " cell="Single 1 " location="{X=396, Y=86} " Growth="2 " GrowthB="0">
-                <Link pin="I_C104_A0_P1_in" dir="in" link="Link4" />
-                <Link pin="I_C104_A0_P3_in" dir="in" link="Link2" />
-                <Link pin="O_C104_A0_P2_out" dir="out" link="Link1" />
-                <Link pin="O_C104_A0_P4_out" dir="out" link="Link0" />
+            <Algorithm name="SingleBandLevelDetwOutDisp3rdgen2" friendlyname="Single Band w Output Display 3rdGen " cell="Level1_2 " location="{X=40, Y=157.1914} " Growth="0 " GrowthB="0">
+                <Link pin="I_C8_A0_P1_in" dir="in" link="Link1" />
+                <Link pin="O_C8_A0_P2_out" dir="out" link="Link3" />
             </Algorithm>
-            <Algorithm name="ADAU1787SigmaOutAlg2" friendlyname="ADAU1787 SDSP OUT " cell="SDSP OUT2 " location="{X=517, Y=185} " Growth="0 " GrowthB="0">
-                <Link pin="I_C98_A0_P1_in" dir="in" link="Link0" />
+            <Algorithm name="GainS200AlgGrowStep1" friendlyname="Gain (Linear) - Growable " cell="Single 1 " location="{X=216, Y=49} " Growth="2 " GrowthB="0">
+                <Link pin="I_C203_A0_P1_in" dir="in" link="Link2" />
+                <Link pin="I_C203_A0_P3_in" dir="in" link="Link3" />
+                <Link pin="O_C203_A0_P2_out" dir="out" link="Link4" />
+                <Link pin="O_C203_A0_P4_out" dir="out" link="Link5" />
             </Algorithm>
-            <Algorithm name="ADAU1787SigmaOutAlg1" friendlyname="ADAU1787 SDSP OUT " cell="SDSP OUT1 " location="{X=516, Y=131} " Growth="0 " GrowthB="0">
-                <Link pin="I_C96_A0_P1_in" dir="in" link="Link1" />
+            <Algorithm name="ADAU1787SigmaOutAlg1" friendlyname="ADAU1787 SDSP OUT " cell="SDSP OUT1 " location="{X=362, Y=94} " Growth="0 " GrowthB="0">
+                <Link pin="I_C96_A0_P1_in" dir="in" link="Link4" />
+            </Algorithm>
+            <Algorithm name="ADAU1787SigmaOutAlg2" friendlyname="ADAU1787 SDSP OUT " cell="SDSP OUT2 " location="{X=364, Y=147} " Growth="0 " GrowthB="0">
+                <Link pin="I_C98_A0_P1_in" dir="in" link="Link5" />
             </Algorithm>
         </Schematic>
     </IC>

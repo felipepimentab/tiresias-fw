@@ -1,7 +1,7 @@
 /*
  * File:           E:\adau-1787-dsp-program\adau_1787_IC_1_FAST_REG.h
  *
- * Created:        Friday, September 20, 2024 2:49:24 PM
+ * Created:        Tuesday, October 1, 2024 2:48:34 PM
  * Description:    adau_1787:IC 1-Fast control register definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -308,12 +308,12 @@
 /* DAC_VOL0  - Registers (IC 1_Fast) */
 #define REG_DAC_VOL0_IC_1_Fast_ADDR               0xC03C
 #define REG_DAC_VOL0_IC_1_Fast_BYTE               1
-#define REG_DAC_VOL0_IC_1_Fast_VALUE              0x50
+#define REG_DAC_VOL0_IC_1_Fast_VALUE              0xFD
 
 /* DAC_VOL1  - Registers (IC 1_Fast) */
 #define REG_DAC_VOL1_IC_1_Fast_ADDR               0xC03D
 #define REG_DAC_VOL1_IC_1_Fast_BYTE               1
-#define REG_DAC_VOL1_IC_1_Fast_VALUE              0x50
+#define REG_DAC_VOL1_IC_1_Fast_VALUE              0xFD
 
 /* DAC_ROUTE0  - Registers (IC 1_Fast) */
 #define REG_DAC_ROUTE0_IC_1_Fast_ADDR             0xC03E
@@ -1788,12 +1788,12 @@
 #define R56_DAC1_MUTE_IC_1_Fast_SHIFT             7
 
 /* DAC_VOL0 (IC 1_Fast) */
-#define R57_DAC0_VOL_IC_1_Fast                    0x50   /* 01010000b	[7:0] */
+#define R57_DAC0_VOL_IC_1_Fast                    0xFD   /* 11111101b	[7:0] */
 #define R57_DAC0_VOL_IC_1_Fast_MASK               0xFF
 #define R57_DAC0_VOL_IC_1_Fast_SHIFT              0
 
 /* DAC_VOL1 (IC 1_Fast) */
-#define R58_DAC1_VOL_IC_1_Fast                    0x50   /* 01010000b	[7:0] */
+#define R58_DAC1_VOL_IC_1_Fast                    0xFD   /* 11111101b	[7:0] */
 #define R58_DAC1_VOL_IC_1_Fast_MASK               0xFF
 #define R58_DAC1_VOL_IC_1_Fast_SHIFT              0
 
