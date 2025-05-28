@@ -40,18 +40,18 @@ const struct i2c_dt_spec adau1787_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 
 int adau1787_init(void)
 {
-  printk("Starting ADAU1787...\n");
+  printk("Initializing audio codec...\n\r");
   const struct device* i2c_dev;
   i2c_dev = device_get_binding("I2C_1");
   if (!i2c_dev) {
-    printk("I2C binding failed.");
+    printk("I2C binding failed.\n\r");
     return -1;
   }
 
   i2c_configure(i2c_dev, I2C_SPEED_SET(I2C_SPEED_FAST_PLUS));
-  printk("SCL pin: %d \n", NRF_TWIM1->PSEL.SCL);
-  printk("SDA pin: %d \n", NRF_TWIM1->PSEL.SDA);
-  printk("I2C frequency: %d \n", NRF_TWIM1->FREQUENCY);
+  printk("SCL pin: %d \n\r", NRF_TWIM1->PSEL.SCL);
+  printk("SDA pin: %d \n\r", NRF_TWIM1->PSEL.SDA);
+  printk("I2C frequency: %d \n\r", NRF_TWIM1->FREQUENCY);
 
   if (!device_is_ready(adau1787_i2c.bus)) {
     printk("I2C bus %s is not ready!\n\r", adau1787_i2c.bus->name);
@@ -59,6 +59,7 @@ int adau1787_init(void)
   }
 
   default_download_IC_1_Sigma();
+  printk("Audio codec initialization done.\n\r");
 
   return 0;
 }
