@@ -10,12 +10,18 @@
 #include <zephyr/shell/shell.h>
 #include <zephyr/zbus/zbus.h>
 
-#include "drivers/adau1787.h"
+#include "modules/audio_codec.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 
 int main(void)
 {
-  adau1787_init();
+  int ret = 0;
+  ret = audio_codec_init();
+  if (ret != 0) {
+    LOG_ERR("Failed to initialize audio codec module");
+    return ret;
+  }
+
   return 0;
 }
