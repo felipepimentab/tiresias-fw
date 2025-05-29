@@ -11,15 +11,24 @@
 #include <zephyr/zbus/zbus.h>
 
 #include "modules/audio_codec.h"
+#include "modules/peripheral.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 
 int main(void)
 {
+  LOG_INF("Main application started.");
+
   int ret = 0;
   ret = audio_codec_init();
   if (ret != 0) {
     LOG_ERR("Failed to initialize audio codec module");
+    return ret;
+  }
+
+  ret = peripheral_init();
+  if (ret != 0) {
+    LOG_ERR("Failed to initialize peripheral module");
     return ret;
   }
 

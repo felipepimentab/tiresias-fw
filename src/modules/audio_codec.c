@@ -1,10 +1,13 @@
 #include "audio_codec.h"
 #include "../drivers/adau1787.h"
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #define AUDIO_CODEC_STACK_SIZE 2048
 #define AUDIO_CODEC_PRIORITY 5
 #define AUDIO_CODEC_FIFO_LENGTH 8
+
+LOG_MODULE_REGISTER(audio_codec_module, LOG_LEVEL_INF);
 
 /* Thread stack area */
 K_THREAD_STACK_DEFINE(audio_codec_stack, AUDIO_CODEC_STACK_SIZE);
@@ -73,7 +76,7 @@ int audio_codec_init(void)
   if (k_mem_slab_alloc(&audio_codec_task_slab, (void**)&task, K_NO_WAIT) == 0) {
     task->type = AUDIO_CODEC_INIT;
     k_fifo_put(&audio_codec_fifo, task);
-    printk("Audio codec thread started.\n");
+    LOG_INF("Audio codec thread started.");
     return 0;
   }
 
