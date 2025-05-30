@@ -20,20 +20,16 @@ static void button_event_handler(enum button_event_type event)
 {
   switch (event) {
   case BUTTON_1_PRESSED:
-    // btn_id = BTN_ID_VOL_UP;
-    LOG_INF("Button 1 pressed!");
+    LOG_INF("Button 1 pressed! (external)");
     break;
   case BUTTON_2_PRESSED:
-    // btn_id = BTN_ID_VOL_DOWN;
-    LOG_INF("Button 2 pressed!");
+    LOG_INF("Button 2 pressed! (external)");
     break;
   case BUTTON_3_PRESSED:
-    // btn_id = BTN_ID_VOL_LOG;
-    LOG_INF("Button 3 pressed!");
+    LOG_INF("Button 3 pressed! (external)");
     break;
   case BUTTON_4_PRESSED:
-    // btn_id = BTN_ID_VOL_READ;
-    LOG_INF("Button 4 pressed!");
+    LOG_INF("Button 4 pressed! (external)");
     break;
   default:
     return;

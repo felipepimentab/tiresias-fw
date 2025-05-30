@@ -14,11 +14,28 @@ int peripheral_set_led(enum led_t led, led_state_t state);
 typedef enum { LED_BLINK, LED_BLINK_SLOW, LED_BLINK_FAST } led_blink_t;
 /* Set the state of a LED */
 int peripheral_set_led_blink(enum led_t led);
-enum peripheral_event { PERIPH_EVENT_BTN1, PERIPH_EVENT_BTN2, PERIPH_EVENT_BTN3, PERIPH_EVENT_BTN4 };
+enum peripheral_event {
+  LED_1_ON,
+  LED_1_OFF,
+  LED_1_BLINK,
+  LED_2_ON,
+  LED_2_OFF,
+  LED_2_BLINK,
+  LED_3_ON,
+  LED_3_OFF,
+  LED_3_BLINK,
+  LED_4_ON,
+  LED_4_OFF,
+  LED_4_BLINK,
+  BTN_1,
+  BTN_2,
+  BTN_3,
+  BTN_4,
+};
 /* Button event callback type */
-typedef void (*button_callback_t)(enum button_event_type event);
+typedef void (*btn_ext_handler_t)(enum button_event_type event);
 
 /* Initialize the peripheral module */
-int peripheral_init(button_callback_t callback);
+int peripheral_init(btn_ext_handler_t callback);
 
 #endif /* PERIPHERAL_H */
