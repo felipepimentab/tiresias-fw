@@ -11,6 +11,7 @@
 #include <zephyr/zbus/zbus.h>
 
 #include "modules/audio_codec.h"
+#include "modules/controller.h"
 #include "modules/peripheral.h"
 #include "modules/storage.h"
 
@@ -39,8 +40,14 @@ static void button_event_handler(enum button_event_type event)
 int main(void)
 {
   LOG_INF("Main application started.");
-
   int ret = 0;
+
+  ret = controller_init();
+  if (ret != 0) {
+    LOG_ERR("Failed to initialize controller module");
+    return ret;
+  }
+
   ret = audio_codec_init();
   if (ret != 0) {
     LOG_ERR("Failed to initialize audio codec module");

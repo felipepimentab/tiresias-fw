@@ -85,7 +85,7 @@ static void audio_codec_thread_fn(void* arg1, void* arg2, void* arg3)
       break;
     }
 
-    /* Release memory after task execution */
+    /* Free memory after task execution */
     k_mem_slab_free(&audio_codec_task_slab, task);
   }
 }
