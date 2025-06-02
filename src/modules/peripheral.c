@@ -1,6 +1,6 @@
 /**
  * @file peripheral.c
- * @brief Module to handle GPIO-based buttons and LEDs with a dedicated thread.
+ * @brief Module to handle GPIO-based buttons and LEDs using a work queue.
  */
 
 #include "peripheral.h"
@@ -43,50 +43,92 @@ static const struct gpio_dt_spec button4 = GPIO_DT_SPEC_GET_OR(BTN4_NODE, gpios,
 static struct gpio_callback btn1_cb, btn2_cb, btn3_cb, btn4_cb;
 static btn_ext_handler_t btn_ext_handler;
 
-/* === Peripheral Control Thread === */
-#define PERIPHERAL_THREAD_STACK_SIZE 1024
-#define PERIPHERAL_THREAD_PRIORITY 5
+/* === Work Queue === */
+struct peripheral_work_item {
+  struct k_work work;
+  enum peripheral_event event;
+};
 
-K_THREAD_STACK_DEFINE(peripheral_stack, PERIPHERAL_THREAD_STACK_SIZE);
-static struct k_thread peripheral_thread_data;
+int peripheral_set_led(enum led_t led, led_state_t state);
+int peripheral_set_led_blink(enum led_t led);
 
-/* === Message Queue for Events === */
-K_MSGQ_DEFINE(peripheral_msgq, sizeof(enum peripheral_event), 10, 4);
-
-/* === Internal Helpers === */
-
-/**
- * @brief Configures an LED GPIO pin.
- */
-static int setup_led(const struct gpio_dt_spec* led)
+static void handle_event_work(struct k_work* work)
 {
-  if (!device_is_ready(led->port)) {
-    LOG_ERR("LED device not ready");
-    return -ENODEV;
+  struct peripheral_work_item* item = CONTAINER_OF(work, struct peripheral_work_item, work);
+  enum peripheral_event evt = item->event;
+
+  switch (evt) {
+  case LED_1_ON:
+    peripheral_set_led(LED_1, LED_ON);
+    break;
+  case LED_1_OFF:
+    peripheral_set_led(LED_1, LED_OFF);
+    break;
+  case LED_1_BLINK:
+    peripheral_set_led_blink(LED_1);
+    break;
+  case LED_2_ON:
+    peripheral_set_led(LED_2, LED_ON);
+    break;
+  case LED_2_OFF:
+    peripheral_set_led(LED_2, LED_OFF);
+    break;
+  case LED_2_BLINK:
+    peripheral_set_led_blink(LED_2);
+    break;
+  case LED_3_ON:
+    peripheral_set_led(LED_3, LED_ON);
+    break;
+  case LED_3_OFF:
+    peripheral_set_led(LED_3, LED_OFF);
+    break;
+  case LED_3_BLINK:
+    peripheral_set_led_blink(LED_3);
+    break;
+  case LED_4_ON:
+    peripheral_set_led(LED_4, LED_ON);
+    break;
+  case LED_4_OFF:
+    peripheral_set_led(LED_4, LED_OFF);
+    break;
+  case LED_4_BLINK:
+    peripheral_set_led_blink(LED_4);
+    break;
+  case BTN_1:
+    LOG_INF("Button 1 pressed! (internal)");
+    if (btn_ext_handler)
+      btn_ext_handler(BUTTON_1_PRESSED);
+    break;
+  case BTN_2:
+    LOG_INF("Button 2 pressed! (internal)");
+    if (btn_ext_handler)
+      btn_ext_handler(BUTTON_2_PRESSED);
+    break;
+  case BTN_3:
+    LOG_INF("Button 3 pressed! (internal)");
+    if (btn_ext_handler)
+      btn_ext_handler(BUTTON_3_PRESSED);
+    break;
+  case BTN_4:
+    LOG_INF("Button 4 pressed! (internal)");
+    if (btn_ext_handler)
+      btn_ext_handler(BUTTON_4_PRESSED);
+    break;
+  default:
+    break;
   }
-  return gpio_pin_configure_dt(led, LED_FLAGS);
 }
 
-/**
- * @brief Configures a button GPIO pin with interrupt and callback.
- */
-static int setup_button(const struct gpio_dt_spec* btn, struct gpio_callback* cb, gpio_callback_handler_t handler)
+static void enqueue_event(enum peripheral_event evt)
 {
-  if (!device_is_ready(btn->port)) {
-    LOG_ERR("Button device not ready");
-    return -ENODEV;
-  }
-  gpio_pin_configure_dt(btn, BTN_FLAGS);
-  gpio_pin_interrupt_configure_dt(btn, GPIO_INT_EDGE_TO_ACTIVE);
-  gpio_init_callback(cb, handler, BIT(btn->pin));
-  gpio_add_callback(btn->port, cb);
-  return 0;
+  static struct peripheral_work_item items[4];
+  static int idx = 0;
+  struct peripheral_work_item* item = &items[idx];
+  idx = (idx + 1) % 4;
+  item->event = evt;
+  k_work_init(&item->work, handle_event_work);
+  k_work_submit(&item->work);
 }
-
-/**
- * @brief Enqueue a peripheral event for the background thread.
- */
-static void enqueue_event(enum peripheral_event evt) { k_msgq_put(&peripheral_msgq, &evt, K_NO_WAIT); }
 
 /* === Button Interrupt Handlers === */
 static void button1_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins) { enqueue_event(BTN_1); }
@@ -95,7 +137,6 @@ static void button3_pressed(const struct device* dev, struct gpio_callback* cb, 
 static void button4_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins) { enqueue_event(BTN_4); }
 
 /* === LED Control API === */
-
 int peripheral_set_led(enum led_t led, led_state_t state)
 {
   switch (led) {
@@ -121,88 +162,31 @@ int peripheral_set_led_blink(enum led_t led)
   return peripheral_set_led(led, LED_OFF);
 }
 
-/* === Peripheral Worker Thread === */
-
-static void peripheral_thread(void* p1, void* p2, void* p3)
+/* === Module Initialization === */
+static int setup_led(const struct gpio_dt_spec* led)
 {
-  enum peripheral_event evt;
-
-  while (1) {
-    if (k_msgq_get(&peripheral_msgq, &evt, K_FOREVER) == 0) {
-      switch (evt) {
-      case LED_1_ON:
-        peripheral_set_led(LED_1, LED_ON);
-        break;
-      case LED_1_OFF:
-        peripheral_set_led(LED_1, LED_OFF);
-        break;
-      case LED_1_BLINK:
-        peripheral_set_led_blink(LED_1);
-        break;
-
-      case LED_2_ON:
-        peripheral_set_led(LED_2, LED_ON);
-        break;
-      case LED_2_OFF:
-        peripheral_set_led(LED_2, LED_OFF);
-        break;
-      case LED_2_BLINK:
-        peripheral_set_led_blink(LED_2);
-        break;
-
-      case LED_3_ON:
-        peripheral_set_led(LED_3, LED_ON);
-        break;
-      case LED_3_OFF:
-        peripheral_set_led(LED_3, LED_OFF);
-        break;
-      case LED_3_BLINK:
-        peripheral_set_led_blink(LED_3);
-        break;
-
-      case LED_4_ON:
-        peripheral_set_led(LED_4, LED_ON);
-        break;
-      case LED_4_OFF:
-        peripheral_set_led(LED_4, LED_OFF);
-        break;
-      case LED_4_BLINK:
-        peripheral_set_led_blink(LED_4);
-        break;
-
-      case BTN_1:
-        LOG_INF("Button 1 pressed! (internal)");
-        if (btn_ext_handler)
-          btn_ext_handler(BUTTON_1_PRESSED);
-        break;
-      case BTN_2:
-        LOG_INF("Button 2 pressed! (internal)");
-        if (btn_ext_handler)
-          btn_ext_handler(BUTTON_2_PRESSED);
-        break;
-      case BTN_3:
-        LOG_INF("Button 3 pressed! (internal)");
-        if (btn_ext_handler)
-          btn_ext_handler(BUTTON_3_PRESSED);
-        break;
-      case BTN_4:
-        LOG_INF("Button 4 pressed! (internal)");
-        if (btn_ext_handler)
-          btn_ext_handler(BUTTON_4_PRESSED);
-        break;
-
-      default:
-        break;
-      }
-    }
+  if (!device_is_ready(led->port)) {
+    LOG_ERR("LED device not ready");
+    return -ENODEV;
   }
+  return gpio_pin_configure_dt(led, LED_FLAGS);
 }
 
-/* === Module Initialization === */
+static int setup_button(const struct gpio_dt_spec* btn, struct gpio_callback* cb, gpio_callback_handler_t handler)
+{
+  if (!device_is_ready(btn->port)) {
+    LOG_ERR("Button device not ready");
+    return -ENODEV;
+  }
+  gpio_pin_configure_dt(btn, BTN_FLAGS);
+  gpio_pin_interrupt_configure_dt(btn, GPIO_INT_EDGE_TO_ACTIVE);
+  gpio_init_callback(cb, handler, BIT(btn->pin));
+  gpio_add_callback(btn->port, cb);
+  return 0;
+}
 
 int peripheral_init(btn_ext_handler_t handler)
 {
-  /* Setup LEDs and turn them off */
   setup_led(&led0);
   peripheral_set_led(LED_1, LED_OFF);
   setup_led(&led1);
@@ -212,19 +196,13 @@ int peripheral_init(btn_ext_handler_t handler)
   setup_led(&led3);
   peripheral_set_led(LED_4, LED_OFF);
 
-  /* Save user callback */
   btn_ext_handler = handler;
 
-  /* Setup buttons */
   setup_button(&button1, &btn1_cb, button1_pressed);
   setup_button(&button2, &btn2_cb, button2_pressed);
   setup_button(&button3, &btn3_cb, button3_pressed);
   setup_button(&button4, &btn4_cb, button4_pressed);
 
-  /* Start peripheral thread */
-  k_thread_create(&peripheral_thread_data, peripheral_stack, K_THREAD_STACK_SIZEOF(peripheral_stack), peripheral_thread,
-      NULL, NULL, NULL, PERIPHERAL_THREAD_PRIORITY, 0, K_NO_WAIT);
-
-  LOG_INF("Peripheral module initialized");
+  LOG_INF("Peripheral module initialized with work queue");
   return 0;
 }

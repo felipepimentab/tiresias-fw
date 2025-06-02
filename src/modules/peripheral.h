@@ -1,46 +1,47 @@
-#ifndef PERIPHERAL_H
-#define PERIPHERAL_H
+/**
+ * @file peripheral.h
+ * @brief Public API for the Peripheral module (LEDs and Buttons).
+ */
+
+#ifndef PERIPHERAL_H_
+#define PERIPHERAL_H_
 
 #include <zephyr/kernel.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/** @brief LED identifiers */
+enum led_t {
+  LED_1,
+  LED_2,
+  LED_3,
+  LED_4,
+};
+
+/** @brief LED state values */
+typedef enum {
+  LED_OFF = 0,
+  LED_ON = 1,
+} led_state_t;
+
+/** @brief Button press events (external) */
+enum button_event_t {
+  BUTTON_1_PRESSED,
+  BUTTON_2_PRESSED,
+  BUTTON_3_PRESSED,
+  BUTTON_4_PRESSED,
+};
+
 /**
- * @file peripheral.h
- * @brief Public interface for the peripheral module handling LEDs and buttons.
+ * @brief Callback signature for button event handler.
  *
- * This module provides initialization and control routines for GPIO-based peripherals,
- * such as buttons and LEDs. It also defines the message types exchanged with the internal
- * peripheral thread via a message queue.
+ * @param event The button event that occurred.
  */
+typedef void (*btn_ext_handler_t)(enum button_event_t event);
 
-/* === Button Event Types === */
-
-/**
- * @brief Enumerates external button events that can be passed to a user-defined callback.
- */
-enum button_event_type { BUTTON_1_PRESSED, BUTTON_2_PRESSED, BUTTON_3_PRESSED, BUTTON_4_PRESSED };
-
-/* === LED Identifiers === */
-
-/**
- * @brief Identifiers for available LEDs.
- */
-enum led_t { LED_1, LED_2, LED_3, LED_4 };
-
-/* === LED States === */
-
-/**
- * @brief Represents the logical ON/OFF state of an LED.
- */
-typedef enum { LED_OFF, LED_ON } led_state_t;
-
-/* === Peripheral Events === */
-
-/**
- * @brief Events handled internally by the peripheral module.
- *
- * These events represent actions triggered by buttons or requests to change LED state.
- * They are processed asynchronously by the peripheral thread.
- */
+/** @brief Internal peripheral event types (used by the work queue) */
 enum peripheral_event {
   LED_1_ON,
   LED_1_OFF,
@@ -60,26 +61,33 @@ enum peripheral_event {
   BTN_4,
 };
 
-/* === External Button Handler === */
-
 /**
- * @brief Callback type for external button event notifications.
+ * @brief Initializes the peripheral module, including LEDs and buttons.
  *
- * This callback is invoked from the peripheral thread when a button is pressed.
- */
-typedef void (*btn_ext_handler_t)(enum button_event_type event);
-
-/* === Public API === */
-
-/**
- * @brief Initializes the peripheral module.
- *
- * Sets up GPIOs for LEDs and buttons, installs interrupt handlers,
- * and starts the peripheral control thread.
- *
- * @param callback User-defined function to be called on button presses.
+ * @param handler Optional callback function for external button press events.
  * @return 0 on success, negative error code otherwise.
  */
-int peripheral_init(btn_ext_handler_t callback);
+int peripheral_init(btn_ext_handler_t handler);
 
-#endif /* PERIPHERAL_H */
+/**
+ * @brief Sets the state of a specific LED.
+ *
+ * @param led   The LED to control.
+ * @param state Desired state (ON or OFF).
+ * @return 0 on success, negative error code otherwise.
+ */
+int peripheral_set_led(enum led_t led, led_state_t state);
+
+/**
+ * @brief Turns an LED on, waits 500 ms, then turns it off.
+ *
+ * @param led The LED to blink.
+ * @return 0 on success, negative error code otherwise.
+ */
+int peripheral_set_led_blink(enum led_t led);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* PERIPHERAL_H_ */

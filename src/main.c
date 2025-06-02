@@ -17,7 +17,7 @@
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 
-static void button_event_handler(enum button_event_type event)
+static void button_event_handler(enum button_event_t event)
 {
   switch (event) {
   case BUTTON_1_PRESSED:
