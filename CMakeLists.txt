@@ -9,13 +9,17 @@ target_sources(app PRIVATE src/main.c)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+add_subdirectory(src/application)
 add_subdirectory(src/drivers)
 add_subdirectory(src/modules)
+add_subdirectory(src/services)
 add_subdirectory(src/SigmaStudioFiles)
 
 zephyr_library_include_directories(
   include
+  src/application
   src/drivers
   src/modules
+  src/services
   src/SigmaStudioFiles
 )
