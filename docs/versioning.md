@@ -44,7 +44,23 @@ After running the script, you should:
 1. Review the changes made to the files
 2. Update the `CHANGELOG.md` with detailed information about the changes in this version
 3. Commit the changes with the message "Bump version to X.Y.Z"
-4. Follow the remaining steps in the release process as described in [VERSIONING.md](../VERSIONING.md)
+
+### Creating the Release
+
+Once you've bumped the version and committed the changes, you can use the release script to push the commit and create a tag:
+
+```bash
+./scripts/release.sh X.Y.Z
+```
+
+This script will:
+- Verify that the version in `src/version.h` matches the specified version
+- Check for uncommitted changes
+- Validate the commit message
+- Create and push the Git tag
+- Push the commit to the remote repository
+
+For more details on the release process, see [VERSIONING.md](../VERSIONING.md).
 
 ## Continuous Integration
 

@@ -63,7 +63,8 @@ if ! grep -q "\[Unreleased\]" "CHANGELOG.md"; then
 fi
 
 # Update CHANGELOG.md - replace [Unreleased] with the new version
-sed -i "" "/## \[Unreleased\]/a\\n## [$NEW_VERSION] - $DATE" "CHANGELOG.md"
+# macOS sed requires a different approach for inserting lines
+awk -v ver="## [$NEW_VERSION] - $DATE" '/## \[Unreleased\]/{print; print ""; print ver; next}1' "CHANGELOG.md" > "CHANGELOG.md.tmp" && mv "CHANGELOG.md.tmp" "CHANGELOG.md"
 
 echo "Version bumped to $NEW_VERSION"
 echo "Please review the changes and update the CHANGELOG.md with the appropriate details."

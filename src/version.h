@@ -16,11 +16,11 @@
  */
 #define TIRESIAS_VERSION_MAJOR 0
 #define TIRESIAS_VERSION_MINOR 1
-#define TIRESIAS_VERSION_PATCH 0
+#define TIRESIAS_VERSION_PATCH 2
 
 /**
  * @brief Version string in format MAJOR.MINOR.PATCH
  */
-#define TIRESIAS_VERSION_STRING "0.1.0"
+#define TIRESIAS_VERSION_STRING "0.1.2"
 
 #endif /* VERSION_H */

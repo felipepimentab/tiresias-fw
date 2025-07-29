@@ -32,6 +32,8 @@ The version information is maintained in `src/version.h`. This file defines:
 
 ### 2. Creating a Release
 
+#### Manual Method
+
 1. Create a Git tag for the new version:
    ```bash
    git tag -a vX.Y.Z -m "Release version X.Y.Z"
@@ -42,11 +44,28 @@ The version information is maintained in `src/version.h`. This file defines:
    git push origin vX.Y.Z
    ```
 
-3. The GitHub Actions workflow will automatically:
-   - Build the firmware
-   - Create a GitHub release
-   - Attach the compiled firmware binaries
-   - Add the release notes from CHANGELOG.md
+#### Automated Method (Recommended)
+
+Use the release script to automatically create and push the tag:
+
+```bash
+./scripts/release.sh X.Y.Z
+```
+
+This script will:
+- Verify that the version in `src/version.h` matches the specified version
+- Check for uncommitted changes
+- Validate the commit message
+- Create and push the Git tag
+- Push the commit to the remote repository
+
+#### Automatic Release Creation
+
+After pushing the tag (either manually or with the script), the GitHub Actions workflow will automatically:
+- Build the firmware
+- Create a GitHub release
+- Attach the compiled firmware binaries
+- Add the release notes from CHANGELOG.md
 
 The release workflow is defined in `.github/workflows/release.yml`.
 
