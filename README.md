@@ -2,6 +2,7 @@
 
 ![USP](https://img.shields.io/badge/research-EESC_USP-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-0.1.0-blue?style=for-the-badge)
 ![GitHub contributors](https://img.shields.io/github/contributors/felipepimentab/tiresias-fw?style=for-the-badge)
 ![GitHub last commit](https://img.shields.io/github/last-commit/felipepimentab/tiresias-fw?style=for-the-badge)
 
@@ -159,9 +160,23 @@ The following tasks show our progress and future development plans:
   - [ ] Create automatic program selection based on environment
   - [ ] Implement adaptive gain control
 
+## 📦 Versioning and Releases
+
+This project follows [Semantic Versioning](https://semver.org/) with the format `MAJOR.MINOR.PATCH`:
+
+- **MAJOR**: Incremented for incompatible API changes
+- **MINOR**: Incremented for backward-compatible functionality additions
+- **PATCH**: Incremented for backward-compatible bug fixes
+
+For more details on our versioning and release process, see [VERSIONING.md](VERSIONING.md).
+
+All notable changes to the project are documented in the [CHANGELOG.md](CHANGELOG.md) file.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Fork the repository, create a feature branch, make your changes, and open a pull request.
+
+Please follow our versioning guidelines when contributing to the project.
 
 ## 📩 Contact
 

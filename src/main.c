@@ -14,6 +14,7 @@
 #include "modules/peripheral.h"
 #include "modules/storage.h"
 #include "services/audio_codec.h"
+#include "version.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 
@@ -39,6 +40,7 @@ static void button_event_handler(enum button_event_t event)
 
 int main(void)
 {
+  LOG_INF("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
   LOG_INF("Main application started.");
   int ret = 0;
 
