@@ -25,22 +25,6 @@ The Tiresias Project is an innovative effort to create an open-source and access
 - **Audio Processing**: Integrates the Analog Devices ADAU1787 Audio Codec for high-quality audio processing, essential for effective hearing aid functionality.
 - **Open-Source**: All code and design files are open-source, allowing for community collaboration and transparency in the development process.
 
-<!-- ## 🗂️ Repository Structure
-
-The repository is structured as follows:
-
-```plaintext
-tiresias-fw/
-├── docs/                   # Documentation files
-├── src/                    # Source code for the firmware
-│   ├── main.c              # Main application code
-│   ├── drivers/            # Drivers and utilities
-│   ├── modules/            # Modules and utilities
-│   └── SigmaStudioFiles/   # Automatically generated files from the SigmaStudio software
-├── CMakeLists.txt          # CMake build system configuration
-└── README.md               # This README file
-``` -->
-
 ## 🛠️ Getting Started
 
 ### Hardware overview
@@ -113,6 +97,67 @@ This project is licensed under the MIT License - see the LICENSE file for detail
     </td>
   </tr>
 </table>
+
+## ✅ Tasks
+
+The following tasks show our progress and future development plans:
+
+### Completed
+
+- [x] **Implement Core Architecture**: Set up the foundational system architecture
+  - [x] Create modular thread-based design
+  - [x] Implement message passing between modules
+  - [x] Set up build system and project structure
+
+- [x] **Implement Storage Module**: Create persistent storage for user settings
+  - [x] Implement NVS-based storage service
+  - [x] Add volume persistence functionality
+  - [x] Create thread-safe asynchronous API
+
+- [x] **Implement Peripheral Module**: Add support for buttons and LEDs
+  - [x] Create button event handling with callbacks
+  - [x] Implement LED control functionality
+  - [x] Add thread-safe API for peripheral access
+
+### In Progress
+
+- [ ] **Implement ADAU1787 Driver**: Create driver for the audio codec
+  - [x] Implement I2C communication with the codec
+  - [X] Add startup (boot) sequence
+  - [x] Add register read/write functionality
+  - [ ] Implement Safeload write operations
+  - [ ] Implement SigmaDSP parameter loading
+
+- [ ] **Implement I2S Control**: Set up audio data transfer
+  - [ ] Configure I2S interface for stereo audio
+  - [ ] Implement block-based audio transfer
+  - [ ] Set up proper audio parameters (44.1kHz, 16-bit)
+
+- [ ] **Implement Bluetooth Service**: Add BLE functionality for wireless control of the hearing aid
+  - [ ] Configure Bluetooth in prj.conf
+  - [ ] Create BLE service module with custom hearing aid profile
+  - [ ] Implement secure pairing and bonding
+  - [ ] Integrate with controller for command routing
+
+- [ ] **Complete Audio Codec Functionality**: Finish the implementation of core audio features
+  - [ ] Implement volume control via I2C
+  - [ ] Add mute/unmute functionality
+  - [ ] Create different audio processing programs/presets
+
+- [ ] **Add Power Management**: Optimize for battery-powered operation
+  - [ ] Implement sleep modes when audio processing is not needed
+  - [ ] Add battery monitoring and low-battery alerts
+  - [ ] Optimize BLE connection parameters for power efficiency
+
+- [ ] **Enhance User Interaction**: Improve the user experience
+  - [ ] Map button functions to hearing aid-specific controls
+  - [ ] Add LED indicators for device status
+  - [ ] Implement user feedback mechanisms
+
+- [ ] **Implement Adaptive Features**: Add environment-aware functionality
+  - [ ] Develop noise detection and classification
+  - [ ] Create automatic program selection based on environment
+  - [ ] Implement adaptive gain control
 
 ## 🤝 Contributing
 
