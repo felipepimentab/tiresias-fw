@@ -10,10 +10,10 @@
 #include <zephyr/shell/shell.h>
 #include <zephyr/zbus/zbus.h>
 
-#include "modules/audio_codec.h"
-#include "modules/controller.h"
+#include "application/controller.h"
 #include "modules/peripheral.h"
 #include "modules/storage.h"
+#include "services/audio_codec.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 

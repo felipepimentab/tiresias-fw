@@ -5,8 +5,6 @@
 #
 
 set(SRCS
-  ${CMAKE_CURRENT_SOURCE_DIR}/audio_codec.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/controller.c
   ${CMAKE_CURRENT_SOURCE_DIR}/i2s_control.c
   ${CMAKE_CURRENT_SOURCE_DIR}/peripheral.c
   ${CMAKE_CURRENT_SOURCE_DIR}/storage.c
