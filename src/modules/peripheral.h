@@ -79,12 +79,27 @@ int peripheral_init(btn_ext_handler_t handler);
 int peripheral_set_led(enum led_t led, led_state_t state);
 
 /**
- * @brief Turns an LED on, waits 500 ms, then turns it off.
+ * @brief Blinks an LED once with default timing (500ms on, 500ms off).
+ * This is a backward-compatible wrapper around peripheral_set_led_blink_async.
  *
  * @param led The LED to blink.
  * @return 0 on success, negative error code otherwise.
  */
 int peripheral_set_led_blink(enum led_t led);
+
+/**
+ * @brief Blinks an LED asynchronously with configurable parameters.
+ * This function is non-blocking and uses the work queue for timing.
+ *
+ * @param led The LED to blink.
+ * @param count Number of complete on-off cycles (0 for indefinite blinking).
+ * @param on_time_ms Duration in milliseconds for the ON state.
+ * @param off_time_ms Duration in milliseconds for the OFF state.
+ * @param end_state Final state of the LED after blinking completes.
+ * @return 0 on success, negative error code otherwise.
+ */
+int peripheral_set_led_blink_async(enum led_t led, uint8_t count, uint16_t on_time_ms, 
+                                  uint16_t off_time_ms, led_state_t end_state);
 
 #ifdef __cplusplus
 }
