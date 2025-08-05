@@ -11,6 +11,7 @@
 #include <zephyr/zbus/zbus.h>
 
 #include "application/controller.h"
+#include "modules/ble.h"
 #include "modules/peripheral.h"
 #include "modules/storage.h"
 #include "services/audio_codec.h"
@@ -22,10 +23,10 @@ static void button_event_handler(enum button_event_t event)
 {
   switch (event) {
   case BUTTON_1_PRESSED:
-    LOG_INF("Button 1 pressed! (external)");
+    LOG_INF("Button 1 pressed! Starting BLE advertising");
     break;
   case BUTTON_2_PRESSED:
-    LOG_INF("Button 2 pressed! (external)");
+    LOG_INF("Button 2 pressed! Stopping BLE advertising");
     break;
   case BUTTON_3_PRESSED:
     LOG_INF("Button 3 pressed! (external)");
@@ -67,6 +68,15 @@ int main(void)
     LOG_ERR("Failed to initialize peripheral module");
     return ret;
   }
+
+  ret = ble_init();
+  if (ret != 0) {
+    LOG_ERR("Failed to initialize BLE module");
+    return ret;
+  }
+
+  LOG_INF("Press Button 1 to start BLE advertising");
+  LOG_INF("Press Button 2 to stop BLE advertising");
 
   return 0;
 }
