@@ -38,6 +38,31 @@ typedef enum {
  */
 int ble_init(void);
 
+/**
+ * @brief Start BLE advertising
+ *
+ * This function starts BLE advertising to allow connections from central devices.
+ *
+ * @return 0 on success, negative error code on failure
+ */
+int ble_start_advertising(void);
+
+/**
+ * @brief Stop BLE advertising
+ *
+ * This function stops BLE advertising if it is currently active.
+ *
+ * @return 0 on success, negative error code on failure
+ */
+int ble_stop_advertising(void);
+
+/**
+ * @brief Get the current BLE state
+ *
+ * @return The current state of the BLE module
+ */
+ble_state_t ble_get_state(void);
+
 #ifdef __cplusplus
 }
 #endif

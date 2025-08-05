@@ -17,6 +17,9 @@ LOG_MODULE_REGISTER(ble_module, CONFIG_LOG_DEFAULT_LEVEL);
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
+/* Current state of the BLE module */
+static ble_state_t current_ble_state = BLE_OFF;
+
 static const struct bt_le_adv_param* adv_param = BT_LE_ADV_PARAM(
     (BT_LE_ADV_OPT_CONN | BT_LE_ADV_OPT_USE_IDENTITY), /* Connectable advertising and use identity address */
     800, /* Min Advertising Interval 500ms (800*0.625ms) */
@@ -43,9 +46,27 @@ static void adv_work_handler(struct k_work* work)
     return;
   }
 
+  current_ble_state = BLE_ADVERTISING;
   printk("Advertising successfully started\n");
 }
 static void advertising_start(void) { k_work_submit(&adv_work); }
+static void connected_cb(struct bt_conn *conn, uint8_t err)
+{
+  if (err) {
+    LOG_ERR("Connection failed (err %u)", err);
+    return;
+  }
+
+  LOG_INF("Connected");
+  current_ble_state = BLE_CONNECTED;
+}
+
+static void disconnected_cb(struct bt_conn *conn, uint8_t reason)
+{
+  LOG_INF("Disconnected (reason %u)", reason);
+  current_ble_state = BLE_DISCONNECTED;
+}
+
 static void recycled_cb(void)
 {
   printk("Connection object available from previous conn. Disconnect is complete!\n");
@@ -53,6 +74,8 @@ static void recycled_cb(void)
 }
 
 BT_CONN_CB_DEFINE(conn_callbacks) = {
+  .connected = connected_cb,
+  .disconnected = disconnected_cb,
   .recycled = recycled_cb,
 };
 
@@ -79,9 +102,34 @@ int ble_init(void)
 
   LOG_INF("Bluetooth initialized\n");
   k_work_init(&adv_work, adv_work_handler);
+  
+  current_ble_state = BLE_NOT_CONNECTED;
+
+  return 0;
+}
+
+int ble_start_advertising(void)
+{
   advertising_start();
 
   LOG_INF("Advertising successfully started\n");
-
   return 0;
+}
+
+int ble_stop_advertising(void)
+{
+  int err = bt_le_adv_stop();
+  if (err) {
+    LOG_ERR("Advertising failed to stop (err %d)", err);
+    return err;
+  }
+
+  current_ble_state = BLE_NOT_CONNECTED;
+  LOG_INF("Advertising successfully stopped");
+  return 0;
+}
+
+ble_state_t ble_get_state(void)
+{
+  return current_ble_state;
 }

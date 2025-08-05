@@ -24,9 +24,11 @@ static void button_event_handler(enum button_event_t event)
   switch (event) {
   case BUTTON_1_PRESSED:
     LOG_INF("Button 1 pressed! Starting BLE advertising");
+    ble_start_advertising();
     break;
   case BUTTON_2_PRESSED:
     LOG_INF("Button 2 pressed! Stopping BLE advertising");
+    ble_stop_advertising();
     break;
   case BUTTON_3_PRESSED:
     LOG_INF("Button 3 pressed! (external)");
@@ -35,6 +37,7 @@ static void button_event_handler(enum button_event_t event)
     LOG_INF("Button 4 pressed! (external)");
     break;
   default:
+    LOG_INF("Unknown button event");
     return;
   }
 }
