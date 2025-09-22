@@ -142,23 +142,6 @@ ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 1);
 /* ZBUS subscriber for LED tasks */
 ZBUS_SUBSCRIBER_DEFINE(led_task_sub, 1);
 
-void subscriber_task(void)
-{
-  struct btn_event_msg msg;
-  int ret;
-
-  while (1) {
-    /* Wait for a message on the button event channel */
-    ret = zbus_sub_wait_msg(&btn_event_sub, &msg, K_FOREVER);
-    if (ret != 0) {
-      LOG_ERR("Error waiting for button event message: %d", ret);
-      continue;
-    }
-
-    LOG_DBG("Button event: %d", msg.event);
-  }
-}
-
 /* === Work Queue Configuration === */
 /**
  * @brief Work queue configuration for asynchronous event handling
