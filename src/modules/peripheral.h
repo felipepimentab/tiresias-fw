@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-/** 
+/**
  * @brief LED identifiers for the nRF5340 DK
  *
  * These enumeration values identify the four LEDs available on the nRF5340 DK.
@@ -39,13 +39,13 @@ extern "C" {
  * - LED_4: The fourth LED (typically labeled LED4 on the board)
  */
 enum led_t {
-  LED_1,  /**< First LED on the board */
-  LED_2,  /**< Second LED on the board */
-  LED_3,  /**< Third LED on the board */
-  LED_4,  /**< Fourth LED on the board */
+  LED_1, /**< First LED on the board */
+  LED_2, /**< Second LED on the board */
+  LED_3, /**< Third LED on the board */
+  LED_4, /**< Fourth LED on the board */
 };
 
-/** 
+/**
  * @brief LED state values
  *
  * These values define the possible states for an LED. They are used as parameters
@@ -57,11 +57,11 @@ enum led_t {
  * of the underlying GPIO logic.
  */
 typedef enum {
-  LED_OFF = 0,  /**< LED is turned off (not illuminated) */
-  LED_ON = 1,   /**< LED is turned on (illuminated) */
+  LED_OFF = 0, /**< LED is turned off (not illuminated) */
+  LED_ON = 1, /**< LED is turned on (illuminated) */
 } led_state_t;
 
-/** 
+/**
  * @brief Button press events
  *
  * These enumeration values represent button press events that can be reported
@@ -78,10 +78,10 @@ typedef enum {
  * - BUTTON_4_PRESSED: Event when the fourth button (typically labeled SW4) is pressed
  */
 enum button_event_t {
-  BUTTON_1_PRESSED,  /**< First button press event */
-  BUTTON_2_PRESSED,  /**< Second button press event */
-  BUTTON_3_PRESSED,  /**< Third button press event */
-  BUTTON_4_PRESSED,  /**< Fourth button press event */
+  BUTTON_1_PRESSED, /**< First button press event */
+  BUTTON_2_PRESSED, /**< Second button press event */
+  BUTTON_3_PRESSED, /**< Third button press event */
+  BUTTON_4_PRESSED, /**< Fourth button press event */
 };
 
 /**
@@ -104,7 +104,7 @@ enum button_event_t {
  */
 typedef void (*btn_ext_handler_t)(enum button_event_t event);
 
-/** 
+/**
  * @brief Internal peripheral event types (used by the work queue)
  *
  * This enumeration defines all possible events that can be processed by the
@@ -131,22 +131,22 @@ typedef void (*btn_ext_handler_t)(enum button_event_t event);
  * event handler callback.
  */
 enum peripheral_event {
-  LED_1_ON,    /**< Turn on LED 1 */
-  LED_1_OFF,   /**< Turn off LED 1 */
+  LED_1_ON, /**< Turn on LED 1 */
+  LED_1_OFF, /**< Turn off LED 1 */
   LED_1_BLINK, /**< Blink LED 1 */
-  LED_2_ON,    /**< Turn on LED 2 */
-  LED_2_OFF,   /**< Turn off LED 2 */
+  LED_2_ON, /**< Turn on LED 2 */
+  LED_2_OFF, /**< Turn off LED 2 */
   LED_2_BLINK, /**< Blink LED 2 */
-  LED_3_ON,    /**< Turn on LED 3 */
-  LED_3_OFF,   /**< Turn off LED 3 */
+  LED_3_ON, /**< Turn on LED 3 */
+  LED_3_OFF, /**< Turn off LED 3 */
   LED_3_BLINK, /**< Blink LED 3 */
-  LED_4_ON,    /**< Turn on LED 4 */
-  LED_4_OFF,   /**< Turn off LED 4 */
+  LED_4_ON, /**< Turn on LED 4 */
+  LED_4_OFF, /**< Turn off LED 4 */
   LED_4_BLINK, /**< Blink LED 4 */
-  BTN_1,       /**< Button 1 pressed event */
-  BTN_2,       /**< Button 2 pressed event */
-  BTN_3,       /**< Button 3 pressed event */
-  BTN_4,       /**< Button 4 pressed event */
+  BTN_1, /**< Button 1 pressed event */
+  BTN_2, /**< Button 2 pressed event */
+  BTN_3, /**< Button 3 pressed event */
+  BTN_4, /**< Button 4 pressed event */
 };
 
 /**
@@ -258,8 +258,8 @@ int peripheral_set_led_blink(enum led_t led);
  *         -EBUSY if the work queue is full
  *         Other negative values from the GPIO driver if the operation fails
  */
-int peripheral_set_led_blink_async(enum led_t led, uint8_t count, uint16_t on_time_ms, 
-                                  uint16_t off_time_ms, led_state_t end_state);
+int peripheral_set_led_blink_async(
+    enum led_t led, uint8_t count, uint16_t on_time_ms, uint16_t off_time_ms, led_state_t end_state);
 
 #ifdef __cplusplus
 }

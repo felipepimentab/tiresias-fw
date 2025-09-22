@@ -21,8 +21,9 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
-#include <zephyr/sys/util.h>
 #include <zephyr/sys/atomic.h>
+#include <zephyr/sys/util.h>
+#include <zephyr/zbus/zbus.h>
 
 LOG_MODULE_REGISTER(peripheral_module, CONFIG_LOG_DEFAULT_LEVEL);
 
@@ -38,15 +39,15 @@ LOG_MODULE_REGISTER(peripheral_module, CONFIG_LOG_DEFAULT_LEVEL);
  *
  * The nRF5340 DK has 4 user buttons (sw0-sw3) and 4 LEDs (led0-led3).
  */
-#define BTN1_NODE DT_ALIAS(sw0)  /* Button 1 node from Device Tree */
-#define BTN2_NODE DT_ALIAS(sw1)  /* Button 2 node from Device Tree */
-#define BTN3_NODE DT_ALIAS(sw2)  /* Button 3 node from Device Tree */
-#define BTN4_NODE DT_ALIAS(sw3)  /* Button 4 node from Device Tree */
+#define BTN1_NODE DT_ALIAS(sw0) /* Button 1 node from Device Tree */
+#define BTN2_NODE DT_ALIAS(sw1) /* Button 2 node from Device Tree */
+#define BTN3_NODE DT_ALIAS(sw2) /* Button 3 node from Device Tree */
+#define BTN4_NODE DT_ALIAS(sw3) /* Button 4 node from Device Tree */
 
-#define LED0_NODE DT_ALIAS(led0)  /* LED 1 node from Device Tree */
-#define LED1_NODE DT_ALIAS(led1)  /* LED 2 node from Device Tree */
-#define LED2_NODE DT_ALIAS(led2)  /* LED 3 node from Device Tree */
-#define LED3_NODE DT_ALIAS(led3)  /* LED 4 node from Device Tree */
+#define LED0_NODE DT_ALIAS(led0) /* LED 1 node from Device Tree */
+#define LED1_NODE DT_ALIAS(led1) /* LED 2 node from Device Tree */
+#define LED2_NODE DT_ALIAS(led2) /* LED 3 node from Device Tree */
+#define LED3_NODE DT_ALIAS(led3) /* LED 4 node from Device Tree */
 
 /* === GPIO Configuration Flags === */
 /**
@@ -116,6 +117,49 @@ struct btn_debounce_work {
   enum peripheral_event event;
 };
 
+/* === ZBUS Configuration === */
+
+/* Message type for button events */
+struct btn_event_msg {
+  enum button_event_t event;
+};
+
+/* Message type for LED tasks */
+struct led_task_msg {
+  enum peripheral_event event;
+};
+
+/* ZBUS channel for button events */
+ZBUS_CHAN_DEFINE(btn_event_chan, struct btn_event_msg, NULL, NULL, ZBUS_OBSERVERS(btn_event_sub),
+    ZBUS_MSG_INIT(.event = BUTTON_1_PRESSED));
+
+/* ZBUS channel for LED tasks */
+ZBUS_CHAN_DEFINE(
+    led_task_chan, struct led_task_msg, NULL, NULL, ZBUS_OBSERVERS(led_task_sub), ZBUS_MSG_INIT(.event = LED_1_BLINK));
+
+/* ZBUS subscriber for button events */
+ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 1);
+
+/* ZBUS subscriber for LED tasks */
+ZBUS_SUBSCRIBER_DEFINE(led_task_sub, 1);
+
+void subscriber_task(void)
+{
+  struct btn_event_msg msg;
+  int ret;
+
+  while (1) {
+    /* Wait for a message on the button event channel */
+    ret = zbus_sub_wait_msg(&btn_event_sub, &msg, K_FOREVER);
+    if (ret != 0) {
+      LOG_ERR("Error waiting for button event message: %d", ret);
+      continue;
+    }
+
+    LOG_DBG("Button event: %d", msg.event);
+  }
+}
+
 /* === Work Queue Configuration === */
 /**
  * @brief Work queue configuration for asynchronous event handling
@@ -130,8 +174,8 @@ struct btn_debounce_work {
  * The work queue thread has a medium-high priority to ensure responsive handling of
  * peripheral events without interfering with critical system tasks.
  */
-#define WORK_QUEUE_STACK_SIZE 1024  /* Stack size for the work queue thread */
-#define WORK_QUEUE_PRIORITY K_PRIO_PREEMPT(8)  /* Medium-high priority for responsive handling */
+#define WORK_QUEUE_STACK_SIZE 1024 /* Stack size for the work queue thread */
+#define WORK_QUEUE_PRIORITY K_PRIO_PREEMPT(8) /* Medium-high priority for responsive handling */
 
 K_THREAD_STACK_DEFINE(peripheral_work_q_stack, WORK_QUEUE_STACK_SIZE);
 static struct k_work_q peripheral_work_q;
@@ -154,8 +198,8 @@ static atomic_t btn_pressed[4];
 
 /* === Function Declarations === */
 int peripheral_set_led(enum led_t led, led_state_t state);
-int peripheral_set_led_blink_async(enum led_t led, uint8_t count, uint16_t on_time_ms, 
-                                  uint16_t off_time_ms, led_state_t end_state);
+int peripheral_set_led_blink_async(
+    enum led_t led, uint8_t count, uint16_t on_time_ms, uint16_t off_time_ms, led_state_t end_state);
 
 /**
  * @brief Handles peripheral events from the work queue
@@ -215,23 +259,35 @@ static void handle_event_work(struct k_work* work)
     break;
   case BTN_1:
     LOG_INF("Button 1 pressed! (internal)");
-    if (btn_ext_handler)
-      btn_ext_handler(BUTTON_1_PRESSED);
+    {
+      // Publish to button event channel on ZBUS
+      struct btn_event_msg msg = { .event = BUTTON_1_PRESSED };
+      zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
+    }
     break;
   case BTN_2:
     LOG_INF("Button 2 pressed! (internal)");
-    if (btn_ext_handler)
-      btn_ext_handler(BUTTON_2_PRESSED);
+    {
+      // Publish to button event channel on ZBUS
+      struct btn_event_msg msg = { .event = BUTTON_2_PRESSED };
+      zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
+    }
     break;
   case BTN_3:
     LOG_INF("Button 3 pressed! (internal)");
-    if (btn_ext_handler)
-      btn_ext_handler(BUTTON_3_PRESSED);
+    {
+      // Publish to button event channel on ZBUS
+      struct btn_event_msg msg = { .event = BUTTON_3_PRESSED };
+      zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
+    }
     break;
   case BTN_4:
     LOG_INF("Button 4 pressed! (internal)");
-    if (btn_ext_handler)
-      btn_ext_handler(BUTTON_4_PRESSED);
+    {
+      // Publish to button event channel on ZBUS
+      struct btn_event_msg msg = { .event = BUTTON_4_PRESSED };
+      zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
+    }
     break;
   default:
     LOG_WRN("Unknown peripheral event: %d", evt);
@@ -272,7 +328,7 @@ static void enqueue_event(enum peripheral_event evt)
  *
  * This function is called after the debounce delay has elapsed. It processes the button
  * event by resetting the button state and enqueueing the event for further processing.
- * 
+ *
  * The debounce mechanism solves several common issues with physical buttons:
  * - Prevents multiple events from being generated when a button bounces during press or release
  * - Ensures consistent behavior across different button types and conditions
@@ -287,24 +343,33 @@ static void enqueue_event(enum peripheral_event evt)
  *
  * @param work Pointer to the work item structure containing the delayed work
  */
-static void btn_debounce_handler(struct k_work *work)
+static void btn_debounce_handler(struct k_work* work)
 {
-  struct btn_debounce_work *debounce_work = CONTAINER_OF(work, struct btn_debounce_work, dwork.work);
+  struct btn_debounce_work* debounce_work = CONTAINER_OF(work, struct btn_debounce_work, dwork.work);
   enum peripheral_event evt = debounce_work->event;
-  
+
   // Determine which button this is for
   int btn_idx = -1;
   switch (evt) {
-    case BTN_1: btn_idx = 0; break;
-    case BTN_2: btn_idx = 1; break;
-    case BTN_3: btn_idx = 2; break;
-    case BTN_4: btn_idx = 3; break;
-    default: return; // Not a button event
+  case BTN_1:
+    btn_idx = 0;
+    break;
+  case BTN_2:
+    btn_idx = 1;
+    break;
+  case BTN_3:
+    btn_idx = 2;
+    break;
+  case BTN_4:
+    btn_idx = 3;
+    break;
+  default:
+    return; // Not a button event
   }
-  
+
   // Reset the button state to allow future button presses to be detected
   atomic_set(&btn_pressed[btn_idx], 0);
-  
+
   // Process the button event
   enqueue_event(evt);
 }
@@ -330,8 +395,8 @@ static void btn_debounce_handler(struct k_work *work)
 static void schedule_debounce(enum peripheral_event evt)
 {
   uint32_t idx = atomic_inc(&debounce_work_idx) % MAX_DEBOUNCE_WORKS;
-  struct btn_debounce_work *debounce_work = &debounce_works[idx];
-  
+  struct btn_debounce_work* debounce_work = &debounce_works[idx];
+
   debounce_work->event = evt;
   k_work_init_delayable(&debounce_work->dwork, btn_debounce_handler);
   k_work_schedule_for_queue(&peripheral_work_q, &debounce_work->dwork, K_MSEC(DEBOUNCE_DELAY_MS));
@@ -358,7 +423,7 @@ static void schedule_debounce(enum peripheral_event evt)
  * - If not, it leaves the value unchanged and returns false
  * This ensures that even if multiple interrupts occur, the button is only processed once.
  */
-static void button1_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins) 
+static void button1_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins)
 {
   // Check if button is already being processed (debounce)
   if (atomic_cas(&btn_pressed[0], 0, 1)) {
@@ -366,21 +431,21 @@ static void button1_pressed(const struct device* dev, struct gpio_callback* cb, 
   }
 }
 
-static void button2_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins) 
+static void button2_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins)
 {
   if (atomic_cas(&btn_pressed[1], 0, 1)) {
     schedule_debounce(BTN_2);
   }
 }
 
-static void button3_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins) 
+static void button3_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins)
 {
   if (atomic_cas(&btn_pressed[2], 0, 1)) {
     schedule_debounce(BTN_3);
   }
 }
 
-static void button4_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins) 
+static void button4_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins)
 {
   if (atomic_cas(&btn_pressed[3], 0, 1)) {
     schedule_debounce(BTN_4);
@@ -393,7 +458,7 @@ static void button4_pressed(const struct device* dev, struct gpio_callback* cb, 
  *
  * This function implements non-blocking LED blinking by toggling the LED state and
  * rescheduling itself until the requested number of blink cycles is complete.
- * 
+ *
  * Key features of the LED blink implementation:
  * - Non-blocking operation using Zephyr's delayable work items
  * - Support for configurable on/off durations for precise timing control
@@ -411,28 +476,27 @@ static void button4_pressed(const struct device* dev, struct gpio_callback* cb, 
  *
  * @param work Pointer to the work item structure containing the delayed work
  */
-static void led_blink_handler(struct k_work *work)
+static void led_blink_handler(struct k_work* work)
 {
-  struct led_blink_work *blink_work = CONTAINER_OF(work, struct led_blink_work, dwork.work);
-  static led_state_t current_state[4] = {LED_OFF, LED_OFF, LED_OFF, LED_OFF};
+  struct led_blink_work* blink_work = CONTAINER_OF(work, struct led_blink_work, dwork.work);
+  static led_state_t current_state[4] = { LED_OFF, LED_OFF, LED_OFF, LED_OFF };
   enum led_t led = blink_work->led;
-  
+
   if (led >= LED_1 && led <= LED_4) {
     // Toggle the LED state
     current_state[led] = (current_state[led] == LED_ON) ? LED_OFF : LED_ON;
     peripheral_set_led(led, current_state[led]);
-    
+
     // Decrement blink count if we just completed a full on-off cycle
     if (current_state[led] == LED_OFF && blink_work->blink_count > 0) {
       blink_work->blink_count--;
     }
-    
+
     // Schedule next toggle or finish
     if (blink_work->blink_count > 0 || current_state[led] == LED_ON) {
       // If we still have blinks remaining or we're in the ON state of a cycle,
       // schedule the next state change
-      uint16_t delay = (current_state[led] == LED_ON) ? 
-                        blink_work->on_time_ms : blink_work->off_time_ms;
+      uint16_t delay = (current_state[led] == LED_ON) ? blink_work->on_time_ms : blink_work->off_time_ms;
       k_work_schedule_for_queue(&peripheral_work_q, &blink_work->dwork, K_MSEC(delay));
     } else {
       // Set final state if we're done blinking
@@ -468,7 +532,7 @@ static void led_blink_handler(struct k_work *work)
 int peripheral_set_led(enum led_t led, led_state_t state)
 {
   int ret = -EINVAL;
-  
+
   switch (led) {
   case LED_1:
     ret = gpio_pin_set_dt(&led0, state);
@@ -483,11 +547,11 @@ int peripheral_set_led(enum led_t led, led_state_t state)
     ret = gpio_pin_set_dt(&led3, state);
     break;
   }
-  
+
   if (ret < 0) {
     LOG_ERR("Failed to set LED %d to state %d: %d", led, state, ret);
   }
-  
+
   return ret;
 }
 
@@ -549,36 +613,35 @@ int peripheral_set_led_blink(enum led_t led)
  * @return 0 on success, -EINVAL for invalid LED, -EBUSY if work queue is full,
  *         or other negative error code if LED control fails
  */
-int peripheral_set_led_blink_async(enum led_t led, uint8_t count, uint16_t on_time_ms, 
-                                  uint16_t off_time_ms, led_state_t end_state)
+int peripheral_set_led_blink_async(
+    enum led_t led, uint8_t count, uint16_t on_time_ms, uint16_t off_time_ms, led_state_t end_state)
 {
   if (led < LED_1 || led > LED_4) {
     return -EINVAL;
   }
-  
+
   // Get the next available blink work item from the pool
   uint32_t idx = atomic_inc(&blink_work_idx) % MAX_BLINK_WORKS;
-  struct led_blink_work *blink_work = &blink_works[idx];
-  
+  struct led_blink_work* blink_work = &blink_works[idx];
+
   // Configure the blink parameters
   blink_work->led = led;
   blink_work->blink_count = count;
   blink_work->on_time_ms = on_time_ms;
   blink_work->off_time_ms = off_time_ms;
   blink_work->end_state = end_state;
-  
+
   // Initialize the delayable work item
   k_work_init_delayable(&blink_work->dwork, led_blink_handler);
-  
+
   // Start with LED on
   int ret = peripheral_set_led(led, LED_ON);
   if (ret < 0) {
     return ret;
   }
-  
+
   // Schedule the first state change
-  return k_work_schedule_for_queue(&peripheral_work_q, &blink_work->dwork, 
-                                  K_MSEC(on_time_ms)) ? 0 : -EBUSY;
+  return k_work_schedule_for_queue(&peripheral_work_q, &blink_work->dwork, K_MSEC(on_time_ms)) ? 0 : -EBUSY;
 }
 
 /* === Module Initialization === */
@@ -608,7 +671,7 @@ static int setup_led(const struct gpio_dt_spec* led)
     LOG_ERR("LED device not ready");
     return -ENODEV;
   }
-  
+
   // Configure the GPIO pin as an output with active-low logic
   int ret = gpio_pin_configure_dt(led, LED_FLAGS);
   if (ret < 0) {
@@ -657,31 +720,31 @@ static int setup_button(const struct gpio_dt_spec* btn, struct gpio_callback* cb
     LOG_ERR("Button device not ready");
     return -ENODEV;
   }
-  
+
   // Configure the GPIO pin as an input with pull-up resistor
   int ret = gpio_pin_configure_dt(btn, BTN_FLAGS);
   if (ret < 0) {
     LOG_ERR("Failed to configure button: %d", ret);
     return ret;
   }
-  
+
   // Configure the pin to generate interrupts on active edge
   ret = gpio_pin_interrupt_configure_dt(btn, GPIO_INT_EDGE_TO_ACTIVE);
   if (ret < 0) {
     LOG_ERR("Failed to configure button interrupt: %d", ret);
     return ret;
   }
-  
+
   // Initialize the callback structure with the handler function
   gpio_init_callback(cb, handler, BIT(btn->pin));
-  
+
   // Add the callback to the GPIO device
   ret = gpio_add_callback(btn->port, cb);
   if (ret < 0) {
     LOG_ERR("Failed to add button callback: %d", ret);
     return ret;
   }
-  
+
   return 0;
 }
 
@@ -721,23 +784,22 @@ static int setup_button(const struct gpio_dt_spec* btn, struct gpio_callback* cb
 int peripheral_init(btn_ext_handler_t handler)
 {
   int ret;
-  
+
   // Initialize work queue for asynchronous event processing
-  k_work_queue_start(&peripheral_work_q, peripheral_work_q_stack,
-                     K_THREAD_STACK_SIZEOF(peripheral_work_q_stack),
-                     WORK_QUEUE_PRIORITY, NULL);
+  k_work_queue_start(&peripheral_work_q, peripheral_work_q_stack, K_THREAD_STACK_SIZEOF(peripheral_work_q_stack),
+      WORK_QUEUE_PRIORITY, NULL);
   k_thread_name_set(&peripheral_work_q.thread, "peripheral_work_q");
-  
+
   // Initialize atomic counters for work item allocation
   atomic_set(&work_item_idx, 0);
   atomic_set(&blink_work_idx, 0);
   atomic_set(&debounce_work_idx, 0);
-  
+
   // Initialize button state tracking for debounce handling
   for (int i = 0; i < 4; i++) {
     atomic_set(&btn_pressed[i], 0);
   }
-  
+
   // Setup LEDs with proper error handling
   ret = setup_led(&led0);
   if (ret < 0) {
@@ -745,21 +807,21 @@ int peripheral_init(btn_ext_handler_t handler)
     return ret;
   }
   peripheral_set_led(LED_1, LED_OFF);
-  
+
   ret = setup_led(&led1);
   if (ret < 0) {
     LOG_ERR("Failed to setup LED 2: %d", ret);
     return ret;
   }
   peripheral_set_led(LED_2, LED_OFF);
-  
+
   ret = setup_led(&led2);
   if (ret < 0) {
     LOG_ERR("Failed to setup LED 3: %d", ret);
     return ret;
   }
   peripheral_set_led(LED_3, LED_OFF);
-  
+
   ret = setup_led(&led3);
   if (ret < 0) {
     LOG_ERR("Failed to setup LED 4: %d", ret);
@@ -776,19 +838,19 @@ int peripheral_init(btn_ext_handler_t handler)
     LOG_ERR("Failed to setup button 1: %d", ret);
     return ret;
   }
-  
+
   ret = setup_button(&button2, &btn2_cb, button2_pressed);
   if (ret < 0) {
     LOG_ERR("Failed to setup button 2: %d", ret);
     return ret;
   }
-  
+
   ret = setup_button(&button3, &btn3_cb, button3_pressed);
   if (ret < 0) {
     LOG_ERR("Failed to setup button 3: %d", ret);
     return ret;
   }
-  
+
   ret = setup_button(&button4, &btn4_cb, button4_pressed);
   if (ret < 0) {
     LOG_ERR("Failed to setup button 4: %d", ret);
