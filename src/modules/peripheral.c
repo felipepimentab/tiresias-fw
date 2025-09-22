@@ -133,14 +133,11 @@ ZBUS_CHAN_DEFINE(btn_event_chan, struct btn_event_msg, NULL, NULL, ZBUS_OBSERVER
     ZBUS_MSG_INIT(.event = BUTTON_1_PRESSED));
 
 /* ZBUS channel for LED tasks */
-ZBUS_CHAN_DEFINE(
-    led_task_chan, struct led_task_msg, NULL, NULL, ZBUS_OBSERVERS(led_task_sub), ZBUS_MSG_INIT(.event = LED_1_BLINK));
+ZBUS_CHAN_DEFINE(led_task_chan, struct led_task_msg, NULL, NULL, ZBUS_OBSERVERS(led_task_listener),
+    ZBUS_MSG_INIT(.event = LED_1_BLINK));
 
 /* ZBUS subscriber for button events */
 ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 1);
-
-/* ZBUS subscriber for LED tasks */
-ZBUS_SUBSCRIBER_DEFINE(led_task_sub, 1);
 
 /* === Work Queue Configuration === */
 /**
@@ -182,6 +179,30 @@ static atomic_t btn_pressed[4];
 int peripheral_set_led(enum led_t led, led_state_t state);
 int peripheral_set_led_blink_async(
     enum led_t led, uint8_t count, uint16_t on_time_ms, uint16_t off_time_ms, led_state_t end_state);
+int peripheral_publish_led_task(enum peripheral_event event);
+static void enqueue_event(enum peripheral_event evt);
+
+/**
+ * @brief Listener callback function for LED task messages
+ *
+ * This function is called whenever a message is published to the led_task_chan.
+ * It creates a work item for the peripheral work queue to handle the LED operation
+ * asynchronously.
+ *
+ * @param chan Pointer to the channel that triggered the callback
+ */
+static void led_task_listener_callback(const struct zbus_channel* chan)
+{
+  const struct led_task_msg* msg = zbus_chan_const_msg(chan);
+
+  LOG_DBG("Received LED task message, event: %d", msg->event);
+
+  /* Create a work item for the peripheral work queue */
+  enqueue_event(msg->event);
+}
+
+/* ZBUS listener for LED tasks */
+ZBUS_LISTENER_DEFINE(led_task_listener, led_task_listener_callback);
 
 /**
  * @brief Handles peripheral events from the work queue
@@ -834,4 +855,28 @@ int peripheral_init(void)
 
   LOG_INF("Peripheral module initialized with work queue");
   return 0;
+}
+
+/* === Public API Function === */
+
+/**
+ * @brief Publish a message to the LED task channel
+ *
+ * This function publishes a message to the LED task channel, which will be processed
+ * by the LED task listener callback. The message contains a peripheral event that
+ * specifies which LED operation to perform.
+ *
+ * @param event The peripheral event to publish (should be an LED-related event)
+ * @return 0 on success, negative errno on failure
+ */
+int peripheral_publish_led_task(enum peripheral_event event)
+{
+  struct led_task_msg msg = { .event = event };
+
+  int ret = zbus_chan_pub(&led_task_chan, &msg, K_MSEC(100));
+  if (ret) {
+    LOG_ERR("Failed to publish LED task message: %d", ret);
+  }
+
+  return ret;
 }

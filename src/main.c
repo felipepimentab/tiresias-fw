@@ -25,23 +25,23 @@ int main(void)
   LOG_INF("Main application started.");
   int ret = 0;
 
-  ret = controller_init();
-  if (ret != 0) {
-    LOG_ERR("Failed to initialize controller module");
-    return ret;
-  }
+  // ret = controller_init();
+  // if (ret != 0) {
+  //   LOG_ERR("Failed to initialize controller module");
+  //   return ret;
+  // }
 
-  ret = audio_codec_init();
-  if (ret != 0) {
-    LOG_ERR("Failed to initialize audio codec module");
-    return ret;
-  }
+  // ret = audio_codec_init();
+  // if (ret != 0) {
+  //   LOG_ERR("Failed to initialize audio codec module");
+  //   return ret;
+  // }
 
-  ret = storage_init();
-  if (ret != 0) {
-    LOG_ERR("Failed to initialize storage module");
-    return ret;
-  }
+  // ret = storage_init();
+  // if (ret != 0) {
+  //   LOG_ERR("Failed to initialize storage module");
+  //   return ret;
+  // }
 
   ret = peripheral_init();
   if (ret != 0) {
@@ -49,14 +49,18 @@ int main(void)
     return ret;
   }
 
-  ret = ble_init();
-  if (ret != 0) {
-    LOG_ERR("Failed to initialize BLE module");
-    return ret;
-  }
+  // ret = ble_init();
+  // if (ret != 0) {
+  //   LOG_ERR("Failed to initialize BLE module");
+  //   return ret;
+  // }
 
-  LOG_INF("Press Button 1 to start BLE advertising");
-  LOG_INF("Press Button 2 to stop BLE advertising");
+  k_msleep(1000);
+  BOARD_RED()
+  k_msleep(1000);
+  BOARD_PURPLE()
+  k_msleep(1000);
+  BOARD_BLUE()
 
   return 0;
 }

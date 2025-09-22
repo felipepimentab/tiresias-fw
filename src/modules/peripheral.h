@@ -57,8 +57,8 @@ enum led_t {
  * of the underlying GPIO logic.
  */
 typedef enum {
-  LED_OFF = 0, /**< LED is turned off (not illuminated) */
-  LED_ON = 1, /**< LED is turned on (illuminated) */
+  LED_OFF = 1, /**< LED is turned off (not illuminated) */
+  LED_ON = 0, /**< LED is turned on (illuminated) */
 } led_state_t;
 
 /**
@@ -257,6 +257,75 @@ int peripheral_set_led_blink(enum led_t led);
  */
 int peripheral_set_led_blink_async(
     enum led_t led, uint8_t count, uint16_t on_time_ms, uint16_t off_time_ms, led_state_t end_state);
+
+/**
+ * @brief Publish a message to the LED task channel
+ *
+ * This function publishes a message to the LED task channel, which will be processed
+ * by the LED task listener callback. The message contains a peripheral event that
+ * specifies which LED operation to perform.
+ *
+ * @param event The peripheral event to publish (should be an LED-related event)
+ * @return 0 on success, negative errno on failure
+ */
+int peripheral_publish_led_task(enum peripheral_event event);
+
+/* === For the nRF5340 Audio DK only === */
+#define BOARD_RED()                                                                                                    \
+  {                                                                                                                    \
+    peripheral_publish_led_task(LED_1_ON);                                                                             \
+    peripheral_publish_led_task(LED_2_OFF);                                                                            \
+    peripheral_publish_led_task(LED_3_OFF);                                                                            \
+    peripheral_publish_led_task(LED_4_OFF);                                                                            \
+  }
+
+#define BOARD_GREEN()                                                                                                  \
+  {                                                                                                                    \
+    peripheral_publish_led_task(LED_1_OFF);                                                                            \
+    peripheral_publish_led_task(LED_2_ON);                                                                             \
+    peripheral_publish_led_task(LED_3_OFF);                                                                            \
+    peripheral_publish_led_task(LED_4_OFF);                                                                            \
+  }
+
+#define BOARD_BLUE()                                                                                                   \
+  {                                                                                                                    \
+    peripheral_publish_led_task(LED_1_OFF);                                                                            \
+    peripheral_publish_led_task(LED_2_OFF);                                                                            \
+    peripheral_publish_led_task(LED_3_ON);                                                                             \
+    peripheral_publish_led_task(LED_4_OFF);                                                                            \
+  }
+
+#define BOARD_YELLOW()                                                                                                 \
+  {                                                                                                                    \
+    peripheral_publish_led_task(LED_1_OFF);                                                                            \
+    peripheral_publish_led_task(LED_2_ON);                                                                             \
+    peripheral_publish_led_task(LED_3_ON);                                                                             \
+    peripheral_publish_led_task(LED_4_OFF);                                                                            \
+  }
+
+#define BOARD_PURPLE()                                                                                                 \
+  {                                                                                                                    \
+    peripheral_publish_led_task(LED_1_ON);                                                                             \
+    peripheral_publish_led_task(LED_2_OFF);                                                                            \
+    peripheral_publish_led_task(LED_3_ON);                                                                             \
+    peripheral_publish_led_task(LED_4_OFF);                                                                            \
+  }
+
+#define BOARD_WHITE()                                                                                                  \
+  {                                                                                                                    \
+    peripheral_publish_led_task(LED_1_ON);                                                                             \
+    peripheral_publish_led_task(LED_2_ON);                                                                             \
+    peripheral_publish_led_task(LED_3_ON);                                                                             \
+    peripheral_publish_led_task(LED_4_OFF);                                                                            \
+  }
+
+#define BOARD_OFF()                                                                                                    \
+  {                                                                                                                    \
+    peripheral_publish_led_task(LED_1_OFF);                                                                            \
+    peripheral_publish_led_task(LED_2_OFF);                                                                            \
+    peripheral_publish_led_task(LED_3_OFF);                                                                            \
+    peripheral_publish_led_task(LED_4_OFF);                                                                            \
+  }
 
 #ifdef __cplusplus
 }
