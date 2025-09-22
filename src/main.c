@@ -19,29 +19,6 @@
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 
-static void button_event_handler(enum button_event_t event)
-{
-  switch (event) {
-  case BUTTON_1_PRESSED:
-    LOG_INF("Button 1 pressed! Starting BLE advertising");
-    ble_start_advertising();
-    break;
-  case BUTTON_2_PRESSED:
-    LOG_INF("Button 2 pressed! Stopping BLE advertising");
-    ble_stop_advertising();
-    break;
-  case BUTTON_3_PRESSED:
-    LOG_INF("Button 3 pressed! (external)");
-    break;
-  case BUTTON_4_PRESSED:
-    LOG_INF("Button 4 pressed! (external)");
-    break;
-  default:
-    LOG_INF("Unknown button event");
-    return;
-  }
-}
-
 int main(void)
 {
   LOG_INF("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
@@ -66,7 +43,7 @@ int main(void)
     return ret;
   }
 
-  ret = peripheral_init(button_event_handler);
+  ret = peripheral_init();
   if (ret != 0) {
     LOG_ERR("Failed to initialize peripheral module");
     return ret;

@@ -93,7 +93,6 @@ static const struct gpio_dt_spec button4 = GPIO_DT_SPEC_GET_OR(BTN4_NODE, gpios,
 
 /* === Callback Structs === */
 static struct gpio_callback btn1_cb, btn2_cb, btn3_cb, btn4_cb;
-static btn_ext_handler_t btn_ext_handler;
 
 /* === Work Queue === */
 struct peripheral_work_item {
@@ -772,16 +771,12 @@ static int setup_button(const struct gpio_dt_spec* btn, struct gpio_callback* cb
  * - Function returns immediately if any step fails
  * - Error codes from lower-level functions are propagated to the caller
  *
- * @param handler Callback function to be called when button events occur.
- *                This function will be called from the work queue context, not the
- *                interrupt context. Can be NULL if button events don't need external handling.
- *
  * @return 0 on success, or a negative error code if initialization fails:
  *         -ENODEV: if a GPIO device is not ready
  *         Other negative error codes from gpio_pin_configure_dt(), gpio_pin_interrupt_configure_dt(),
  *         or gpio_add_callback() functions
  */
-int peripheral_init(btn_ext_handler_t handler)
+int peripheral_init(void)
 {
   int ret;
 
@@ -828,9 +823,6 @@ int peripheral_init(btn_ext_handler_t handler)
     return ret;
   }
   peripheral_set_led(LED_4, LED_OFF);
-
-  // Store the button event handler callback
-  btn_ext_handler = handler;
 
   // Setup buttons with interrupt handlers
   ret = setup_button(&button1, &btn1_cb, button1_pressed);

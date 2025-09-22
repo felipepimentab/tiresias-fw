@@ -163,15 +163,12 @@ enum peripheral_event {
  * If any step fails (e.g., a device is not available), the function returns
  * immediately with an appropriate error code and logs the failure.
  *
- * @param handler Callback function for button press events. Can be NULL if button
- *                events don't need to be handled by the application.
- *
  * @return 0 on success, or one of the following negative error codes:
  *         -ENODEV: If an LED or button device is not available
  *         -EIO: If GPIO configuration fails
  *         -EINVAL: If work queue initialization fails
  */
-int peripheral_init(btn_ext_handler_t handler);
+int peripheral_init(void);
 
 /**
  * @brief Sets the state of a specific LED
