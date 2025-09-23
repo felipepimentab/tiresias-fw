@@ -23,7 +23,14 @@
       "utility": "c",
       "display.h": "c",
       "uuid.h": "c",
-      "random": "c"
+      "random": "c",
+      "stdint.h": "c",
+      "__config": "cpp",
+      "ostream": "cpp",
+      "streambuf": "cpp",
+      "audio_codec.h": "c",
+      "bluetooth.h": "c",
+      "ble.h": "c"
     },
     "editor.tabSize": 2,
     "C_Cpp.errorSquiggles": "disabled",
