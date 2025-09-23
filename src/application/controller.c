@@ -1,7 +1,4 @@
 #include "controller.h"
-#include "audio_codec.h"
-#include "peripheral.h"
-#include "storage.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/util.h>
@@ -11,12 +8,7 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 
 /* === Configuration Constants === */
 #define CONTROLLER_THREAD_STACK_SIZE 1024
-#define CONTROLLER_THREAD_PRIORITY 4
-
-/* === Internal Resources === */
-/* Thread stack and metadata */
-K_THREAD_STACK_DEFINE(controller_thread_stack, CONTROLLER_THREAD_STACK_SIZE);
-static struct k_thread controller_thread_data;
+#define CONTROLLER_THREAD_PRIORITY 3
 
 /* === Controller Thread Function === */
 
@@ -32,20 +24,7 @@ static void controller_thread_fn(void* arg1, void* arg2, void* arg3)
   ARG_UNUSED(arg3);
 }
 
-/* === Public API Functions === */
-
-/**
- * @brief Initializes the controller thread
- *
- * @return 0 on success
- */
-int controller_init(void)
-{
-  LOG_INF("Controller module started.");
-
-  /* Create the controller thread */
-  k_thread_create(&controller_thread_data, controller_thread_stack, K_THREAD_STACK_SIZEOF(controller_thread_stack),
-      controller_thread_fn, NULL, NULL, NULL, CONTROLLER_THREAD_PRIORITY, 0, K_NO_WAIT);
-
-  return 0;
-}
+/* === Internal Resources === */
+/* Thread definition using K_THREAD_DEFINE macro */
+K_THREAD_DEFINE(controller_thread, CONTROLLER_THREAD_STACK_SIZE, controller_thread_fn, NULL, NULL, NULL,
+    CONTROLLER_THREAD_PRIORITY, 0, 0);
