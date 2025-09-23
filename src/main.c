@@ -22,38 +22,13 @@ LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 int main(void)
 {
   LOG_INF("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
-  LOG_INF("Main application started.");
   int ret = 0;
-
-  // ret = controller_init();
-  // if (ret != 0) {
-  //   LOG_ERR("Failed to initialize controller module");
-  //   return ret;
-  // }
-
-  // ret = audio_codec_init();
-  // if (ret != 0) {
-  //   LOG_ERR("Failed to initialize audio codec module");
-  //   return ret;
-  // }
-
-  // ret = storage_init();
-  // if (ret != 0) {
-  //   LOG_ERR("Failed to initialize storage module");
-  //   return ret;
-  // }
 
   ret = peripheral_init();
   if (ret != 0) {
     LOG_ERR("Failed to initialize peripheral module");
     return ret;
   }
-
-  // ret = ble_init();
-  // if (ret != 0) {
-  //   LOG_ERR("Failed to initialize BLE module");
-  //   return ret;
-  // }
 
   k_msleep(1000);
   BOARD_RED()
