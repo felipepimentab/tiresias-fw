@@ -14,10 +14,8 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 
 /**
  * @brief Controller thread function.
- *
- * Waits for messages from the ZBUS channels and executes them accordingly.
  */
-static void controller_thread_fn(void* arg1, void* arg2, void* arg3)
+static void controller_thread(void* arg1, void* arg2, void* arg3)
 {
   ARG_UNUSED(arg1);
   ARG_UNUSED(arg2);
@@ -25,6 +23,6 @@ static void controller_thread_fn(void* arg1, void* arg2, void* arg3)
 }
 
 /* === Internal Resources === */
-/* Thread definition using K_THREAD_DEFINE macro */
-K_THREAD_DEFINE(controller_thread, CONTROLLER_THREAD_STACK_SIZE, controller_thread_fn, NULL, NULL, NULL,
+/* Static thread definition */
+K_THREAD_DEFINE(controller_thread_id, CONTROLLER_THREAD_STACK_SIZE, controller_thread, NULL, NULL, NULL,
     CONTROLLER_THREAD_PRIORITY, 0, 0);
