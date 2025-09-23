@@ -137,7 +137,7 @@ ZBUS_CHAN_DEFINE(led_task_chan, struct led_task_msg, NULL, NULL, ZBUS_OBSERVERS(
     ZBUS_MSG_INIT(.event = LED_1_BLINK));
 
 /* ZBUS subscriber for button events */
-ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 1);
+ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 4);
 
 /* === Work Queue Configuration === */
 /**
