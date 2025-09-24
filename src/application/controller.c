@@ -15,11 +15,14 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 /**
  * @brief Controller thread function.
  */
-static void controller_thread(void* arg1, void* arg2, void* arg3)
+static void controller_thread(void)
 {
-  ARG_UNUSED(arg1);
-  ARG_UNUSED(arg2);
-  ARG_UNUSED(arg3);
+  LOG_INF("Controller thread started");
+  /* Main thread loop */
+  while (1) {
+    /* Sleep until explicitly woken up by a direct function call */
+    k_sleep(K_FOREVER);
+  }
 }
 
 /* === Internal Resources === */
