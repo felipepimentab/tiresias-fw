@@ -30,7 +30,9 @@
       "streambuf": "cpp",
       "audio_codec.h": "c",
       "bluetooth.h": "c",
-      "ble.h": "c"
+      "ble.h": "c",
+      "storage.h": "c",
+      "connection.h": "c"
     },
     "editor.tabSize": 2,
     "C_Cpp.errorSquiggles": "disabled",

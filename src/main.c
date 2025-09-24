@@ -11,10 +11,11 @@
 #include <zephyr/zbus/zbus.h>
 
 #include "application/controller.h"
-#include "modules/ble.h"
+#include "modules/connection.h"
 #include "modules/peripheral.h"
 #include "modules/storage.h"
 #include "services/audio_codec.h"
+#include "services/ble.h"
 #include "version.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);

@@ -1,4 +1,5 @@
 #include "ble.h"
+#include "connection.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
@@ -54,6 +55,14 @@ LOG_MODULE_REGISTER(ble, CONFIG_LOG_DEFAULT_LEVEL);
 #define BLE_QUEUE_SIZE 4 /**< Size of the message queue for BLE commands */
 
 /**
+ * @brief ZBUS Subscriber for BLE commands
+ *
+ * Defines a subscriber for the BLE command channel with a queue size of 4.
+ * This subscriber is used by the BLE thread to receive commands.
+ */
+ZBUS_SUBSCRIBER_DEFINE(ble_cmd_sub, 4);
+
+/**
  * @brief ZBUS Channel Definitions
  *
  * These channels provide the communication infrastructure for the BLE service.
@@ -85,9 +94,7 @@ ZBUS_CHAN_DEFINE(ble_cmd_chan, /* Name */
     ble_cmd_chan_msg, /* Message type */
     NULL, /* Validator */
     NULL, /* User data */
-    ZBUS_OBSERVERS(/* Observers */
-        /* Will be added programmatically */
-        ),
+    ZBUS_OBSERVERS(ble_cmd_sub), /* Subscriber for BLE commands */
     ZBUS_MSG_INIT(.cmd = BLE_CMD_OFF) /* Initial value */
 );
 
@@ -332,14 +339,6 @@ static void handle_state_disconnecting(ble_cmd cmd)
 }
 
 /**
- * @brief ZBUS Subscriber for BLE commands
- *
- * Defines a subscriber for the BLE command channel with a queue size of 4.
- * This subscriber is used by the BLE thread to receive commands.
- */
-ZBUS_SUBSCRIBER_DEFINE(ble_cmd_sub, 4);
-
-/**
  * @brief BLE Thread Function
  *
  * Main execution function for the BLE service thread.
@@ -369,25 +368,27 @@ static void ble_thread(void* arg1, void* arg2, void* arg3)
   set_ble_state(BLE_STATE_OFF);
 
   /* Subscribe to BLE command channel */
-  err = zbus_chan_add_obs(&ble_cmd_chan, &ble_cmd_sub, NULL);
-  if (err) {
-    LOG_ERR("Failed to subscribe to BLE command channel: %d", err);
-    return;
-  }
+  // err = zbus_chan_add_obs(&ble_cmd_chan, &ble_cmd_sub, NULL);
+  // if (err) {
+  //   LOG_ERR("Failed to subscribe to BLE command channel: %d", err);
+  //   return;
+  // }
 
   LOG_INF("BLE thread started, waiting for commands");
 
   /* Process messages from the command channel */
   while (1) {
-    /* Block until a message is received */
-    err = zbus_sub_wait(&ble_cmd_sub, K_FOREVER);
+    const struct zbus_channel* chan;
+
+    /* Block until a message is received with proper timeout handling */
+    err = zbus_sub_wait(&ble_cmd_sub, &chan, K_MSEC(SYS_FOREVER_MS));
     if (err) {
       LOG_ERR("Error waiting for BLE command: %d", err);
       continue;
     }
 
-    /* Read the message */
-    err = zbus_sub_read(&ble_cmd_sub, &msg, K_NO_WAIT);
+    /* Read the message with appropriate timeout */
+    err = zbus_chan_read(chan, &msg, K_MSEC(0));
     if (err) {
       LOG_ERR("Error reading BLE command: %d", err);
       continue;
@@ -409,4 +410,4 @@ static void ble_thread(void* arg1, void* arg2, void* arg3)
  * This thread runs independently of other system threads and
  * manages the entire BLE state machine.
  */
-K_THREAD_DEFINE(ble_thread_id, BLE_STACK_SIZE, ble_thread, NULL, NULL, NULL, BLE_PRIORITY, 0, K_NO_WAIT);
+K_THREAD_DEFINE(ble_thread_id, BLE_STACK_SIZE, ble_thread, NULL, NULL, NULL, BLE_PRIORITY, 0, 0);

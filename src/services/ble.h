@@ -1,6 +1,11 @@
 #ifndef BLUETOOTH_H
 #define BLUETOOTH_H
 
+#include "connection.h"
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/zbus/zbus.h>
+
 /**
  * @file ble.h
  * @brief Bluetooth Low Energy (BLE) service module
@@ -37,8 +42,9 @@
  *
  * // Later, receive state updates
  * struct ble_state_chan_msg state_msg;
- * zbus_sub_wait(&ble_state_listener, K_FOREVER);
- * zbus_sub_read(&ble_state_listener, &state_msg, K_NO_WAIT);
+ * const struct zbus_channel *chan;
+ * zbus_sub_wait(&ble_state_listener, &chan, K_MSEC(SYS_FOREVER_MS));
+ * zbus_chan_read(chan, &state_msg, K_MSEC(0));
  * if (state_msg.state == BLE_STATE_CONNECTED) {
  *   // Handle connected state
  * }
@@ -109,7 +115,7 @@ typedef struct ble_cmd_chan_msg {
  * This channel broadcasts BLE state changes to all subscribers.
  * Modules interested in BLE state changes should subscribe to this channel.
  */
-extern ZBUS_CHAN_DECLARE(ble_state_chan);
+ZBUS_CHAN_DECLARE(ble_state_chan);
 
 /**
  * @brief BLE command channel declaration
@@ -117,6 +123,6 @@ extern ZBUS_CHAN_DECLARE(ble_state_chan);
  * This channel receives commands for the BLE service.
  * Modules that need to control BLE should publish to this channel.
  */
-extern ZBUS_CHAN_DECLARE(ble_cmd_chan);
+ZBUS_CHAN_DECLARE(ble_cmd_chan);
 
 #endif /* BLUETOOTH_H */
