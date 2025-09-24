@@ -1,11 +1,6 @@
 #ifndef BLUETOOTH_H
 #define BLUETOOTH_H
 
-#include "connection.h"
-#include <zephyr/kernel.h>
-#include <zephyr/logging/log.h>
-#include <zephyr/zbus/zbus.h>
-
 /**
  * @file ble.h
  * @brief Bluetooth Low Energy (BLE) service module
@@ -124,5 +119,19 @@ ZBUS_CHAN_DECLARE(ble_state_chan);
  * Modules that need to control BLE should publish to this channel.
  */
 ZBUS_CHAN_DECLARE(ble_cmd_chan);
+
+/**
+ * @brief Send a command to the BLE service
+ *
+ * This function publishes a command to the BLE command channel,
+ * which will be processed by the BLE thread. It provides a simple
+ * interface for controlling the BLE service from other modules.
+ *
+ * @param cmd The command to send to the BLE service
+ * @param timeout_ms Timeout in milliseconds for the publish operation
+ *
+ * @return 0 on success, negative error code on failure
+ */
+int ble_send_command(ble_cmd cmd, uint32_t timeout_ms);
 
 #endif /* BLUETOOTH_H */

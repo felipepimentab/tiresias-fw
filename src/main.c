@@ -31,11 +31,17 @@ int main(void)
     return ret;
   }
 
-  k_msleep(1000);
-  BOARD_RED()
-  k_msleep(1000);
-  BOARD_PURPLE()
-  k_msleep(1000);
+  /* Wait for BLE thread to initialize before sending commands */
+  k_sleep(K_MSEC(600));
+  
+  /* Initialize BLE service */
+  ret = ble_send_command(BLE_CMD_INIT, 100);
+  if (ret != 0) {
+    LOG_ERR("Failed to initialize BLE service: %d", ret);
+    BOARD_RED()
+    return ret;
+  }
+  LOG_INF("BLE service initialization requested");
   BOARD_BLUE()
 
   return 0;

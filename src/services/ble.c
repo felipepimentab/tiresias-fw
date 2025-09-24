@@ -1,8 +1,28 @@
 #include "ble.h"
-#include "connection.h"
+#include "../modules/connection.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
+
+/**
+ * @brief Send a command to the BLE service
+ *
+ * This function publishes a command to the BLE command channel,
+ * which will be processed by the BLE thread. It provides a simple
+ * interface for controlling the BLE service from other modules.
+ *
+ * @param cmd The command to send to the BLE service
+ * @param timeout_ms Timeout in milliseconds for the publish operation
+ *
+ * @return 0 on success, negative error code on failure
+ */
+int ble_send_command(ble_cmd cmd, uint32_t timeout_ms)
+{
+  struct ble_cmd_chan_msg msg;
+  msg.cmd = cmd;
+
+  return zbus_chan_pub(&ble_cmd_chan, &msg, K_MSEC(timeout_ms));
+}
 
 /**
  * @file ble.c
@@ -42,7 +62,7 @@
  * and application modules that use BLE functionality.
  */
 
-LOG_MODULE_REGISTER(ble, CONFIG_LOG_DEFAULT_LEVEL);
+LOG_MODULE_REGISTER(ble, LOG_LEVEL_INF);
 
 /**
  * @brief Configuration Constants
@@ -50,7 +70,7 @@ LOG_MODULE_REGISTER(ble, CONFIG_LOG_DEFAULT_LEVEL);
  * These constants define the resource allocation and execution parameters
  * for the BLE service thread.
  */
-#define BLE_STACK_SIZE 2048 /**< Stack size for BLE thread (bytes) */
+#define BLE_STACK_SIZE 4096 /**< Stack size for BLE thread (bytes) */
 #define BLE_PRIORITY 4 /**< Thread priority (0-15, lower is higher priority) */
 #define BLE_QUEUE_SIZE 4 /**< Size of the message queue for BLE commands */
 
@@ -361,28 +381,24 @@ static void ble_thread(void* arg1, void* arg2, void* arg3)
   ARG_UNUSED(arg2);
   ARG_UNUSED(arg3);
 
+  LOG_INF("BLE thread started, waiting for commands");
   int err;
   struct ble_cmd_chan_msg msg;
 
   /* Initialize BLE state */
   set_ble_state(BLE_STATE_OFF);
 
-  /* Subscribe to BLE command channel */
-  // err = zbus_chan_add_obs(&ble_cmd_chan, &ble_cmd_sub, NULL);
-  // if (err) {
-  //   LOG_ERR("Failed to subscribe to BLE command channel: %d", err);
-  //   return;
-  // }
-
-  LOG_INF("BLE thread started, waiting for commands");
-
   /* Process messages from the command channel */
   while (1) {
     const struct zbus_channel* chan;
 
-    /* Block until a message is received with proper timeout handling */
-    err = zbus_sub_wait(&ble_cmd_sub, &chan, K_MSEC(SYS_FOREVER_MS));
+    /* Use a timeout instead of waiting forever to prevent deadlock */
+    err = zbus_sub_wait(&ble_cmd_sub, &chan, K_FOREVER);
     if (err) {
+      if (err == -EAGAIN) {
+        /* Timeout occurred, just continue and try again */
+        continue;
+      }
       LOG_ERR("Error waiting for BLE command: %d", err);
       continue;
     }
@@ -405,9 +421,9 @@ static void ble_thread(void* arg1, void* arg2, void* arg3)
  * Creates and starts the BLE service thread with:
  * - Stack size defined by BLE_STACK_SIZE
  * - Priority defined by BLE_PRIORITY
- * - Immediate start (K_NO_WAIT)
+ * - Delayed start (500ms) to ensure system initialization is complete
  *
  * This thread runs independently of other system threads and
  * manages the entire BLE state machine.
  */
-K_THREAD_DEFINE(ble_thread_id, BLE_STACK_SIZE, ble_thread, NULL, NULL, NULL, BLE_PRIORITY, 0, 0);
+K_THREAD_DEFINE(ble_thread_id, BLE_STACK_SIZE, ble_thread, NULL, NULL, NULL, BLE_PRIORITY, 0, 500);

@@ -17,21 +17,18 @@ LOG_MODULE_REGISTER(audio_codec_module, LOG_LEVEL_INF);
  *
  * Handles audio codec operations directly
  */
-static void audio_codec_thread_fn(void* arg1, void* arg2, void* arg3)
+static void audio_codec_thread_fn(void)
 {
-  ARG_UNUSED(arg1);
-  ARG_UNUSED(arg2);
-  ARG_UNUSED(arg3);
-
+  LOG_INF("Audio codec thread started");
   int ret;
 
   /* Initialize codec hardware */
-  ret = adau1787_init();
-  if (ret == 0) {
-    LOG_INF("ADAU1787 codec initialized.");
-  } else {
-    LOG_ERR("ADAU1787 init failed: %d", ret);
-  }
+  // ret = adau1787_init();
+  // if (ret == 0) {
+  //   LOG_INF("ADAU1787 codec initialized.");
+  // } else {
+  //   LOG_ERR("ADAU1787 init failed: %d", ret);
+  // }
 
   /* Main thread loop */
   while (1) {
