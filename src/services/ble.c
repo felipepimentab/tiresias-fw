@@ -426,4 +426,4 @@ static void ble_thread(void* arg1, void* arg2, void* arg3)
  * This thread runs independently of other system threads and
  * manages the entire BLE state machine.
  */
-K_THREAD_DEFINE(ble_thread_id, BLE_STACK_SIZE, ble_thread, NULL, NULL, NULL, BLE_PRIORITY, 0, 500);
+K_THREAD_DEFINE(ble_thread_id, BLE_STACK_SIZE, ble_thread, NULL, NULL, NULL, BLE_PRIORITY, 0, 0);
