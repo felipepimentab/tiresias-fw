@@ -248,42 +248,38 @@ static void process_bluetooth_command(bluetooth_cmd cmd)
  */
 static void handle_state_off(bluetooth_cmd cmd)
 {
-  switch (cmd) {
-  case BLUETOOTH_CMD_INIT:
-    LOG_INF("Initializing Bluetooth");
-    set_bluetooth_state(BLUETOOTH_STATE_INITIALIZING);
-    /* Add actual initialization code here */
-    /* For now, simulate successful initialization */
-    set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
-    break;
-  default:
+  if (cmd != BLUETOOTH_CMD_INIT) {
     LOG_WRN("Command %d not valid in OFF state", cmd);
-    break;
+    return;
   }
+
+  LOG_INF("Initializing Bluetooth");
+  set_bluetooth_state(BLUETOOTH_STATE_INITIALIZING);
+  int ret = ble_init();
+  if (ret != 0) {
+    LOG_ERR("Failed to initialize Bluetooth: %d", ret);
+    set_bluetooth_state(BLUETOOTH_STATE_INIT_ERROR);
+    return;
+  }
+  set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
 }
 
-static void handle_state_initializing(bluetooth_cmd cmd)
-{
-  /* In a real implementation, most commands would be ignored during initialization */
-  LOG_WRN("Command %d ignored in INITIALIZING state", cmd);
-}
+static void handle_state_initializing(bluetooth_cmd cmd) { LOG_WRN("Command %d ignored in INITIALIZING state", cmd); }
 
 static void handle_state_not_connected(bluetooth_cmd cmd)
 {
-  switch (cmd) {
-  case BLUETOOTH_CMD_ADVERTISE:
-    LOG_INF("Starting advertising");
-    set_bluetooth_state(BLUETOOTH_STATE_ADVERTISING);
-    /* Add actual advertising code here */
-    break;
-  case BLUETOOTH_CMD_OFF:
-    LOG_INF("Turning Bluetooth off");
-    set_bluetooth_state(BLUETOOTH_STATE_OFF);
-    break;
-  default:
+  if (cmd != BLUETOOTH_CMD_ADVERTISE) {
     LOG_WRN("Command %d not valid in NOT_CONNECTED state", cmd);
-    break;
+    return;
   }
+
+  LOG_INF("Starting advertising");
+  int ret = ble_start_advertising();
+  if (ret != 0) {
+    LOG_ERR("Failed to start advertising: %d", ret);
+    return;
+  }
+  set_bluetooth_state(BLUETOOTH_STATE_ADVERTISING);
 }
 
 static void handle_state_advertising(bluetooth_cmd cmd)
