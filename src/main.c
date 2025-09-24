@@ -11,11 +11,10 @@
 #include <zephyr/zbus/zbus.h>
 
 #include "application/controller.h"
-#include "modules/connection.h"
-#include "modules/peripheral.h"
-#include "modules/storage.h"
-#include "services/audio_codec.h"
-#include "services/ble.h"
+#include "services/audio_codec/audio_codec.h"
+#include "services/bluetooth/ble.h"
+#include "system_modules/peripheral/peripheral.h"
+#include "system_modules/storage/storage.h"
 #include "version.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
@@ -33,7 +32,7 @@ int main(void)
 
   /* Wait for BLE thread to initialize before sending commands */
   k_sleep(K_MSEC(600));
-  
+
   /* Initialize BLE service */
   ret = ble_send_command(BLE_CMD_INIT, 100);
   if (ret != 0) {

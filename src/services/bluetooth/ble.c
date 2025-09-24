@@ -1,5 +1,5 @@
 #include "ble.h"
-#include "../modules/connection.h"
+#include "modules/connection/connection.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>

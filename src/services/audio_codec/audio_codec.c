@@ -1,6 +1,5 @@
 #include "audio_codec.h"
-#include "../drivers/adau1787.h"
-
+#include "drivers/adau1787.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
