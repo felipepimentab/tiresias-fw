@@ -11,8 +11,22 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 #define CONTROLLER_THREAD_STACK_SIZE 1024
 #define CONTROLLER_THREAD_PRIORITY 3
 
-/* ZBUS subscriber for button events */
-ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 4);
+/* ZBUS multi-channel observer */
+ZBUS_SUBSCRIBER_DEFINE(controller_sub, 4);
+
+/* Button event handler */
+static void btn_event_handler()
+{
+  btn_event_msg_t msg;
+
+  int err = zbus_chan_read(&btn_event_chan, &msg, K_MSEC(50));
+  if (err != 0) {
+    LOG_ERR("Failed to receive button event: %d", err);
+    return;
+  }
+
+  LOG_INF("Received button event: %d", msg.event);
+}
 
 /* === Controller Thread Function === */
 
@@ -25,19 +39,16 @@ static void controller_thread(void)
   const struct zbus_channel* chan;
   /* Main thread loop */
   while (1) {
-    int err = zbus_sub_wait(&btn_event_sub, &chan, K_FOREVER);
+    int err = zbus_sub_wait(&controller_sub, &chan, K_FOREVER);
     if (err != 0) {
-      LOG_ERR("Failed to wait for button event: %d", err);
+      LOG_ERR("Failed to wait for controller event: %d", err);
       continue;
     }
 
-    btn_event_msg_t msg;
-    err = zbus_chan_read(chan, &msg, K_MSEC(50));
-    if (err != 0) {
-      LOG_ERR("Failed to receive button event: %d", err);
+    if (chan == &btn_event_chan) {
+      btn_event_handler();
       continue;
     }
-    LOG_INF("Received button event: %d", msg.event);
   }
 }
 

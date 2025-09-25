@@ -27,6 +27,10 @@
 
 LOG_MODULE_REGISTER(peripheral_module, CONFIG_LOG_DEFAULT_LEVEL);
 
+/* ZBUS channel for button events */
+ZBUS_CHAN_DEFINE(btn_event_chan, btn_event_msg_t, NULL, NULL, ZBUS_OBSERVERS(controller_sub),
+    ZBUS_MSG_INIT(.event = BUTTON_1_PRESSED));
+
 /* === Device Tree Aliases === */
 /**
  * @brief Device Tree node aliases for buttons and LEDs
@@ -122,10 +126,6 @@ struct btn_debounce_work {
 typedef struct led_task_msg {
   enum peripheral_event_t event;
 } led_task_msg_t;
-
-/* ZBUS channel for button events */
-ZBUS_CHAN_DEFINE(btn_event_chan, struct btn_event_msg_t, NULL, NULL, ZBUS_OBSERVERS(btn_event_sub),
-    ZBUS_MSG_INIT(.event = BUTTON_1_PRESSED));
 
 /* ZBUS channel for LED tasks */
 ZBUS_CHAN_DEFINE(led_task_chan, struct led_task_msg, NULL, NULL, ZBUS_OBSERVERS(led_task_listener),

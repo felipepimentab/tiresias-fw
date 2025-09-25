@@ -20,6 +20,7 @@
 #define PERIPHERAL_H_
 
 #include <zephyr/kernel.h>
+#include <zephyr/zbus/zbus.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,6 +89,9 @@ typedef enum button_event_t {
 typedef struct btn_event_msg_t {
   enum button_event_t event;
 } btn_event_msg_t;
+
+/* ZBUS channel for button events */
+extern const struct zbus_channel btn_event_chan;
 
 /**
  * @brief Callback signature for button event handler
