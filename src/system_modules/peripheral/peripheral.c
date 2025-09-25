@@ -97,7 +97,7 @@ static struct gpio_callback btn1_cb, btn2_cb, btn3_cb, btn4_cb;
 /* === Work Queue === */
 struct peripheral_work_item {
   struct k_work work;
-  enum peripheral_event event;
+  enum peripheral_event_t event;
 };
 
 /* === LED Blink Work Items === */
@@ -113,20 +113,23 @@ struct led_blink_work {
 /* === Button Debounce Work Items === */
 struct btn_debounce_work {
   struct k_work_delayable dwork;
-  enum peripheral_event event;
+  enum peripheral_event_t event;
 };
 
 /* === ZBUS Configuration === */
 
 /* Message type for button events */
-struct btn_event_msg {
+typedef struct btn_event_msg {
   enum button_event_t event;
-};
+} btn_event_msg_t;
 
 /* Message type for LED tasks */
-struct led_task_msg {
-  enum peripheral_event event;
-};
+typedef struct led_task_msg {
+  enum peripheral_event_t event;
+} led_task_msg_t;
+
+/* ZBUS subscriber for button events */
+ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 4);
 
 /* ZBUS channel for button events */
 ZBUS_CHAN_DEFINE(btn_event_chan, struct btn_event_msg, NULL, NULL, ZBUS_OBSERVERS(btn_event_sub),
@@ -135,9 +138,6 @@ ZBUS_CHAN_DEFINE(btn_event_chan, struct btn_event_msg, NULL, NULL, ZBUS_OBSERVER
 /* ZBUS channel for LED tasks */
 ZBUS_CHAN_DEFINE(led_task_chan, struct led_task_msg, NULL, NULL, ZBUS_OBSERVERS(led_task_listener),
     ZBUS_MSG_INIT(.event = LED_1_BLINK));
-
-/* ZBUS subscriber for button events */
-ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 4);
 
 /* === Work Queue Configuration === */
 /**
@@ -179,8 +179,8 @@ static atomic_t btn_pressed[4];
 int peripheral_set_led(enum led_t led, led_state_t state);
 int peripheral_set_led_blink_async(
     enum led_t led, uint8_t count, uint16_t on_time_ms, uint16_t off_time_ms, led_state_t end_state);
-int peripheral_publish_led_task(enum peripheral_event event);
-static void enqueue_event(enum peripheral_event evt);
+int peripheral_publish_led_task(enum peripheral_event_t event);
+static void enqueue_event(enum peripheral_event_t evt);
 
 /**
  * @brief Listener callback function for LED task messages
@@ -221,7 +221,7 @@ ZBUS_LISTENER_DEFINE(led_task_listener, led_task_listener_callback);
 static void handle_event_work(struct k_work* work)
 {
   struct peripheral_work_item* item = CONTAINER_OF(work, struct peripheral_work_item, work);
-  enum peripheral_event evt = item->event;
+  enum peripheral_event_t evt = item->event;
 
   switch (evt) {
   case LED_1_ON:
@@ -316,7 +316,7 @@ static void handle_event_work(struct k_work* work)
  *
  * @param evt The peripheral event to enqueue for processing
  */
-static void enqueue_event(enum peripheral_event evt)
+static void enqueue_event(enum peripheral_event_t evt)
 {
   uint32_t idx = atomic_inc(&work_item_idx) % MAX_WORK_ITEMS;
   struct peripheral_work_item* item = &work_items[idx];
@@ -349,7 +349,7 @@ static void enqueue_event(enum peripheral_event evt)
 static void btn_debounce_handler(struct k_work* work)
 {
   struct btn_debounce_work* debounce_work = CONTAINER_OF(work, struct btn_debounce_work, dwork.work);
-  enum peripheral_event evt = debounce_work->event;
+  enum peripheral_event_t evt = debounce_work->event;
 
   // Determine which button this is for
   int btn_idx = -1;
@@ -395,7 +395,7 @@ static void btn_debounce_handler(struct k_work* work)
  *
  * @param evt The button event to schedule for debounce processing
  */
-static void schedule_debounce(enum peripheral_event evt)
+static void schedule_debounce(enum peripheral_event_t evt)
 {
   uint32_t idx = atomic_inc(&debounce_work_idx) % MAX_DEBOUNCE_WORKS;
   struct btn_debounce_work* debounce_work = &debounce_works[idx];
@@ -869,7 +869,7 @@ int peripheral_init(void)
  * @param event The peripheral event to publish (should be an LED-related event)
  * @return 0 on success, negative errno on failure
  */
-int peripheral_publish_led_task(enum peripheral_event event)
+int peripheral_publish_led_task(enum peripheral_event_t event)
 {
   struct led_task_msg msg = { .event = event };
 

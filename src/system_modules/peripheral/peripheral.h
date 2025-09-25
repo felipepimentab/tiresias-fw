@@ -38,12 +38,12 @@ extern "C" {
  * - LED_3: The third LED (typically labeled LED3 on the board)
  * - LED_4: The fourth LED (typically labeled LED4 on the board)
  */
-enum led_t {
+typedef enum led_t {
   LED_1, /**< First LED on the board */
   LED_2, /**< Second LED on the board */
   LED_3, /**< Third LED on the board */
   LED_4, /**< Fourth LED on the board */
-};
+} led_t;
 
 /**
  * @brief LED state values
@@ -56,7 +56,7 @@ enum led_t {
  * where LED_ON means the LED is illuminated and LED_OFF means it is not, regardless
  * of the underlying GPIO logic.
  */
-typedef enum {
+typedef enum led_state_t {
   LED_OFF = 1, /**< LED is turned off (not illuminated) */
   LED_ON = 0, /**< LED is turned on (illuminated) */
 } led_state_t;
@@ -77,12 +77,12 @@ typedef enum {
  * - BUTTON_3_PRESSED: Event when the third button (typically labeled SW3) is pressed
  * - BUTTON_4_PRESSED: Event when the fourth button (typically labeled SW4) is pressed
  */
-enum button_event_t {
+typedef enum button_event_t {
   BUTTON_1_PRESSED, /**< First button press event */
   BUTTON_2_PRESSED, /**< Second button press event */
   BUTTON_3_PRESSED, /**< Third button press event */
   BUTTON_4_PRESSED, /**< Fourth button press event */
-};
+} button_event_t;
 
 /**
  * @brief Callback signature for button event handler
@@ -130,7 +130,7 @@ typedef void (*btn_ext_handler_t)(enum button_event_t event);
  * by applications. Instead, use the public API functions and the button
  * event handler callback.
  */
-enum peripheral_event {
+typedef enum peripheral_event_t {
   LED_1_ON, /**< Turn on LED 1 */
   LED_1_OFF, /**< Turn off LED 1 */
   LED_1_BLINK, /**< Blink LED 1 */
@@ -147,7 +147,7 @@ enum peripheral_event {
   BTN_2, /**< Button 2 pressed event */
   BTN_3, /**< Button 3 pressed event */
   BTN_4, /**< Button 4 pressed event */
-};
+} peripheral_event_t;
 
 /**
  * @brief Initializes the peripheral module, including LEDs and buttons
@@ -268,7 +268,7 @@ int peripheral_set_led_blink_async(
  * @param event The peripheral event to publish (should be an LED-related event)
  * @return 0 on success, negative errno on failure
  */
-int peripheral_publish_led_task(enum peripheral_event event);
+int peripheral_publish_led_task(enum peripheral_event_t event);
 
 /* === For the nRF5340 Audio DK only === */
 #define BOARD_RED()                                                                                                    \
