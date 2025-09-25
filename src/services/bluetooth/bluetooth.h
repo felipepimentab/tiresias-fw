@@ -52,7 +52,7 @@
 /**
  * @brief Bluetooth states
  *
- * Defines all possibluetooth states of the Bluetooth service state machine.
+ * Defines all possible states of the Bluetooth service state machine.
  */
 typedef enum bluetooth_state {
   BLUETOOTH_STATE_OFF, /**< Bluetooth stack is powered off */

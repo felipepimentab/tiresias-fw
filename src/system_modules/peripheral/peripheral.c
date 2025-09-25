@@ -118,21 +118,13 @@ struct btn_debounce_work {
 
 /* === ZBUS Configuration === */
 
-/* Message type for button events */
-typedef struct btn_event_msg {
-  enum button_event_t event;
-} btn_event_msg_t;
-
 /* Message type for LED tasks */
 typedef struct led_task_msg {
   enum peripheral_event_t event;
 } led_task_msg_t;
 
-/* ZBUS subscriber for button events */
-ZBUS_SUBSCRIBER_DEFINE(btn_event_sub, 4);
-
 /* ZBUS channel for button events */
-ZBUS_CHAN_DEFINE(btn_event_chan, struct btn_event_msg, NULL, NULL, ZBUS_OBSERVERS(btn_event_sub),
+ZBUS_CHAN_DEFINE(btn_event_chan, struct btn_event_msg_t, NULL, NULL, ZBUS_OBSERVERS(btn_event_sub),
     ZBUS_MSG_INIT(.event = BUTTON_1_PRESSED));
 
 /* ZBUS channel for LED tasks */
@@ -264,7 +256,7 @@ static void handle_event_work(struct k_work* work)
     LOG_INF("Button 1 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
-      struct btn_event_msg msg = { .event = BUTTON_1_PRESSED };
+      btn_event_msg_t msg = { .event = BUTTON_1_PRESSED };
       zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
     }
     break;
@@ -272,7 +264,7 @@ static void handle_event_work(struct k_work* work)
     LOG_INF("Button 2 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
-      struct btn_event_msg msg = { .event = BUTTON_2_PRESSED };
+      btn_event_msg_t msg = { .event = BUTTON_2_PRESSED };
       zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
     }
     break;
@@ -280,7 +272,7 @@ static void handle_event_work(struct k_work* work)
     LOG_INF("Button 3 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
-      struct btn_event_msg msg = { .event = BUTTON_3_PRESSED };
+      btn_event_msg_t msg = { .event = BUTTON_3_PRESSED };
       zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
     }
     break;
@@ -288,7 +280,7 @@ static void handle_event_work(struct k_work* work)
     LOG_INF("Button 4 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
-      struct btn_event_msg msg = { .event = BUTTON_4_PRESSED };
+      btn_event_msg_t msg = { .event = BUTTON_4_PRESSED };
       zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
     }
     break;

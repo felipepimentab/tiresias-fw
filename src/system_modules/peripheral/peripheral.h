@@ -84,6 +84,11 @@ typedef enum button_event_t {
   BUTTON_4_PRESSED, /**< Fourth button press event */
 } button_event_t;
 
+/* Message type for button events */
+typedef struct btn_event_msg_t {
+  enum button_event_t event;
+} btn_event_msg_t;
+
 /**
  * @brief Callback signature for button event handler
  *
