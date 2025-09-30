@@ -374,32 +374,24 @@ static void bluetooth_thread(void* arg1, void* arg2, void* arg3)
   ARG_UNUSED(arg3);
 
   LOG_INF("Bluetooth thread started.");
-  int err;
+  int ret = 0;
   struct bluetooth_cmd_chan_msg msg;
 
-  /* Process messages from the command channel */
   while (1) {
     const struct zbus_channel* chan;
 
-    /* Use a timeout instead of waiting forever to prevent deadlock */
-    err = zbus_sub_wait(&bluetooth_cmd_sub, &chan, K_FOREVER);
-    if (err) {
-      if (err == -EAGAIN) {
-        /* Timeout occurred, just continue and try again */
-        continue;
-      }
-      LOG_ERR("Error waiting for Bluetooth command: %d", err);
+    ret = zbus_sub_wait(&bluetooth_cmd_sub, &chan, K_FOREVER);
+    if (ret != 0) {
+      LOG_ERR("Error waiting for Bluetooth command: %d", ret);
       continue;
     }
 
-    /* Read the message with appropriate timeout */
-    err = zbus_chan_read(chan, &msg, K_MSEC(0));
-    if (err) {
-      LOG_ERR("Error reading Bluetooth command: %d", err);
+    ret = zbus_chan_read(chan, &msg, K_MSEC(500));
+    if (ret != 0) {
+      LOG_ERR("Error reading Bluetooth command: %d", ret);
       continue;
     }
 
-    /* Process the command */
     bluetooth_state_machine(msg.cmd);
   }
 }

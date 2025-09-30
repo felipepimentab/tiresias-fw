@@ -10,15 +10,24 @@ LOG_MODULE_REGISTER(audio_codec_module, LOG_LEVEL_INF);
 #define AUDIO_CODEC_STACK_SIZE 2048 /* Stack size for codec thread */
 #define AUDIO_CODEC_PRIORITY 3 /* Thread priority */
 
-// ZBUS
+/* === Zbus Configuration === */
+/* Subscriber for Audio Codec commands channel */
 ZBUS_SUBSCRIBER_DEFINE(codec_cmd_sub, 4);
 
+/* Channel for Audio Codec state updates */
 ZBUS_CHAN_DEFINE(codec_state_chan, struct codec_state_chan_msg, NULL, NULL, ZBUS_OBSERVERS_EMPTY,
     ZBUS_MSG_INIT(.state = CODEC_STATE_OFF));
 
+/* Channel for Audio Codec commands */
 ZBUS_CHAN_DEFINE(codec_cmd_chan, struct codec_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(codec_cmd_sub),
     ZBUS_MSG_INIT(.cmd = CODEC_CMD_INIT));
 
+/**
+ * @brief Public API function to send commands to the Audio Codec service.
+ *
+ * @param cmd The command to send.
+ * @return int 0 on success, negative error code on failure.
+ */
 int codec_send_command(codec_cmd cmd)
 {
   struct codec_cmd_chan_msg msg;
@@ -33,9 +42,18 @@ int codec_send_command(codec_cmd cmd)
   return 0;
 }
 
-// State
+/* === State Management === */
+
+/**
+ * @brief Current codec state.
+ */
 static codec_state current_state = CODEC_STATE_OFF;
 
+/**
+ * @brief Set the codec state.
+ *
+ * @param state The new codec state.
+ */
 static void set_codec_state(codec_state state)
 {
   struct codec_state_chan_msg msg;
@@ -53,15 +71,28 @@ static void set_codec_state(codec_state state)
   }
 }
 
-// State Handlers
+/* === State Handlers === */
+
+/**
+ * @brief Handle codec command in state CODEC_STATE_OFF.
+ *
+ * @param cmd The command to handle.
+ */
 static void handle_state_off(codec_cmd cmd)
 {
   if (cmd != CODEC_CMD_INIT) {
     return;
   }
 
-  adau1787_init();
   set_codec_state(CODEC_STATE_INITIALIZING);
+  int ret = adau1787_init();
+  if (ret != 0) {
+    LOG_ERR("Failed to initialize ADAU1787 codec: %d", ret);
+    set_codec_state(CODEC_STATE_ERROR);
+    return;
+  }
+
+  set_codec_state(CODEC_STATE_IDLE);
 };
 
 static void handle_state_initializing(codec_cmd cmd)
@@ -83,7 +114,13 @@ static void handle_state_streaming(codec_cmd cmd)
   LOG_INF("Handling codec command %d in state %d", cmd, current_state);
 };
 
-// State Machine
+/* === State Machine === */
+
+/**
+ * @brief Audio codec state machine.
+ *
+ * @param cmd The command to handle.
+ */
 static void codec_state_machine(codec_cmd cmd)
 {
   switch (current_state) {
@@ -122,8 +159,8 @@ static void audio_codec_thread_fn(void)
 {
   LOG_INF("Audio codec thread started");
   int err;
+  struct codec_cmd_chan_msg msg;
 
-  /* Main thread loop */
   while (1) {
     const struct zbus_channel* chan;
 
@@ -133,13 +170,13 @@ static void audio_codec_thread_fn(void)
       continue;
     }
 
-    const struct codec_cmd_chan_msg* msg = zbus_chan_msg(chan);
-    if (msg == NULL) {
-      LOG_ERR("Failed to get codec command message");
+    err = zbus_chan_read(chan, &msg, K_MSEC(500));
+    if (err != 0) {
+      LOG_ERR("Failed to read codec command message: %d", err);
       continue;
     }
 
-    codec_state_machine(msg->cmd);
+    codec_state_machine(msg.cmd);
   }
 }
 
