@@ -19,6 +19,20 @@ ZBUS_CHAN_DEFINE(codec_state_chan, struct codec_state_chan_msg, NULL, NULL, ZBUS
 ZBUS_CHAN_DEFINE(codec_cmd_chan, struct codec_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(codec_cmd_sub),
     ZBUS_MSG_INIT(.cmd = CODEC_CMD_INIT));
 
+int codec_send_command(codec_cmd cmd)
+{
+  struct codec_cmd_chan_msg msg;
+  msg.cmd = cmd;
+
+  int err = zbus_chan_pub(&codec_cmd_chan, &msg, K_MSEC(100));
+  if (err != 0) {
+    LOG_ERR("Failed to publish codec command message: %d", err);
+    return err;
+  }
+
+  return 0;
+}
+
 // State
 static codec_state current_state = CODEC_STATE_OFF;
 
@@ -40,7 +54,15 @@ static void set_codec_state(codec_state state)
 }
 
 // State Handlers
-static void handle_state_off(codec_cmd cmd) { LOG_INF("Handling codec command %d in state %d", cmd, current_state); };
+static void handle_state_off(codec_cmd cmd)
+{
+  if (cmd != CODEC_CMD_INIT) {
+    return;
+  }
+
+  adau1787_init();
+  set_codec_state(CODEC_STATE_INITIALIZING);
+};
 
 static void handle_state_initializing(codec_cmd cmd)
 {

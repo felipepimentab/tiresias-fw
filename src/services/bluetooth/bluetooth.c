@@ -110,12 +110,12 @@ ZBUS_CHAN_DEFINE(bluetooth_cmd_chan, /* Name */
  *
  * @return 0 on success, negative error code on failure
  */
-int bluetooth_send_command(bluetooth_cmd cmd, uint32_t timeout_ms)
+int bluetooth_send_command(bluetooth_cmd cmd)
 {
   struct bluetooth_cmd_chan_msg msg;
   msg.cmd = cmd;
 
-  return zbus_chan_pub(&bluetooth_cmd_chan, &msg, K_MSEC(timeout_ms));
+  return zbus_chan_pub(&bluetooth_cmd_chan, &msg, K_MSEC(100));
 }
 
 /**

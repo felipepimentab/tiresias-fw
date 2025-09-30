@@ -112,10 +112,9 @@ typedef struct bluetooth_cmd_chan_msg {
  * interface for controlling the Bluetooth service from other modules.
  *
  * @param cmd The command to send to the Bluetooth service
- * @param timeout_ms Timeout in milliseconds for the publish operation
  *
  * @return 0 on success, negative error code on failure
  */
-int bluetooth_send_command(bluetooth_cmd cmd, uint32_t timeout_ms);
+int bluetooth_send_command(bluetooth_cmd cmd);
 
 #endif /* BLUETOOTH_H */

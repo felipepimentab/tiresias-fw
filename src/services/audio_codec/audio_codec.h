@@ -45,4 +45,6 @@ typedef struct codec_cmd_chan_msg {
 ZBUS_CHAN_DECLARE(codec_state_chan);
 ZBUS_CHAN_DECLARE(codec_cmd_chan);
 
+int codec_send_command(codec_cmd cmd);
+
 #endif /* AUDIO_CODEC_H */

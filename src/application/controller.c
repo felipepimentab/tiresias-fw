@@ -40,11 +40,21 @@ static void set_controller_state(controller_state state)
 static void handle_state_off(struct zbus_channel* chan)
 {
   LOG_WRN("******** Initializing ********");
-  int ret = bluetooth_send_command(BLUETOOTH_CMD_INIT, 100);
+  int ret = 0;
+
+  ret = bluetooth_send_command(BLUETOOTH_CMD_INIT);
   if (ret != 0) {
     LOG_ERR("Failed to send Bluetooth init command: %d", ret);
   }
+
+  ret = codec_send_command(CODEC_CMD_INIT);
+  if (ret != 0) {
+    LOG_ERR("Failed to send codec init command: %d", ret);
+  }
+
   zbus_chan_add_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(100));
+  zbus_chan_add_obs(&codec_state_chan, &controller_sub, K_MSEC(100));
+
   set_controller_state(CONTROLLER_STATE_INITIALIZING);
   BOARD_PURPLE();
 };
@@ -52,9 +62,12 @@ static void handle_state_off(struct zbus_channel* chan)
 static void handle_state_initializing(struct zbus_channel* chan)
 {
   bluetooth_state bt_state;
-  int err = zbus_chan_read(&bluetooth_state_chan, &bt_state, K_MSEC(100));
-  if (err != 0) {
-    LOG_ERR("Failed to read Bluetooth bt_state: %d", err);
+  codec_state cd_state;
+  int ret = 0;
+
+  ret = zbus_chan_read(&bluetooth_state_chan, &bt_state, K_MSEC(100));
+  if (ret != 0) {
+    LOG_ERR("Failed to read Bluetooth bt_state: %d", ret);
     return;
   }
 
@@ -70,7 +83,25 @@ static void handle_state_initializing(struct zbus_channel* chan)
     return;
   }
 
-  if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED) {
+  ret = zbus_chan_read(&codec_state_chan, &cd_state, K_MSEC(100));
+  if (ret != 0) {
+    LOG_ERR("Failed to read codec cd_state: %d", ret);
+    return;
+  }
+
+  if (cd_state == CODEC_STATE_INITIALIZING) {
+    LOG_WRN("Codec is initializing");
+    return;
+  }
+
+  if (cd_state == CODEC_STATE_ERROR) {
+    LOG_ERR("Codec initialization failed");
+    set_controller_state(CONTROLLER_STATE_ERROR);
+    zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(100));
+    return;
+  }
+
+  if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
     set_controller_state(CONTROLLER_STATE_IDLE);
     BOARD_BLUE();
     zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(100));
@@ -126,9 +157,9 @@ static void controller_thread(void)
   BOARD_WHITE();
   /* Main thread loop */
   while (1) {
-    int err = zbus_sub_wait(&controller_sub, &chan, K_FOREVER);
-    if (err != 0) {
-      LOG_ERR("Failed to wait for controller event: %d", err);
+    int ret = zbus_sub_wait(&controller_sub, &chan, K_FOREVER);
+    if (ret != 0) {
+      LOG_ERR("Failed to wait for controller event: %d", ret);
       continue;
     }
 
