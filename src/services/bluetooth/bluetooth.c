@@ -377,7 +377,7 @@ static void bluetooth_thread(void* arg1, void* arg2, void* arg3)
   ARG_UNUSED(arg2);
   ARG_UNUSED(arg3);
 
-  LOG_INF("Bluetooth thread started, waiting for commands");
+  LOG_INF("Bluetooth thread started.");
   int err;
   struct bluetooth_cmd_chan_msg msg;
 
