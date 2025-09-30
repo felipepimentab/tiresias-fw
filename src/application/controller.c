@@ -46,6 +46,7 @@ static void handle_state_off(struct zbus_channel* chan)
   }
   zbus_chan_add_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(100));
   set_controller_state(CONTROLLER_STATE_INITIALIZING);
+  BOARD_PURPLE();
 };
 
 static void handle_state_initializing(struct zbus_channel* chan)
@@ -71,6 +72,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
 
   if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED) {
     set_controller_state(CONTROLLER_STATE_IDLE);
+    BOARD_BLUE();
     zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(100));
     return;
   }
@@ -121,6 +123,7 @@ static void controller_thread(void)
 {
   LOG_INF("Controller thread started");
   struct zbus_channel* chan;
+  BOARD_WHITE();
   /* Main thread loop */
   while (1) {
     int err = zbus_sub_wait(&controller_sub, &chan, K_FOREVER);

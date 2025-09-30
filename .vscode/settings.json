@@ -36,7 +36,8 @@
       "controller.h": "c",
       "version.h": "c",
       "adau1787.h": "c",
-      "peripheral.h": "c"
+      "peripheral.h": "c",
+      "numbers": "c"
     },
     "editor.tabSize": 2,
     "C_Cpp.errorSquiggles": "disabled",

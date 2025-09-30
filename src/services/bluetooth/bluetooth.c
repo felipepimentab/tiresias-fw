@@ -5,26 +5,6 @@
 #include <zephyr/zbus/zbus.h>
 
 /**
- * @brief Send a command to the Bluetooth service
- *
- * This function publishes a command to the Bluetooth command channel,
- * which will be processed by the Bluetooth thread. It provides a simple
- * interface for controlling the Bluetooth service from other modules.
- *
- * @param cmd The command to send to the Bluetooth service
- * @param timeout_ms Timeout in milliseconds for the publish operation
- *
- * @return 0 on success, negative error code on failure
- */
-int bluetooth_send_command(bluetooth_cmd cmd, uint32_t timeout_ms)
-{
-  struct bluetooth_cmd_chan_msg msg;
-  msg.cmd = cmd;
-
-  return zbus_chan_pub(&bluetooth_cmd_chan, &msg, K_MSEC(timeout_ms));
-}
-
-/**
  * @file bluetooth.c
  * @brief Implementation of the Bluetooth service module
  *
@@ -108,15 +88,35 @@ ZBUS_CHAN_DEFINE(bluetooth_state_chan, /* Name */
  *
  * This channel receives commands for the Bluetooth service.
  * The Bluetooth thread subscribes to this channel programmatically during initialization.
- * It is initialized with BLUETOOTH_CMD_OFF as the default command.
+ * It is initialized with BLUETOOTH_CMD_INIT as the default command.
  */
 ZBUS_CHAN_DEFINE(bluetooth_cmd_chan, /* Name */
     bluetooth_cmd_chan_msg, /* Message type */
     NULL, /* Validator */
     NULL, /* User data */
     ZBUS_OBSERVERS(bluetooth_cmd_sub), /* Subscriber for Bluetooth commands */
-    ZBUS_MSG_INIT(.cmd = BLUETOOTH_CMD_OFF) /* Initial value */
+    ZBUS_MSG_INIT(.cmd = BLUETOOTH_CMD_INIT) /* Initial value */
 );
+
+/**
+ * @brief Send a command to the Bluetooth service
+ *
+ * This function publishes a command to the Bluetooth command channel,
+ * which will be processed by the Bluetooth thread. It provides a simple
+ * interface for controlling the Bluetooth service from other modules.
+ *
+ * @param cmd The command to send to the Bluetooth service
+ * @param timeout_ms Timeout in milliseconds for the publish operation
+ *
+ * @return 0 on success, negative error code on failure
+ */
+int bluetooth_send_command(bluetooth_cmd cmd, uint32_t timeout_ms)
+{
+  struct bluetooth_cmd_chan_msg msg;
+  msg.cmd = cmd;
+
+  return zbus_chan_pub(&bluetooth_cmd_chan, &msg, K_MSEC(timeout_ms));
+}
 
 /**
  * @brief Current Bluetooth State
@@ -170,8 +170,6 @@ static void set_bluetooth_state(bluetooth_state new_state)
   int err = zbus_chan_pub(&bluetooth_state_chan, &msg, K_MSEC(100));
   if (err) {
     LOG_ERR("Failed to publish Bluetooth state change: %d", err);
-  } else {
-    LOG_INF("Bluetooth state changed to: %d", new_state);
   }
 }
 
@@ -188,10 +186,8 @@ static void set_bluetooth_state(bluetooth_state new_state)
  *
  * @param cmd The Bluetooth command to process
  */
-static void process_bluetooth_command(bluetooth_cmd cmd)
+static void bluetooth_state_machine(bluetooth_cmd cmd)
 {
-  LOG_INF("Processing Bluetooth command: %d in state: %d", cmd, current_state);
-
   /* State machine implementation - routes commands to appropriate handler */
   switch (current_state) {
   case BLUETOOTH_STATE_OFF:
@@ -381,9 +377,6 @@ static void bluetooth_thread(void* arg1, void* arg2, void* arg3)
   int err;
   struct bluetooth_cmd_chan_msg msg;
 
-  /* Initialize Bluetooth state */
-  set_bluetooth_state(BLUETOOTH_STATE_OFF);
-
   /* Process messages from the command channel */
   while (1) {
     const struct zbus_channel* chan;
@@ -407,7 +400,7 @@ static void bluetooth_thread(void* arg1, void* arg2, void* arg3)
     }
 
     /* Process the command */
-    process_bluetooth_command(msg.cmd);
+    bluetooth_state_machine(msg.cmd);
   }
 }
 

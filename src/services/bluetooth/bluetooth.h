@@ -105,22 +105,6 @@ typedef struct bluetooth_cmd_chan_msg {
 } bluetooth_cmd_chan_msg;
 
 /**
- * @brief Bluetooth state channel declaration
- *
- * This channel broadcasts Bluetooth state changes to all subscribers.
- * Modules interested in Bluetooth state changes should subscribe to this channel.
- */
-ZBUS_CHAN_DECLARE(bluetooth_state_chan);
-
-/**
- * @brief Bluetooth command channel declaration
- *
- * This channel receives commands for the Bluetooth service.
- * Modules that need to control Bluetooth should publish to this channel.
- */
-ZBUS_CHAN_DECLARE(bluetooth_cmd_chan);
-
-/**
  * @brief Send a command to the Bluetooth service
  *
  * This function publishes a command to the Bluetooth command channel,
