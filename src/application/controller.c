@@ -13,7 +13,7 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 #define CONTROLLER_THREAD_STACK_SIZE 1024
 #define CONTROLLER_THREAD_PRIORITY 3
 
-/* ZBUS multi-channel observer */
+/* === ZBUS multi-channel observer === */
 ZBUS_SUBSCRIBER_DEFINE(controller_sub, 8);
 
 ZBUS_CHAN_DECLARE(btn_event_chan, bluetooth_state_chan);
@@ -79,6 +79,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
   if (bt_state == BLUETOOTH_STATE_INIT_ERROR) {
     LOG_ERR("Bluetooth initialization failed");
     set_controller_state(CONTROLLER_STATE_ERROR);
+    BOARD_RED();
     zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(100));
     return;
   }
@@ -97,6 +98,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
   if (cd_state == CODEC_STATE_ERROR) {
     LOG_ERR("Codec initialization failed");
     set_controller_state(CONTROLLER_STATE_ERROR);
+    BOARD_RED();
     zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(100));
     return;
   }
