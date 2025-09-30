@@ -18,7 +18,7 @@
 /* Audio codec state */
 typedef enum codec_state {
   CODEC_STATE_OFF,
-  CODEC_STATE_INIT,
+  CODEC_STATE_INITIALIZING,
   CODEC_STATE_IDLE,
   CODEC_STATE_ERROR,
   CODEC_STATE_STANDARD,

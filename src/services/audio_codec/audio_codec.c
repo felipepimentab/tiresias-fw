@@ -68,7 +68,7 @@ static void codec_state_machine(codec_cmd cmd)
   case CODEC_STATE_OFF:
     handle_state_off(cmd);
     break;
-  case CODEC_STATE_INIT:
+  case CODEC_STATE_INITIALIZING:
     handle_state_initializing(cmd);
     break;
   case CODEC_STATE_IDLE:
