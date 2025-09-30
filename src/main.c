@@ -29,19 +29,5 @@ int main(void)
     LOG_ERR("Failed to initialize peripheral module");
     return ret;
   }
-
-  /* Wait for Bluetooth thread to initialize before sending commands */
-  k_sleep(K_MSEC(600));
-
-  /* Initialize Bluetooth service */
-  ret = bluetooth_send_command(BLUETOOTH_CMD_INIT, 100);
-  if (ret != 0) {
-    LOG_ERR("Failed to initialize Bluetooth service: %d", ret);
-    BOARD_RED()
-    return ret;
-  }
-  LOG_INF("Bluetooth service initialization requested");
-  BOARD_BLUE()
-
   return 0;
 }
