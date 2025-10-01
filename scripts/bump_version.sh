@@ -55,17 +55,9 @@ sed -i "" "s/#define TIRESIAS_VERSION_STRING \"$CURRENT_VERSION\"/#define TIRESI
 # Update version badge in README.md
 sed -i "" "s/Version-[0-9]\+\.[0-9]\+\.[0-9]\+-blue/Version-$NEW_VERSION-blue/" "README.md"
 
-# Prepare CHANGELOG.md
-DATE=$(date +%Y-%m-%d)
-if ! grep -q "\[Unreleased\]" "CHANGELOG.md"; then
-  echo "Error: CHANGELOG.md does not contain an [Unreleased] section."
-  exit 1
-fi
-
-# Update CHANGELOG.md - replace [Unreleased] with the new version
-# macOS sed requires a different approach for inserting lines
-awk -v ver="## [$NEW_VERSION] - $DATE" '/## \[Unreleased\]/{print; print ""; print ver; next}1' "CHANGELOG.md" > "CHANGELOG.md.tmp" && mv "CHANGELOG.md.tmp" "CHANGELOG.md"
-
+git add .
+git commit -am "Bump version to $NEW_VERSION"
+git tag -a "v$NEW_VERSION" -m "Release version $NEW_VERSION"
+git push origin main
+git push origin "v$NEW_VERSION"
 echo "Version bumped to $NEW_VERSION"
-echo "Please review the changes and update the CHANGELOG.md with the appropriate details."
-echo "Then commit with: git commit -am 'Bump version to $NEW_VERSION'"
