@@ -15,12 +15,12 @@
  * PATCH version when you make backward compatible bug fixes
  */
 #define TIRESIAS_VERSION_MAJOR 0
-#define TIRESIAS_VERSION_MINOR 1
-#define TIRESIAS_VERSION_PATCH 2
+#define TIRESIAS_VERSION_MINOR 2
+#define TIRESIAS_VERSION_PATCH 0
 
 /**
  * @brief Version string in format MAJOR.MINOR.PATCH
  */
-#define TIRESIAS_VERSION_STRING "0.1.2"
+#define TIRESIAS_VERSION_STRING "0.2.0"
 
 #endif /* VERSION_H */
