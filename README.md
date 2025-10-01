@@ -58,6 +58,16 @@ Controller (Application)
     └── nvs (Zephyr Driver)
 ```
 
+### Initialization
+
+```sh
+# initialize tiresias-workspace for the tiresias-fw application (main branch)
+west init -m https://github.com/felipepimentab/tiresias-fw --mr main tiresias-workspace
+# update nRF Connect SDK modules
+cd tiresias-workspace
+west update
+```
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

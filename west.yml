@@ -1,0 +1,14 @@
+manifest:
+  self:
+    path: tiresias-fw
+  remotes:
+    - name: nrf
+      url-base: https://github.com/nrfconnect
+  projects:
+    - name: sdk-nrf
+      remote: nrf
+      path: nrf
+      revision: v3.0.1
+      import:
+        path-prefix: external
+      clone-depth: 1
