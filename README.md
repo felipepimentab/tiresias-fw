@@ -89,7 +89,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
   <tr>
     <td align="center">
       <a href="https://www.linkedin.com/in/felipepimentab/">
-        <img src="https://media.licdn.com/dms/image/v2/D4D03AQFyoYsj9tdKNQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1703206014313?e=1756339200&v=beta&t=gYEPW4J-IrkjDcsqruskhAkUTVabUPuZ1pHwwJ6uOlA" width="100px;" alt="Felipe Pimenta Bernardo on LinkedIn"/><br>
+        <img src="https://github.com/felipepimentab.png" width="100px;" alt="Felipe Pimenta Bernardo on GitHub"/><br>
         <sub>
           <b>Felipe Pimenta Bernardo</b>
         </sub>
@@ -97,7 +97,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
     </td>
     <td align="center">
       <a href="https://www.linkedin.com/in/joaocolombari/">
-        <img src="https://media.licdn.com/dms/image/v2/D4D03AQFD-hNZ1GKuXA/profile-displayphoto-shrink_800_800/B4DZcw9ykIGUAc-/0/1748873194277?e=1756339200&v=beta&t=uSvDTtqZZkaMX_0TsrSo-0BUP34ut-sS3rHq8DOgfv8" width="100px;" alt="João Colombari on LinkedIn"/><br>
+        <img src="https://github.com/joaocolombari.png" width="100px;" alt="João Colombari on GitHub"/><br>
         <sub>
           <b>João Victor Colombari</b>
         </sub>
@@ -105,7 +105,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
     </td>
     <td align="center">
       <a href="https://www.linkedin.com/in/bruno-henriques-321b16121/">
-        <img src="https://media.licdn.com/dms/image/v2/C5103AQEXMdFo89PoXQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1517004559859?e=1756339200&v=beta&t=kJyiXqvCFNW-FvnJttJnG9dII_PskhOtZMhaRQ7jNV4" width="100px;" alt="Bruno Henriques on LinkedIn"/><br>
+        <img src="https://github.com/brunochenriques.png" width="100px;" alt="Bruno Henriques on GitHub"/><br>
         <sub>
           <b>Bruno Henriques</b>
         </sub>
@@ -113,79 +113,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
     </td>
   </tr>
 </table>
-
-## ✅ Tasks
-
-The following tasks show our progress and future development plans:
-
-### Completed
-
-- [x] **Implement Core Architecture**: Set up the foundational system architecture
-  - [x] Create modular thread-based design
-  - [x] Implement message passing between modules
-  - [x] Set up build system and project structure
-
-- [x] **Implement Storage Module**: Create persistent storage for user settings
-  - [x] Implement NVS-based storage service
-  - [x] Add volume persistence functionality
-  - [x] Create thread-safe asynchronous API
-
-- [x] **Implement Peripheral Module**: Add support for buttons and LEDs
-  - [x] Create button event handling with callbacks
-  - [x] Implement LED control functionality
-  - [x] Add thread-safe API for peripheral access
-
-### In Progress
-
-- [ ] **Implement ADAU1787 Driver**: Create driver for the audio codec
-  - [x] Implement I2C communication with the codec
-  - [X] Add startup (boot) sequence
-  - [x] Add register read/write functionality
-  - [ ] Implement Safeload write operations
-  - [ ] Implement SigmaDSP parameter loading
-
-- [ ] **Implement I2S Control**: Set up audio data transfer
-  - [ ] Configure I2S interface for stereo audio
-  - [ ] Implement block-based audio transfer
-  - [ ] Set up proper audio parameters (44.1kHz, 16-bit)
-
-- [ ] **Implement Bluetooth Service**: Add BLE functionality for wireless control of the hearing aid
-  - [ ] Configure Bluetooth in prj.conf
-  - [ ] Create BLE service module with custom hearing aid profile
-  - [ ] Implement secure pairing and bonding
-  - [ ] Integrate with controller for command routing
-
-- [ ] **Complete Audio Codec Functionality**: Finish the implementation of core audio features
-  - [ ] Implement volume control via I2C
-  - [ ] Add mute/unmute functionality
-  - [ ] Create different audio processing programs/presets
-
-- [ ] **Add Power Management**: Optimize for battery-powered operation
-  - [ ] Implement sleep modes when audio processing is not needed
-  - [ ] Add battery monitoring and low-battery alerts
-  - [ ] Optimize BLE connection parameters for power efficiency
-
-- [ ] **Enhance User Interaction**: Improve the user experience
-  - [ ] Map button functions to hearing aid-specific controls
-  - [ ] Add LED indicators for device status
-  - [ ] Implement user feedback mechanisms
-
-- [ ] **Implement Adaptive Features**: Add environment-aware functionality
-  - [ ] Develop noise detection and classification
-  - [ ] Create automatic program selection based on environment
-  - [ ] Implement adaptive gain control
-
-## 📦 Versioning and Releases
-
-This project follows [Semantic Versioning](https://semver.org/) with the format `MAJOR.MINOR.PATCH`:
-
-- **MAJOR**: Incremented for incompatible API changes
-- **MINOR**: Incremented for backward-compatible functionality additions
-- **PATCH**: Incremented for backward-compatible bug fixes
-
-For more details on our versioning and release process, see [VERSIONING.md](VERSIONING.md).
-
-All notable changes to the project are documented in the [CHANGELOG.md](CHANGELOG.md) file.
 
 ## 🤝 Contributing
 
