@@ -60,10 +60,15 @@ Controller (Application)
 
 ### Initialization
 
+Initialize a new workspace for the Tiresias Firmware project:
+
 ```sh
-# initialize tiresias-workspace for the tiresias-fw application (main branch)
 west init -m https://github.com/felipepimentab/tiresias-fw --mr main tiresias-workspace
-# update nRF Connect SDK modules
+```
+
+Update the project's modules:
+
+```sh
 cd tiresias-workspace
 west update
 ```
