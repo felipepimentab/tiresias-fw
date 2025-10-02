@@ -26,6 +26,17 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 #define CONTROLLER_THREAD_PRIORITY 3
 #define ZBUS_TIMEOUT_MS 100
 
+/* === Error checker for controller === */
+#define CONTROLLER_CHECK_ERROR(ret, msg)                                                                               \
+  do {                                                                                                                 \
+    if (ret != 0) {                                                                                                    \
+      LOG_ERR(msg " :%d", ret);                                                                                        \
+      set_controller_state(CONTROLLER_STATE_ERROR);                                                                    \
+      BOARD_RED();                                                                                                     \
+      return;                                                                                                          \
+    }                                                                                                                  \
+  } while (0)
+
 /* === ZBUS Communication Setup === */
 ZBUS_SUBSCRIBER_DEFINE(controller_sub, 8);
 ZBUS_CHAN_DECLARE(btn_event_chan, bluetooth_state_chan, codec_state_chan);
@@ -95,38 +106,18 @@ static void handle_state_off(struct zbus_channel* chan)
 
   /* Initialize Bluetooth service */
   ret = bluetooth_send_command(BLUETOOTH_CMD_INIT);
-  if (ret != 0) {
-    LOG_ERR("Failed to send Bluetooth init command: %d", ret);
-    set_controller_state(CONTROLLER_STATE_ERROR);
-    BOARD_RED();
-    return;
-  }
+  CONTROLLER_CHECK_ERROR(ret, "Failed to send Bluetooth init command");
 
   /* Initialize audio codec service */
   ret = codec_send_command(CODEC_CMD_INIT);
-  if (ret != 0) {
-    LOG_ERR("Failed to send codec init command: %d", ret);
-    set_controller_state(CONTROLLER_STATE_ERROR);
-    BOARD_RED();
-    return;
-  }
+  CONTROLLER_CHECK_ERROR(ret, "Failed to send codec init command");
 
   /* Subscribe to service state channels */
   ret = zbus_chan_add_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
-  if (ret != 0) {
-    LOG_ERR("Failed to subscribe to Bluetooth state channel: %d", ret);
-    set_controller_state(CONTROLLER_STATE_ERROR);
-    BOARD_RED();
-    return;
-  }
+  CONTROLLER_CHECK_ERROR(ret, "Failed to subscribe to Bluetooth state channel");
 
   ret = zbus_chan_add_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
-  if (ret != 0) {
-    LOG_ERR("Failed to subscribe to codec state channel: %d", ret);
-    set_controller_state(CONTROLLER_STATE_ERROR);
-    BOARD_RED();
-    return;
-  }
+  CONTROLLER_CHECK_ERROR(ret, "Failed to subscribe to codec state channel");
 
   /* Transition to initializing state */
   set_controller_state(CONTROLLER_STATE_INITIALIZING);
@@ -150,10 +141,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
 
   /* Read Bluetooth service state */
   ret = zbus_chan_read(&bluetooth_state_chan, &bt_state, K_MSEC(ZBUS_TIMEOUT_MS));
-  if (ret != 0) {
-    LOG_ERR("Failed to read Bluetooth state: %d", ret);
-    return;
-  }
+  CONTROLLER_CHECK_ERROR(ret, "Failed to read Bluetooth state");
 
   /* Check if Bluetooth is still initializing */
   if (bt_state == BLUETOOTH_STATE_INITIALIZING) {
@@ -173,10 +161,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
 
   /* Read audio codec service state */
   ret = zbus_chan_read(&codec_state_chan, &cd_state, K_MSEC(ZBUS_TIMEOUT_MS));
-  if (ret != 0) {
-    LOG_ERR("Failed to read codec state: %d", ret);
-    return;
-  }
+  CONTROLLER_CHECK_ERROR(ret, "Failed to read codec state");
 
   /* Check if codec is still initializing */
   if (cd_state == CODEC_STATE_INITIALIZING) {
@@ -225,20 +210,14 @@ static void handle_state_idle(struct zbus_channel* chan)
     button_event_t btn_event;
 
     ret = zbus_chan_read(chan, &btn_event, K_MSEC(ZBUS_TIMEOUT_MS));
-    if (ret != 0) {
-      LOG_ERR("Failed to read button event: %d", ret);
-      return;
-    }
+    CONTROLLER_CHECK_ERROR(ret, "Failed to read button event");
 
     LOG_INF("Button event received: %d", btn_event);
 
     /* Handle button 3 press - start advertising */
     if (btn_event == BUTTON_3_PRESSED) {
       ret = bluetooth_send_command(BLUETOOTH_CMD_ADVERTISE);
-      if (ret != 0) {
-        LOG_ERR("Failed to send Bluetooth advertise command: %d", ret);
-        return;
-      }
+      CONTROLLER_CHECK_ERROR(ret, "Failed to send Bluetooth advertise command");
 
       LOG_INF("Starting Bluetooth advertising");
       BOARD_PURPLE();
