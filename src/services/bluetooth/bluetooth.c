@@ -249,7 +249,7 @@ static void handle_state_off(bluetooth_cmd cmd)
     return;
   }
 
-  LOG_INF("Initializing Bluetooth");
+  LOG_DBG("Initializing Bluetooth");
   set_bluetooth_state(BLUETOOTH_STATE_INITIALIZING);
   int ret = ble_init();
   if (ret != 0) {
@@ -269,7 +269,7 @@ static void handle_state_not_connected(bluetooth_cmd cmd)
     return;
   }
 
-  LOG_INF("Starting advertising");
+  LOG_DBG("Starting advertising");
   int ret = ble_start_advertising();
   if (ret != 0) {
     LOG_ERR("Failed to start advertising: %d", ret);
@@ -282,12 +282,12 @@ static void handle_state_advertising(bluetooth_cmd cmd)
 {
   switch (cmd) {
   case BLUETOOTH_CMD_CONNECT:
-    LOG_INF("Connection requested while advertising");
+    LOG_DBG("Connection requested while advertising");
     set_bluetooth_state(BLUETOOTH_STATE_CONNECTING);
     break;
   case BLUETOOTH_CMD_DISCONNECT:
   case BLUETOOTH_CMD_OFF:
-    LOG_INF("Stopping advertising");
+    LOG_DBG("Stopping advertising");
     set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
     break;
   default:
@@ -300,7 +300,7 @@ static void handle_state_connecting(bluetooth_cmd cmd)
 {
   switch (cmd) {
   case BLUETOOTH_CMD_DISCONNECT:
-    LOG_INF("Cancelling connection attempt");
+    LOG_DBG("Cancelling connection attempt");
     set_bluetooth_state(BLUETOOTH_STATE_DISCONNECTING);
     set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
     break;
@@ -315,7 +315,7 @@ static void handle_state_connected(bluetooth_cmd cmd)
 {
   switch (cmd) {
   case BLUETOOTH_CMD_DISCONNECT:
-    LOG_INF("Disconnecting from connected state");
+    LOG_DBG("Disconnecting from connected state");
     set_bluetooth_state(BLUETOOTH_STATE_DISCONNECTING);
     /* Add actual disconnection code here */
     set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
@@ -373,7 +373,7 @@ static void bluetooth_thread(void* arg1, void* arg2, void* arg3)
   ARG_UNUSED(arg2);
   ARG_UNUSED(arg3);
 
-  LOG_INF("Bluetooth thread started.");
+  LOG_DBG("Bluetooth thread started.");
   int ret = 0;
   struct bluetooth_cmd_chan_msg msg;
 

@@ -102,21 +102,21 @@ static void handle_state_off(codec_cmd cmd)
 
 static void handle_state_initializing(codec_cmd cmd)
 {
-  LOG_INF("Handling codec command %d in state %d", cmd, current_state);
+  LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
 };
 
-static void handle_state_idle(codec_cmd cmd) { LOG_INF("Handling codec command %d in state %d", cmd, current_state); };
+static void handle_state_idle(codec_cmd cmd) { LOG_DBG("Handling codec command %d in state %d", cmd, current_state); };
 
-static void handle_state_error(codec_cmd cmd) { LOG_INF("Handling codec command %d in state %d", cmd, current_state); };
+static void handle_state_error(codec_cmd cmd) { LOG_DBG("Handling codec command %d in state %d", cmd, current_state); };
 
 static void handle_state_standard(codec_cmd cmd)
 {
-  LOG_INF("Handling codec command %d in state %d", cmd, current_state);
+  LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
 };
 
 static void handle_state_streaming(codec_cmd cmd)
 {
-  LOG_INF("Handling codec command %d in state %d", cmd, current_state);
+  LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
 };
 
 /* === State Machine === */
@@ -162,7 +162,7 @@ static void codec_state_machine(codec_cmd cmd)
  */
 static void audio_codec_thread_fn(void)
 {
-  LOG_INF("Audio codec thread started");
+  LOG_DBG("Audio codec thread started");
   int ret = 0;
   struct codec_cmd_chan_msg msg;
 

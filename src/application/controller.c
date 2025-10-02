@@ -154,7 +154,7 @@ static void controller_state_machine(struct zbus_channel* chan)
  */
 static void controller_thread(void)
 {
-  LOG_INF("Controller thread started");
+  LOG_DBG("Controller thread started");
   struct zbus_channel* chan;
   BOARD_WHITE();
   /* Main thread loop */

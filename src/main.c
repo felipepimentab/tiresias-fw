@@ -23,7 +23,7 @@ LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 int main(void)
 {
   int ret = 0;
-  LOG_DBG("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
+  LOG_INF("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
 
   ret = peripheral_init();
   ERR_CHK_MSG(ret, "Failed to initialize peripheral module");

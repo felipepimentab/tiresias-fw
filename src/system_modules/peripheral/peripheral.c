@@ -253,7 +253,7 @@ static void handle_event_work(struct k_work* work)
     peripheral_set_led_blink_async(LED_4, 1, 500, 500, LED_OFF);
     break;
   case BTN_1:
-    LOG_INF("Button 1 pressed! (internal)");
+    LOG_DBG("Button 1 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
       btn_event_msg_t msg = { .event = BUTTON_1_PRESSED };
@@ -261,7 +261,7 @@ static void handle_event_work(struct k_work* work)
     }
     break;
   case BTN_2:
-    LOG_INF("Button 2 pressed! (internal)");
+    LOG_DBG("Button 2 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
       btn_event_msg_t msg = { .event = BUTTON_2_PRESSED };
@@ -269,7 +269,7 @@ static void handle_event_work(struct k_work* work)
     }
     break;
   case BTN_3:
-    LOG_INF("Button 3 pressed! (internal)");
+    LOG_DBG("Button 3 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
       btn_event_msg_t msg = { .event = BUTTON_3_PRESSED };
@@ -277,7 +277,7 @@ static void handle_event_work(struct k_work* work)
     }
     break;
   case BTN_4:
-    LOG_INF("Button 4 pressed! (internal)");
+    LOG_DBG("Button 4 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
       btn_event_msg_t msg = { .event = BUTTON_4_PRESSED };
@@ -845,7 +845,7 @@ int peripheral_init(void)
     return ret;
   }
 
-  LOG_INF("Peripheral module initialized with work queue");
+  LOG_DBG("Peripheral module initialized with work queue");
   return 0;
 }
 
