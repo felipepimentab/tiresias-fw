@@ -34,12 +34,13 @@ static void set_controller_state(controller_state state)
     return;
   }
 
+  LOG_INF("Setting controller state to %d", state);
+
   current_state = state;
 }
 
 static void handle_state_off(struct zbus_channel* chan)
 {
-  LOG_WRN("******** Initializing ********");
   int ret = 0;
 
   ret = bluetooth_send_command(BLUETOOTH_CMD_INIT);
@@ -56,7 +57,7 @@ static void handle_state_off(struct zbus_channel* chan)
   zbus_chan_add_obs(&codec_state_chan, &controller_sub, K_MSEC(100));
 
   set_controller_state(CONTROLLER_STATE_INITIALIZING);
-  BOARD_PURPLE();
+  BOARD_YELLOW();
 };
 
 static void handle_state_initializing(struct zbus_channel* chan)
@@ -103,6 +104,9 @@ static void handle_state_initializing(struct zbus_channel* chan)
     return;
   }
 
+  LOG_INF("Codec state: %d", cd_state);
+  LOG_INF("Bluetooth state: %d", bt_state);
+
   if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
     set_controller_state(CONTROLLER_STATE_IDLE);
     BOARD_BLUE();
@@ -111,7 +115,26 @@ static void handle_state_initializing(struct zbus_channel* chan)
   }
 };
 
-static void handle_state_idle(struct zbus_channel* chan) { };
+static void handle_state_idle(struct zbus_channel* chan)
+{
+  int ret = 0;
+  if (chan == &btn_event_chan) {
+    button_event_t btn_event;
+    ret = zbus_chan_read(chan, &btn_event, K_MSEC(100));
+    if (ret != 0) {
+      LOG_ERR("Failed to read btn_event: %d", ret);
+      return;
+    }
+
+    LOG_INF("Button event: %d", btn_event);
+
+    if (btn_event == BUTTON_3_PRESSED) {
+      bluetooth_send_command(BLUETOOTH_CMD_ADVERTISE);
+      BOARD_PURPLE();
+      return;
+    }
+  }
+};
 static void handle_state_low_power(struct zbus_channel* chan) { };
 static void handle_state_std_op(struct zbus_channel* chan) { };
 static void handle_state_error(struct zbus_channel* chan) { };

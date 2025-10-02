@@ -281,6 +281,13 @@ static void handle_state_not_connected(bluetooth_cmd cmd)
 static void handle_state_advertising(bluetooth_cmd cmd)
 {
   switch (cmd) {
+  case BLUETOOTH_CMD_ADVERTISE:
+    int ret = ble_stop_advertising();
+    if (ret != 0) {
+      LOG_ERR("Failed to stop advertising: %d", ret);
+      return;
+    }
+    break;
   case BLUETOOTH_CMD_CONNECT:
     LOG_DBG("Connection requested while advertising");
     set_bluetooth_state(BLUETOOTH_STATE_CONNECTING);

@@ -185,8 +185,6 @@ static void audio_codec_thread_fn(void)
   }
 }
 
-#if !CONFIG_NO_AUDIO_CODEC
 /* Define and automatically start the thread at boot time */
 K_THREAD_DEFINE(
     audio_codec_thread, AUDIO_CODEC_STACK_SIZE, audio_codec_thread_fn, NULL, NULL, NULL, AUDIO_CODEC_PRIORITY, 0, 0);
-#endif
