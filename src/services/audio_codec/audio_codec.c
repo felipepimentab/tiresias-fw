@@ -1,4 +1,5 @@
 #include "audio_codec.h"
+#include "../utils/macros_common.h"
 #include "drivers/adau1787.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -83,14 +84,18 @@ static void handle_state_off(codec_cmd cmd)
   if (cmd != CODEC_CMD_INIT) {
     return;
   }
+  int ret = 0;
 
   set_codec_state(CODEC_STATE_INITIALIZING);
-  int ret = adau1787_init();
+
+#if CONFIG_ADAU1787
+  ret = adau1787_init();
   if (ret != 0) {
     LOG_ERR("Failed to initialize ADAU1787 codec: %d", ret);
     set_codec_state(CODEC_STATE_ERROR);
     return;
   }
+#endif
 
   set_codec_state(CODEC_STATE_IDLE);
 };
@@ -158,21 +163,21 @@ static void codec_state_machine(codec_cmd cmd)
 static void audio_codec_thread_fn(void)
 {
   LOG_INF("Audio codec thread started");
-  int err;
+  int ret = 0;
   struct codec_cmd_chan_msg msg;
 
   while (1) {
     const struct zbus_channel* chan;
 
-    err = zbus_sub_wait(&codec_cmd_sub, &chan, K_FOREVER);
-    if (err != 0) {
-      LOG_ERR("Failed to wait for codec command: %d", err);
+    ret = zbus_sub_wait(&codec_cmd_sub, &chan, K_FOREVER);
+    if (ret != 0) {
+      LOG_ERR("Failed to wait for codec command: %d", ret);
       continue;
     }
 
-    err = zbus_chan_read(chan, &msg, K_MSEC(500));
-    if (err != 0) {
-      LOG_ERR("Failed to read codec command message: %d", err);
+    ret = zbus_chan_read(chan, &msg, K_MSEC(500));
+    if (ret != 0) {
+      LOG_ERR("Failed to read codec command message: %d", ret);
       continue;
     }
 
@@ -180,6 +185,8 @@ static void audio_codec_thread_fn(void)
   }
 }
 
+#if !CONFIG_NO_AUDIO_CODEC
 /* Define and automatically start the thread at boot time */
 K_THREAD_DEFINE(
     audio_codec_thread, AUDIO_CODEC_STACK_SIZE, audio_codec_thread_fn, NULL, NULL, NULL, AUDIO_CODEC_PRIORITY, 0, 0);
+#endif

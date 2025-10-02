@@ -1,0 +1,68 @@
+# Main Kconfig file for Tiresias Firmware
+
+menu "Tiresias"
+
+# Controller thread
+config TIRESIAS_CONTROLLER_THREAD_PRIORITY
+  int "Controller thread priority"
+  default 3
+  help
+    Priority of the controller thread.
+
+config TIRESIAS_CONTROLLER_THREAD_STACK_SIZE
+  int "Controller thread stack size"
+  default 2048
+  help
+    Stack size of the controller thread in bytes.
+
+# Audio Codec thread
+config TIRESIAS_AUDIO_CODEC_THREAD_PRIORITY
+  int "Audio Codec thread priority"
+  default 4
+  help
+    Priority of the Audio Codec thread.
+
+config TIRESIAS_AUDIO_CODEC_THREAD_STACK_SIZE
+  int "Audio Codec thread stack size"
+  default 1024
+  help
+    Stack size of the Audio Codec thread in bytes.
+
+#Bluetooth thread
+config TIRESIAS_BLUETOOTH_THREAD_PRIORITY
+  int "Bluetooth thread priority"
+  default 5
+  help
+    Priority of the Bluetooth thread.
+
+config TIRESIAS_BLUETOOTH_THREAD_STACK_SIZE
+  int "Bluetooth thread stack size"
+  default 2048
+  help
+    Stack size of the Bluetooth thread in bytes.
+
+choice AUDIO_CODEC
+	prompt "Choose which audio codec is connected to the board"
+	default ADAU1787
+
+config NO_AUDIO_CODEC
+	bool "No audio codec connected"
+  help
+     No audio codec enabled.
+
+config ADAU1787
+	bool "ADAU1787"
+  help
+     ADAU1787 audio codec enabled.
+
+config CS47L63
+	bool "CS47L63"
+  help
+     CS47L63 audio codec enabled.
+
+endchoice
+
+endmenu # Tiresias
+
+# Include Zephyr's Kconfig
+source "Kconfig.zephyr"

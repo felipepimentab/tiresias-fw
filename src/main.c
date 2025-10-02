@@ -15,19 +15,18 @@
 #include "services/bluetooth/bluetooth.h"
 #include "system_modules/peripheral/peripheral.h"
 #include "system_modules/storage/storage.h"
+#include "utils/macros_common.h"
 #include "version.h"
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 
 int main(void)
 {
-  LOG_INF("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
   int ret = 0;
+  LOG_DBG("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
 
   ret = peripheral_init();
-  if (ret != 0) {
-    LOG_ERR("Failed to initialize peripheral module");
-    return ret;
-  }
-  return 0;
+  ERR_CHK_MSG(ret, "Failed to initialize peripheral module");
+
+  return ret;
 }
