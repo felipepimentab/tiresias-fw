@@ -1,4 +1,5 @@
 #include "bluetooth.h"
+#include "../system_modules/peripheral/peripheral.h"
 #include "modules/connection/connection.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -226,6 +227,18 @@ static void bluetooth_state_machine(bluetooth_cmd cmd)
   }
 }
 
+void ble_connected_cb(void)
+{
+  set_bluetooth_state(BLUETOOTH_STATE_CONNECTED);
+  BOARD_GREEN();
+}
+
+void ble_disconnected_cb(void)
+{
+  set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
+  BOARD_WHITE();
+}
+
 /**
  * @brief State Handler Implementations
  *
@@ -251,7 +264,7 @@ static void handle_state_off(bluetooth_cmd cmd)
 
   LOG_DBG("Initializing Bluetooth");
   set_bluetooth_state(BLUETOOTH_STATE_INITIALIZING);
-  int ret = ble_init();
+  int ret = ble_init(ble_connected_cb, ble_disconnected_cb);
   if (ret != 0) {
     LOG_ERR("Failed to initialize Bluetooth: %d", ret);
     set_bluetooth_state(BLUETOOTH_STATE_INIT_ERROR);
@@ -280,27 +293,16 @@ static void handle_state_not_connected(bluetooth_cmd cmd)
 
 static void handle_state_advertising(bluetooth_cmd cmd)
 {
-  switch (cmd) {
-  case BLUETOOTH_CMD_ADVERTISE:
-    int ret = ble_stop_advertising();
-    if (ret != 0) {
-      LOG_ERR("Failed to stop advertising: %d", ret);
-      return;
-    }
-    break;
-  case BLUETOOTH_CMD_CONNECT:
-    LOG_DBG("Connection requested while advertising");
-    set_bluetooth_state(BLUETOOTH_STATE_CONNECTING);
-    break;
-  case BLUETOOTH_CMD_DISCONNECT:
-  case BLUETOOTH_CMD_OFF:
-    LOG_DBG("Stopping advertising");
-    set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
-    break;
-  default:
+  if (cmd != BLUETOOTH_CMD_ADVERTISE) {
     LOG_WRN("Command %d not valid in ADVERTISING state", cmd);
-    break;
   }
+
+  int ret = ble_stop_advertising();
+  if (ret != 0) {
+    LOG_ERR("Failed to stop advertising: %d", ret);
+    return;
+  }
+  set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
 }
 
 static void handle_state_connecting(bluetooth_cmd cmd)

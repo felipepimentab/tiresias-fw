@@ -28,5 +28,8 @@ int main(void)
   ret = peripheral_init();
   ERR_CHK_MSG(ret, "Failed to initialize peripheral module");
 
+  ret = controller_init();
+  ERR_CHK_MSG(ret, "Failed to initialize controller module");
+
   return ret;
 }

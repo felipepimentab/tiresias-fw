@@ -58,6 +58,16 @@ LOG_MODULE_REGISTER(connection, CONFIG_LOG_DEFAULT_LEVEL);
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
 /**
+ * @brief Storage for external callback functions
+ *
+ * These static variables store the callback functions provided during initialization.
+ * They are used by the internal callback functions to delegate event handling
+ * to the external modules.
+ */
+static ble_connected_cb_t external_connected_cb = NULL;
+static ble_disconnected_cb_t external_disconnected_cb = NULL;
+
+/**
  * @brief Advertising parameters configuration
  *
  * Configures the BLE advertising with carefully selected parameters optimized for
@@ -122,11 +132,10 @@ static const struct bt_data sd[] = {
 };
 
 /**
- * @brief Callback for BLE connection events
+ * @brief Internal callback for BLE connection events
  *
  * This function is called when a BLE connection is established with a central device.
- * It logs the connection status and can be extended to perform additional actions
- * when a connection is established.
+ * It logs the connection status and delegates to the external callback if provided.
  *
  * @param conn Pointer to the connection object representing the new connection
  * @param err Error code (0 for success, non-zero for failure)
@@ -142,18 +151,21 @@ static void connected_cb(struct bt_conn* conn, uint8_t err)
 {
   if (err) {
     LOG_ERR("Connection failed (err %u)", err);
-    return;
+  } else {
+    LOG_INF("Connected");
   }
 
-  LOG_INF("Connected");
+  /* Call external callback if provided */
+  if (external_connected_cb) {
+    external_connected_cb(conn, err);
+  }
 }
 
 /**
- * @brief Callback for BLE disconnection events
+ * @brief Internal callback for BLE disconnection events
  *
  * This function is called when a BLE connection is terminated for any reason.
- * It logs the disconnection reason and can be extended to perform cleanup
- * or recovery actions when a connection is lost.
+ * It logs the disconnection reason and delegates to the external callback if provided.
  *
  * @param conn Pointer to the connection object that was disconnected
  * @param reason Reason code for the disconnection
@@ -169,6 +181,11 @@ static void connected_cb(struct bt_conn* conn, uint8_t err)
 static void disconnected_cb(struct bt_conn* conn, uint8_t reason)
 {
   LOG_INF("Disconnected (reason %u)", reason);
+
+  /* Call external callback if provided */
+  if (external_disconnected_cb) {
+    external_disconnected_cb(conn, reason);
+  }
 }
 
 /**
@@ -190,31 +207,43 @@ BT_CONN_CB_DEFINE(conn_callbacks) = {
 };
 
 /**
- * @brief Initialize the BLE module
+ * @brief Initialize the BLE connection module
  *
- * This function performs the complete initialization sequence for the Bluetooth
- * subsystem, preparing it for advertising and connections:
- * 
- * 1. Creates a Bluetooth identity with a static random address (FF:EE:DD:CC:BB:AA)
- *    - Static address ensures consistent device identity across power cycles
- *    - Random address type provides enhanced privacy compared to public address
- * 
- * 2. Enables the Bluetooth subsystem with default controller configuration
- *    - Initializes the Bluetooth controller and host stack
- *    - Sets up default connection parameters
- *    - Prepares the radio for operation
+ * This function initializes the Bluetooth Low Energy (BLE) subsystem and prepares
+ * the device for advertising and accepting connections. It must be called before
+ * any other BLE operations.
  *
- * This function must be called before any other BLE operations and typically
- * only needs to be called once during system startup.
+ * The function performs the following operations:
+ * 1. Stores the provided callback functions for connection events
+ * 2. Creates a Bluetooth identity with a static random address (FF:EE:DD:CC:BB:AA)
+ * 3. Enables the Bluetooth controller and host stack
+ * 4. Prepares the device for advertising
+ *
+ * @param connected_cb Callback function to be called when a connection is established.
+ *                     Can be NULL if no external handling is needed.
+ * @param disconnected_cb Callback function to be called when a connection is terminated.
+ *                        Can be NULL if no external handling is needed.
  *
  * @return 0 on success, negative error code on failure
- * 
- * @note This function may block while the controller initializes
- * @see bt_enable(), bt_id_create() in Zephyr Bluetooth API
+ *         Common error codes:
+ *         - -EALREADY: Bluetooth is already enabled
+ *         - -EIO: Hardware initialization failed
+ *         - -ENOMEM: Insufficient memory for initialization
+ *         - -ENODEV: Bluetooth controller not found
+ *
+ * @note This function should be called once during system initialization
+ * @warning Calling this function multiple times may result in undefined behavior
+ *
+ * @see ble_start_advertising() to begin advertising after initialization
+ * @see ble_stop_advertising() to stop advertising
  */
-int ble_init(void)
+int ble_init(ble_connected_cb_t connected_cb, ble_disconnected_cb_t disconnected_cb)
 {
   int err;
+
+  /* Store external callback functions */
+  external_connected_cb = connected_cb;
+  external_disconnected_cb = disconnected_cb;
 
   /* Create a static random address for the device */
   bt_addr_le_t addr;

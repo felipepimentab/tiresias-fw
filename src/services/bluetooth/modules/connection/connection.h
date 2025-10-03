@@ -2,30 +2,46 @@
  * @file connection.h
  * @brief Public API for the BLE connectivity module.
  *
- * This module provides a simple, lightweight interface for Bluetooth Low Energy (BLE) 
- * connectivity functionality, focusing on core operations including initialization, 
- * identity management, and advertising control.
+ * This module provides a simplified interface for BLE (Bluetooth Low Energy) 
+ * operations, focusing on advertising and basic connection handling. It abstracts
+ * the complexity of the Zephyr Bluetooth API and provides a clean interface for
+ * applications that need basic BLE functionality.
  *
- * The connection module is designed with the following principles:
- * - Simplicity: Clean API with minimal dependencies
- * - Synchronous operation: All functions execute immediately without deferred processing
- * - Separation of concerns: Handles only connectivity, not application-specific logic
+ * The module handles:
+ * - BLE initialization and configuration
+ * - Advertising management (start/stop)
+ * - Connection event delegation to external callbacks
+ * - Device naming and identification
  *
- * The connection module handles the following responsibilities:
- * - Bluetooth subsystem initialization and configuration
- * - Device identity creation and management (using static random address)
- * - Advertising control (start/stop) with configurable parameters
- * - Connection event handling through registered callbacks
+ * Key features:
+ * - Callback-based initialization with ble_init()
+ * - Easy advertising control with start/stop functions
+ * - Flexible connection event handling through external callbacks
+ * - Configurable device name through Kconfig
+ * - Built-in error handling and logging
  *
  * Integration with other modules:
- * - Can be used alongside the BLE service module for GATT services
- * - Works with the peripheral module for hardware-specific configurations
- * - Can integrate with application-level state management
+ * - Connection events are delegated to external callbacks provided during initialization
+ * - State management is handled by the calling module through the callback functions
+ * - The module operates as a bridge between Zephyr BLE stack and application logic
  *
  * Usage example:
  * ```c
- * // Initialize the BLE module
- * int err = ble_init();
+ * // Define callback functions
+ * void my_connected_cb(struct bt_conn *conn, uint8_t err) {
+ *   if (err) {
+ *     // Handle connection error
+ *     return;
+ *   }
+ *   // Handle successful connection
+ * }
+ *
+ * void my_disconnected_cb(struct bt_conn *conn, uint8_t reason) {
+ *   // Handle disconnection
+ * }
+ *
+ * // Initialize the BLE module with callbacks
+ * int err = ble_init(my_connected_cb, my_disconnected_cb);
  * if (err) {
  *   // Handle initialization error
  *   return err;
@@ -50,10 +66,48 @@
 #define CONNECTION_H_
 
 #include <zephyr/kernel.h>
+#include <zephyr/bluetooth/conn.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @brief Callback function type for BLE connection events
+ *
+ * This function type defines the signature for callbacks that will be invoked
+ * when a BLE connection is established with a central device.
+ *
+ * @param conn Pointer to the connection object representing the new connection
+ * @param err Error code (0 for success, non-zero for failure)
+ *            Common error codes:
+ *            - 0: Connection successful
+ *            - BT_HCI_ERR_CONN_TIMEOUT: Connection timeout
+ *            - BT_HCI_ERR_CONN_FAIL: Connection failed to be established
+ * 
+ * @note This callback executes in the context of the Bluetooth host work queue
+ * @warning Keep processing in this callback minimal to avoid blocking the BT stack
+ */
+typedef void (*ble_connected_cb_t)(struct bt_conn *conn, uint8_t err);
+
+/**
+ * @brief Callback function type for BLE disconnection events
+ *
+ * This function type defines the signature for callbacks that will be invoked
+ * when a BLE connection is terminated for any reason.
+ *
+ * @param conn Pointer to the connection object that was disconnected
+ * @param reason Reason code for the disconnection
+ *               Common reason codes:
+ *               - BT_HCI_ERR_REMOTE_USER_TERM_CONN: Remote device terminated connection
+ *               - BT_HCI_ERR_LOCAL_HOST_TERM_CONN: Local device terminated connection
+ *               - BT_HCI_ERR_CONN_TIMEOUT: Connection supervision timeout
+ *               - BT_HCI_ERR_CONN_FAIL_TO_ESTABLISH: Connection failed to establish
+ * 
+ * @note This callback executes in the context of the Bluetooth host work queue
+ * @warning Keep processing in this callback minimal to avoid blocking the BT stack
+ */
+typedef void (*ble_disconnected_cb_t)(struct bt_conn *conn, uint8_t reason);
 
 /**
  * @brief Initialize the BLE module
@@ -66,7 +120,12 @@ extern "C" {
  *
  * - Creating a Bluetooth identity with a static random address (FF:EE:DD:CC:BB:AA)
  * - Enabling the Bluetooth subsystem with default controller settings
- * - Setting up connection callbacks for connection events
+ * - Setting up connection callbacks for connection events using provided callbacks
+ *
+ * @param connected_cb Callback function to be called when a connection is established.
+ *                     Can be NULL if connection events are not needed.
+ * @param disconnected_cb Callback function to be called when a connection is terminated.
+ *                        Can be NULL if disconnection events are not needed.
  *
  * @return 0 on success, negative error code on failure
  *         Possible error codes:
@@ -78,7 +137,7 @@ extern "C" {
  * @note This function is thread-safe and can be called from any context.
  * @warning This function may block while the controller is being initialized.
  */
-int ble_init(void);
+int ble_init(ble_connected_cb_t connected_cb, ble_disconnected_cb_t disconnected_cb);
 
 /**
  * @brief Start BLE advertising

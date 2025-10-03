@@ -18,6 +18,15 @@
 #include <stdint.h>
 #include <zephyr/zbus/zbus.h>
 
+typedef enum controller_event {
+  /** @brief Request to transition to a new state */
+  CONTROLLER_EVENT_INIT = 0,
+} controller_event;
+
+typedef struct controller_event_chan_msg {
+  controller_event event;
+} controller_event_chan_msg;
+
 /* === Controller State Definitions === */
 
 /**
@@ -66,5 +75,7 @@ controller_state controller_get_state(void);
  * @return true if controller is ready for operation, false otherwise
  */
 bool controller_is_operational(void);
+
+int controller_init(void);
 
 #endif /* CONTROLLER_H */

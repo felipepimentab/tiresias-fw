@@ -41,6 +41,14 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 ZBUS_SUBSCRIBER_DEFINE(controller_sub, 8);
 ZBUS_CHAN_DECLARE(btn_event_chan, bluetooth_state_chan, codec_state_chan);
 
+ZBUS_CHAN_DEFINE(controller_event_chan, /* Name */
+    controller_event_chan_msg, /* Message type */
+    NULL, /* Validator */
+    NULL, /* User data */
+    ZBUS_OBSERVERS(controller_sub), /* No static observers */
+    ZBUS_MSG_INIT(.event = CONTROLLER_EVENT_INIT) /* Initial value */
+);
+
 /* === State Management === */
 
 /**
@@ -121,7 +129,6 @@ static void handle_state_off(struct zbus_channel* chan)
 
   /* Transition to initializing state */
   set_controller_state(CONTROLLER_STATE_INITIALIZING);
-  BOARD_YELLOW();
 }
 
 /**
@@ -185,7 +192,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
   if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
     LOG_INF("System initialization complete");
     set_controller_state(CONTROLLER_STATE_IDLE);
-    BOARD_BLUE();
+    BOARD_WHITE();
 
     /* Unsubscribe from state channels during normal operation */
     (void)zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
@@ -218,9 +225,6 @@ static void handle_state_idle(struct zbus_channel* chan)
     if (btn_event == BUTTON_3_PRESSED) {
       ret = bluetooth_send_command(BLUETOOTH_CMD_ADVERTISE);
       CONTROLLER_CHECK_ERROR(ret, "Failed to send Bluetooth advertise command");
-
-      LOG_INF("Starting Bluetooth advertising");
-      BOARD_PURPLE();
       return;
     }
   }
@@ -345,9 +349,6 @@ static void controller_thread(void)
 
   LOG_INF("Controller thread started");
 
-  /* Initialize board LED to indicate startup */
-  BOARD_WHITE();
-
   /* Main event processing loop */
   while (1) {
     ret = zbus_sub_wait(&controller_sub, &chan, K_FOREVER);
@@ -359,6 +360,13 @@ static void controller_thread(void)
     /* Process the event through the state machine */
     controller_state_machine(chan);
   }
+}
+
+int controller_init(void)
+{
+  int ret = zbus_chan_notify(&controller_event_chan, K_NO_WAIT);
+  CONTROLLER_CHECK_ERROR(ret, "Failed to notify controller event channel");
+  return ret;
 }
 
 /* === Thread Definition === */
