@@ -2,7 +2,7 @@
  * @file connection.h
  * @brief Public API for the BLE connectivity module.
  *
- * This module provides a simplified interface for BLE (Bluetooth Low Energy) 
+ * This module provides a simplified interface for BLE (Bluetooth Low Energy)
  * operations, focusing on advertising and basic connection handling. It abstracts
  * the complexity of the Zephyr Bluetooth API and provides a clean interface for
  * applications that need basic BLE functionality.
@@ -65,8 +65,8 @@
 #ifndef CONNECTION_H_
 #define CONNECTION_H_
 
-#include <zephyr/kernel.h>
 #include <zephyr/bluetooth/conn.h>
+#include <zephyr/kernel.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,11 +84,11 @@ extern "C" {
  *            - 0: Connection successful
  *            - BT_HCI_ERR_CONN_TIMEOUT: Connection timeout
  *            - BT_HCI_ERR_CONN_FAIL: Connection failed to be established
- * 
+ *
  * @note This callback executes in the context of the Bluetooth host work queue
  * @warning Keep processing in this callback minimal to avoid blocking the BT stack
  */
-typedef void (*ble_connected_cb_t)(struct bt_conn *conn, uint8_t err);
+typedef void (*ble_connected_cb_t)(struct bt_conn* conn, uint8_t err);
 
 /**
  * @brief Callback function type for BLE disconnection events
@@ -103,11 +103,11 @@ typedef void (*ble_connected_cb_t)(struct bt_conn *conn, uint8_t err);
  *               - BT_HCI_ERR_LOCAL_HOST_TERM_CONN: Local device terminated connection
  *               - BT_HCI_ERR_CONN_TIMEOUT: Connection supervision timeout
  *               - BT_HCI_ERR_CONN_FAIL_TO_ESTABLISH: Connection failed to establish
- * 
+ *
  * @note This callback executes in the context of the Bluetooth host work queue
  * @warning Keep processing in this callback minimal to avoid blocking the BT stack
  */
-typedef void (*ble_disconnected_cb_t)(struct bt_conn *conn, uint8_t reason);
+typedef void (*ble_disconnected_cb_t)(struct bt_conn* conn, uint8_t reason);
 
 /**
  * @brief Initialize the BLE module
@@ -115,7 +115,7 @@ typedef void (*ble_disconnected_cb_t)(struct bt_conn *conn, uint8_t reason);
  * This function initializes the Bluetooth subsystem and prepares it for use.
  * It must be called before any other BLE functions and is typically invoked
  * during system startup.
- * 
+ *
  * The initialization process includes:
  *
  * - Creating a Bluetooth identity with a static random address (FF:EE:DD:CC:BB:AA)
@@ -144,7 +144,7 @@ int ble_init(ble_connected_cb_t connected_cb, ble_disconnected_cb_t disconnected
  *
  * This function starts BLE advertising to allow connections from central devices.
  * If advertising is already active, this function will return an error.
- * 
+ *
  * The advertising is configured with the following parameters:
  *
  * - Connectable advertising (allows connections from central devices)
