@@ -72,7 +72,7 @@ static ble_disconnected_cb_t external_disconnected_cb = NULL;
  *
  * Configures the BLE advertising with carefully selected parameters optimized for
  * both power efficiency and reliable discovery:
- * 
+ *
  * - Connectable advertising (allows connections from central devices)
  * - Uses identity address (uses the device's static random address)
  * - Advertising interval of approximately 500ms (800 * 0.625ms)
@@ -81,7 +81,7 @@ static ble_disconnected_cb_t external_disconnected_cb = NULL;
  *   - Longer intervals save power but increase discovery latency
  * - Undirected advertising (broadcasts to any listening device)
  * - No scan request notifications (reduces processing overhead)
- * 
+ *
  * @note These parameters can be adjusted based on specific application requirements
  * for power consumption, discovery speed, or connection reliability.
  */
@@ -96,14 +96,14 @@ static const struct bt_le_adv_param* adv_param = BT_LE_ADV_PARAM(
  *
  * Contains the essential advertising data fields to ensure compatibility and
  * proper device discovery:
- * 
+ *
  * - Flags: General discoverable mode and BR/EDR not supported
  *   - BT_LE_AD_GENERAL: Device is in general discoverable mode
  *   - BT_LE_AD_NO_BREDR: Device does not support BR/EDR (Classic Bluetooth)
  * - Complete device name as configured in Kconfig (CONFIG_BT_DEVICE_NAME)
  *   - Using complete name ensures the full name is visible during scanning
  *   - Name is included in advertising data for immediate identification
- * 
+ *
  * @note The advertising payload is limited to 31 bytes total, so fields
  * should be kept minimal to ensure all data fits within this limit.
  */
@@ -117,13 +117,13 @@ static const struct bt_data ad[] = {
  *
  * Contains additional advertising data sent in response to active scans.
  * This data complements the primary advertising data with:
- * 
+ *
  * - 128-bit service UUID that identifies the device's primary service
  *   - Custom UUID: 0x00001523-1212-efde-1523-785feabcd123
  *   - Used to identify this specific device/application
  *   - Allows central devices to filter for compatible devices
  *   - Placed in scan response to conserve primary advertising payload space
- * 
+ *
  * @note Using a custom UUID helps prevent connections from incompatible devices
  * and enables targeted discovery by scanning specifically for this UUID.
  */
@@ -143,7 +143,7 @@ static const struct bt_data sd[] = {
  *            - 0: Connection successful
  *            - BT_HCI_ERR_CONN_TIMEOUT: Connection timeout
  *            - BT_HCI_ERR_CONN_FAIL: Connection failed to be established
- * 
+ *
  * @note This callback executes in the context of the Bluetooth host work queue
  * @warning Keep processing in this callback minimal to avoid blocking the BT stack
  */
@@ -174,7 +174,7 @@ static void connected_cb(struct bt_conn* conn, uint8_t err)
  *               - BT_HCI_ERR_LOCAL_HOST_TERM_CONN: Local device terminated connection
  *               - BT_HCI_ERR_CONN_TIMEOUT: Connection supervision timeout
  *               - BT_HCI_ERR_CONN_FAIL_TO_ESTABLISH: Connection failed to establish
- * 
+ *
  * @note This callback executes in the context of the Bluetooth host work queue
  * @warning Keep processing in this callback minimal to avoid blocking the BT stack
  */
@@ -193,11 +193,11 @@ static void disconnected_cb(struct bt_conn* conn, uint8_t reason)
  *
  * Defines the callbacks that will be invoked for various connection events.
  * The BT_CONN_CB_DEFINE macro registers these callbacks with the Bluetooth stack.
- * 
+ *
  * Registered callbacks:
  * - connected: Called when a connection is established
  * - disconnected: Called when a connection is terminated
- * 
+ *
  * @note Additional callbacks could be added here for security events,
  * parameter updates, or other connection-related events if needed.
  */
@@ -276,7 +276,7 @@ int ble_init(ble_connected_cb_t connected_cb, ble_disconnected_cb_t disconnected
  * This function starts BLE advertising immediately with the configured parameters.
  * It configures the advertising data and scan response data, then activates the
  * radio to begin broadcasting.
- * 
+ *
  * The advertising configuration includes:
  * - Device name in the primary advertising data
  * - Service UUID in the scan response data
@@ -287,7 +287,7 @@ int ble_init(ble_connected_cb_t connected_cb, ble_disconnected_cb_t disconnected
  * a connection is established (if connectable advertising is used).
  *
  * @return 0 on success, negative error code on failure
- * 
+ *
  * @pre ble_init() must be called successfully before this function
  * @see ble_stop_advertising() to stop the advertising process
  * @see bt_le_adv_start() in Zephyr Bluetooth API
@@ -314,12 +314,12 @@ int ble_start_advertising(void)
  * power.
  *
  * If advertising is not currently active, this function will return -EALREADY.
- * 
+ *
  * @return 0 on success, negative error code on failure
  *         Common error codes:
  *         - -EALREADY: Advertising is not active
  *         - -EINVAL: Invalid state or parameters
- * 
+ *
  * @pre ble_init() must be called successfully before this function
  * @see ble_start_advertising() to restart advertising
  * @see bt_le_adv_stop() in Zephyr Bluetooth API
