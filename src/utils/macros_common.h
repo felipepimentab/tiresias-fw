@@ -13,40 +13,39 @@
  * For debug mode all LEDs are turned on in case of an error.
  */
 
-#define PRINT_AND_OOPS(code)                                                                       \
-	do {                                                                                       \
-		LOG_ERR("ERR_CHK Err_code: [%d] @ line: %d\t", code, __LINE__);                    \
-		k_oops();                                                                          \
-	} while (0)
+#define PRINT_AND_OOPS(code)                                                                                           \
+  do {                                                                                                                 \
+    LOG_ERR("ERR_CHK Err_code: [%d] @ line: %d\t", code, __LINE__);                                                    \
+    k_oops();                                                                                                          \
+  } while (0)
 
-#define ERR_CHK(err_code)                                                                          \
-	do {                                                                                       \
-		if (err_code) {                                                                    \
-			PRINT_AND_OOPS(err_code);                                                  \
-		}                                                                                  \
-	} while (0)
+#define ERR_CHK(err_code)                                                                                              \
+  do {                                                                                                                 \
+    if (err_code) {                                                                                                    \
+      PRINT_AND_OOPS(err_code);                                                                                        \
+    }                                                                                                                  \
+  } while (0)
 
-#define ERR_CHK_MSG(err_code, msg)                                                                 \
-	do {                                                                                       \
-		if (err_code) {                                                                    \
-			LOG_ERR("%s", msg);                                                        \
-			PRINT_AND_OOPS(err_code);                                                  \
-		}                                                                                  \
-	} while (0)
+#define ERR_CHK_MSG(err_code, msg)                                                                                     \
+  do {                                                                                                                 \
+    if (err_code) {                                                                                                    \
+      LOG_ERR("%s", msg);                                                                                              \
+      PRINT_AND_OOPS(err_code);                                                                                        \
+    }                                                                                                                  \
+  } while (0)
 
 #if (defined(CONFIG_INIT_STACKS) && defined(CONFIG_THREAD_ANALYZER))
 
-#define STACK_USAGE_PRINT(thread_name, p_thread)                                                   \
-	do {                                                                                       \
-		static uint64_t thread_ts;                                                         \
-		size_t unused_space_in_thread_bytes;                                               \
-		if (k_uptime_get() - thread_ts > CONFIG_PRINT_STACK_USAGE_MS) {                    \
-			k_thread_stack_space_get(p_thread, &unused_space_in_thread_bytes);         \
-			thread_ts = k_uptime_get();                                                \
-			LOG_DBG("Unused space in %s thread: %d bytes", thread_name,                \
-				unused_space_in_thread_bytes);                                     \
-		}                                                                                  \
-	} while (0)
+#define STACK_USAGE_PRINT(thread_name, p_thread)                                                                       \
+  do {                                                                                                                 \
+    static uint64_t thread_ts;                                                                                         \
+    size_t unused_space_in_thread_bytes;                                                                               \
+    if (k_uptime_get() - thread_ts > CONFIG_PRINT_STACK_USAGE_MS) {                                                    \
+      k_thread_stack_space_get(p_thread, &unused_space_in_thread_bytes);                                               \
+      thread_ts = k_uptime_get();                                                                                      \
+      LOG_DBG("Unused space in %s thread: %d bytes", thread_name, unused_space_in_thread_bytes);                       \
+    }                                                                                                                  \
+  } while (0)
 #else
 #define STACK_USAGE_PRINT(thread_name, p_stack)
 #endif /* (defined(CONFIG_INIT_STACKS) && defined(CONFIG_THREAD_ANALYZER)) */

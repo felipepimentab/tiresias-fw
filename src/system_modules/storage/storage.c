@@ -60,8 +60,8 @@ LOG_MODULE_REGISTER(storage_module, LOG_LEVEL_INF);
  * This enum can be extended with additional operation types as needed.
  */
 typedef enum {
-  STORAGE_SAVE_VOLUME,  /**< Request to save volume setting to NVS */
-  STORAGE_READ_VOLUME   /**< Request to read volume setting from NVS */
+  STORAGE_SAVE_VOLUME, /**< Request to save volume setting to NVS */
+  STORAGE_READ_VOLUME /**< Request to read volume setting from NVS */
 } storage_msg_type_t;
 
 /**
@@ -74,13 +74,13 @@ typedef enum {
  * - A semaphore for synchronous operations
  */
 typedef struct {
-  storage_msg_type_t type;      /**< Type of storage operation */
+  storage_msg_type_t type; /**< Type of storage operation */
   union {
-    int32_t volume_db;          /**< Volume data for save operations */
-  } data;                        /**< Union of possible data payloads */
-  struct k_sem* response_sem;    /**< Optional semaphore to signal completion */
-  int32_t* response_value;       /**< Optional pointer to store read values */
-  int* response_code;            /**< Optional pointer to store result code */
+    int32_t volume_db; /**< Volume data for save operations */
+  } data; /**< Union of possible data payloads */
+  struct k_sem* response_sem; /**< Optional semaphore to signal completion */
+  int32_t* response_value; /**< Optional pointer to store read values */
+  int* response_code; /**< Optional pointer to store result code */
 } storage_msg_t;
 
 /**
@@ -207,10 +207,10 @@ int storage_save_volume(int32_t vol_db)
   storage_msg_t msg = {
     .type = STORAGE_SAVE_VOLUME,
     .data.volume_db = vol_db,
-    .response_sem = NULL,     /* No semaphore for async operation */
-    .response_code = NULL,    /* No response code needed */
+    .response_sem = NULL, /* No semaphore for async operation */
+    .response_code = NULL, /* No response code needed */
   };
-  
+
   /* Send message to storage thread without waiting */
   return k_msgq_put(&storage_msgq, &msg, K_NO_WAIT);
 }
@@ -240,19 +240,19 @@ int storage_read_volume(int32_t* vol_db)
   /* Prepare message with response pointers and semaphore */
   storage_msg_t msg = {
     .type = STORAGE_READ_VOLUME,
-    .response_value = vol_db,     /* Where to store the read value */
-    .response_code = &rc,         /* Where to store the result code */
-    .response_sem = &sem,         /* Semaphore to signal completion */
+    .response_value = vol_db, /* Where to store the read value */
+    .response_code = &rc, /* Where to store the result code */
+    .response_sem = &sem, /* Semaphore to signal completion */
   };
 
   /* Send message to storage thread without waiting */
   if (k_msgq_put(&storage_msgq, &msg, K_NO_WAIT) != 0) {
-    return -EFAULT;  /* Failed to queue the message */
+    return -EFAULT; /* Failed to queue the message */
   }
 
   /* Block until storage thread signals completion */
   k_sem_take(&sem, K_FOREVER);
-  
+
   /* Return the result code set by the storage thread */
   return rc;
 }

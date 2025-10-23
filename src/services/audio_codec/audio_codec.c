@@ -88,7 +88,7 @@ static void handle_state_off(codec_cmd cmd)
 
   set_codec_state(CODEC_STATE_INITIALIZING);
 
-#if CONFIG_ADAU1787
+#if CONFIG_AUDIO_CODEC_ADAU1787
   ret = adau1787_init();
   if (ret != 0) {
     LOG_ERR("Failed to initialize ADAU1787 codec: %d", ret);
@@ -105,9 +105,15 @@ static void handle_state_initializing(codec_cmd cmd)
   LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
 };
 
-static void handle_state_idle(codec_cmd cmd) { LOG_DBG("Handling codec command %d in state %d", cmd, current_state); };
+static void handle_state_idle(codec_cmd cmd)
+{
+  LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
+};
 
-static void handle_state_error(codec_cmd cmd) { LOG_DBG("Handling codec command %d in state %d", cmd, current_state); };
+static void handle_state_error(codec_cmd cmd)
+{
+  LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
+};
 
 static void handle_state_standard(codec_cmd cmd)
 {

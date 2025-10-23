@@ -273,7 +273,10 @@ static void handle_state_off(bluetooth_cmd cmd)
   set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
 }
 
-static void handle_state_initializing(bluetooth_cmd cmd) { LOG_WRN("Command %d ignored in INITIALIZING state", cmd); }
+static void handle_state_initializing(bluetooth_cmd cmd)
+{
+  LOG_WRN("Command %d ignored in INITIALIZING state", cmd);
+}
 
 static void handle_state_not_connected(bluetooth_cmd cmd)
 {

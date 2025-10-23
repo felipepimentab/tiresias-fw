@@ -50,12 +50,12 @@ config NO_AUDIO_CODEC
   help
      No audio codec enabled.
 
-config ADAU1787
+config AUDIO_CODEC_ADAU1787
 	bool "ADAU1787"
   help
      ADAU1787 audio codec enabled.
 
-config CS47L63
+config AUDIO_CODEC_CS47L63
 	bool "CS47L63"
   help
      CS47L63 audio codec enabled.
