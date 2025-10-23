@@ -192,7 +192,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
   if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
     LOG_INF("System initialization complete");
     set_controller_state(CONTROLLER_STATE_IDLE);
-    BOARD_WHITE();
+    ret = peripheral_publish_led_task(LED_2_BLINK);
 
     /* Unsubscribe from state channels during normal operation */
     (void)zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));

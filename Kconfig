@@ -43,7 +43,7 @@ config TIRESIAS_BLUETOOTH_THREAD_STACK_SIZE
 
 choice AUDIO_CODEC
 	prompt "Choose which audio codec is connected to the board"
-	default ADAU1787
+	default AUDIO_CODEC_ADAU1787
 
 config NO_AUDIO_CODEC
 	bool "No audio codec connected"
