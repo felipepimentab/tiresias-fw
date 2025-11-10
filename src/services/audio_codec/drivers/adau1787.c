@@ -1,4 +1,5 @@
 #include "adau1787.h"
+#include "../../../utils/macros_common.h"
 #include "SigmaStudioFW.h"
 #include "adau_1787_IC_1_FAST.h"
 #include "adau_1787_IC_1_FAST_PARAM.h"
@@ -24,6 +25,8 @@ LOG_MODULE_REGISTER(adau1787_driver, LOG_LEVEL_INF);
 /** @brief I2C device configuration structure for ADAU1787 */
 const struct i2c_dt_spec adau1787_i2c = I2C_DT_SPEC_GET(I2C_NODE);
 
+static int adau_init_error = 0;
+
 int adau1787_init(void)
 {
   LOG_INF("Initializing audio codec...");
@@ -46,6 +49,7 @@ int adau1787_init(void)
   }
 
   default_download_IC_1_Sigma();
+  ERR_CHK_MSG(adau_init_error, "Failed to program ADAU1787 codec");
 
   LOG_INF("Audio codec initialization done.");
   return 0;
@@ -66,6 +70,7 @@ int adau1787_write(sub_addr_t start_addr, uint8_t* data, size_t data_len)
   ret = i2c_write_dt(&adau1787_i2c, buf, sizeof(buf));
   if (ret != 0) {
     LOG_ERR("I2C write failed: addr=0x%X reg=0x%X", adau1787_i2c.addr, buf[0]);
+    adau_init_error = ret;
     return ret;
   }
   return ret;
