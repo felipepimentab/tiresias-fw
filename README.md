@@ -10,7 +10,7 @@ Source code and associated files for the firmware used in the Tiresias project
 
 ## ☕️ Introduction
 
-Welcome to the **Tiresias Firmware** repository! This repository contains the source code and associated files for the firmware used in the [Tiresias Project](https://tiresias-docs.vercel.app), a Brazilian research initiative conducted at [EESC-USP](https://www.eesc.usp.br/) by MSc students. The goal of the Tiresias Project is to develop a free and open-source national technology for hearing aid applications using off-the-shelf components.
+Welcome to the **Tiresias Firmware** repository. This repository contains the source code and associated files for the firmware used in the [Tiresias Project](https://tiresias-docs.vercel.app), a Brazilian research initiative conducted at [EESC-USP](https://www.eesc.usp.br/) by MSc and PhD students. The goal of the Tiresias Project is to create a free and open-source development platform for hearing aid applications targeting truly wearable resource-constrained devices.
 
 The firmware is designed for the Nordic Semiconductor's [nRF5340 SoC](https://www.nordicsemi.com/Products/nRF5340), running the [Zephyr RTOS](https://www.zephyrproject.org), and integrating the Analog Devices' [ADAU1787 audio codec](https://www.analog.com/en/products/adau1787.html).
 
@@ -18,47 +18,19 @@ The firmware is designed for the Nordic Semiconductor's [nRF5340 SoC](https://ww
 
 ### About the Tiresias Project
 
-The Tiresias Project is an innovative effort to create an open-source and accessible hearing aid solution tailored to the needs of the Brazilian population. Our aim is to reduce dependency on expensive proprietary technologies by leveraging widely available components and state-of-the-art design practices.
+The Tiresias Project is an innovative effort to create an open-source and accessible hearing aid solution tailored to the needs of the Brazilian population. Our aim is to reduce dependency on expensive proprietary technologies by leveraging widely available (off-the-sheld) components and open-access software.
 
 ### Key Features
 
-- **Connectivity**: Utilizes the Nordic nRF5340 SoC for Bluetooth Low Energy (BLE) communication, ensuring seamless wireless connectivity.
-- **Audio Processing**: Integrates the Analog Devices ADAU1787 Audio Codec for high-quality audio processing, essential for effective hearing aid functionality.
-- **Open-Source**: All code and design files are open-source, allowing for community collaboration and transparency in the development process.
+- **Connectivity**: Uses the Nordic nRF5340 SoC for Bluetooth Low Energy (BLE) communication.
+- **Audio Processing**: Integrates the Analog Devices ADAU1787 Audio Codec for efficient audio processing.
+- **Open-Source**: All code and design files are open-source, reducing costs and fostering community collaboration.
 
 ## 🛠️ Getting Started
 
-### Hardware overview
-
-The project uses a [nRF5340 SoC](https://www.nordicsemi.com/Products/nRF5340) from [Nordic Semiconductors](https://www.nordicsemi.com). It contains an application proccessor for handling the main functions and a dedicated network processor for handling Bluetooth Low Energy (BLE) connectivity.
-
-For digital audio processing, the [ADAU1787 Audio Codec](https://www.analog.com/en/products/adau1787.html) from [Analog Devices](https://www.analog.com/en/index.html) provides speed and efficiency with its SigmaDSP audio processing core and FastDSP audio processing engine.
-
-The ADAU1787 is controlled via I2C by the nRF5340, which also handles BLE connection for wirelles operation.
-
-### Firmware overview
-
-```plaintext
-Controller (Application)
-│
-├── Audio Codec (Service)
-│   ├── adau1787 (Module)
-│   │   └── i2c (Zephyr Driver)
-│   └── i2s_control (Module)
-│       └── i2s (Zephyr Driver)
-│
-├── Bluetooth (Service)
-│   └── ble_profile (Module)
-│       └── ble (Zephyr Driver)
-│
-├── peripheral (Module)
-│   └── gpio (Zephyr Driver)
-│
-└── storage (Module)
-    └── nvs (Zephyr Driver)
-```
-
 ### Initialization
+
+First, make sure you have [`west`](https://docs.zephyrproject.org/latest/develop/west/install.html#installing-west) installed.
 
 Initialize a new workspace for the Tiresias Firmware project:
 
@@ -72,6 +44,27 @@ Update the project's modules:
 cd tiresias-workspace
 west update
 ```
+
+Clone the board files repository:
+
+```sh
+# inside tiresias-workspace
+git clone https://github.com/felipepimentab/boards.git
+```
+
+### Hardware overview
+
+The project uses a [nRF5340 SoC](https://www.nordicsemi.com/Products/nRF5340) from [Nordic Semiconductors](https://www.nordicsemi.com). It contains an application proccessor for handling the main functions and a dedicated network processor for handling Bluetooth Low Energy (BLE) connectivity.
+
+For digital audio processing, the [ADAU1787 Audio Codec](https://www.analog.com/en/products/adau1787.html) from [Analog Devices](https://www.analog.com/en/index.html) provides speed and efficiency with its SigmaDSP audio processing core and FastDSP audio processing engine.
+
+The ADAU1787 is controlled via I2C by the nRF5340, while an I2S interface allows streaming and advanced audio analysis.
+
+### Firmware overview
+
+The firmware implements an event-driven, state-machine based layered architecture to ensure modularity and clear separation of responsabilities. It consists of four layers: **Application**, **Service**, **Module** and **Driver**.
+
+...
 
 ## 📝 License
 
