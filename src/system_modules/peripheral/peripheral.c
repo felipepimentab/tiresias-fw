@@ -40,18 +40,11 @@ ZBUS_CHAN_DEFINE(btn_event_chan, btn_event_msg_t, NULL, NULL, ZBUS_OBSERVERS(con
  * - Hardware independence: The code doesn't need to know the specific GPIO pins
  * - Portability: The same code can work on different boards with different pin assignments
  * - Maintainability: Pin assignments can be changed in the Device Tree without modifying code
- *
- * The nRF5340 DK has 4 user buttons (sw0-sw3) and 4 LEDs (led0-led3).
  */
 #define BTN1_NODE DT_ALIAS(sw0) /* Button 1 node from Device Tree */
-#define BTN2_NODE DT_ALIAS(sw1) /* Button 2 node from Device Tree */
-#define BTN3_NODE DT_ALIAS(sw2) /* Button 3 node from Device Tree */
-#define BTN4_NODE DT_ALIAS(sw3) /* Button 4 node from Device Tree */
-
-#define LED0_NODE DT_ALIAS(led0) /* LED 1 node from Device Tree */
-#define LED1_NODE DT_ALIAS(led1) /* LED 2 node from Device Tree */
-#define LED2_NODE DT_ALIAS(led2) /* LED 3 node from Device Tree */
-#define LED3_NODE DT_ALIAS(led3) /* LED 4 node from Device Tree */
+#define LED1_NODE DT_ALIAS(led0) /* LED 1 node from Device Tree */
+#define LED2_NODE DT_ALIAS(led1) /* LED 2 node from Device Tree */
+#define LED3_NODE DT_ALIAS(led2) /* LED 3 node from Device Tree */
 
 /* === GPIO Configuration Flags === */
 /**
@@ -84,19 +77,15 @@ ZBUS_CHAN_DEFINE(btn_event_chan, btn_event_msg_t, NULL, NULL, ZBUS_OBSERVERS(con
 #define LED_FLAGS (GPIO_OUTPUT_ACTIVE | GPIO_ACTIVE_LOW)
 
 /* === LED GPIO Specs === */
-static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET_OR(LED0_NODE, gpios, { 0 });
 static const struct gpio_dt_spec led1 = GPIO_DT_SPEC_GET_OR(LED1_NODE, gpios, { 0 });
 static const struct gpio_dt_spec led2 = GPIO_DT_SPEC_GET_OR(LED2_NODE, gpios, { 0 });
 static const struct gpio_dt_spec led3 = GPIO_DT_SPEC_GET_OR(LED3_NODE, gpios, { 0 });
 
 /* === Button GPIO Specs === */
 static const struct gpio_dt_spec button1 = GPIO_DT_SPEC_GET_OR(BTN1_NODE, gpios, { 0 });
-static const struct gpio_dt_spec button2 = GPIO_DT_SPEC_GET_OR(BTN2_NODE, gpios, { 0 });
-static const struct gpio_dt_spec button3 = GPIO_DT_SPEC_GET_OR(BTN3_NODE, gpios, { 0 });
-static const struct gpio_dt_spec button4 = GPIO_DT_SPEC_GET_OR(BTN4_NODE, gpios, { 0 });
 
 /* === Callback Structs === */
-static struct gpio_callback btn1_cb, btn2_cb, btn3_cb, btn4_cb;
+static struct gpio_callback btn1_cb;
 
 /* === Work Queue === */
 struct peripheral_work_item {
@@ -243,44 +232,11 @@ static void handle_event_work(struct k_work* work)
   case LED_3_BLINK:
     peripheral_set_led_blink_async(LED_3, 1, 500, 500, LED_OFF);
     break;
-  case LED_4_ON:
-    peripheral_set_led(LED_4, LED_ON);
-    break;
-  case LED_4_OFF:
-    peripheral_set_led(LED_4, LED_OFF);
-    break;
-  case LED_4_BLINK:
-    peripheral_set_led_blink_async(LED_4, 1, 500, 500, LED_OFF);
-    break;
   case BTN_1:
     LOG_DBG("Button 1 pressed! (internal)");
     {
       // Publish to button event channel on ZBUS
       btn_event_msg_t msg = { .event = BUTTON_1_PRESSED };
-      zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
-    }
-    break;
-  case BTN_2:
-    LOG_DBG("Button 2 pressed! (internal)");
-    {
-      // Publish to button event channel on ZBUS
-      btn_event_msg_t msg = { .event = BUTTON_2_PRESSED };
-      zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
-    }
-    break;
-  case BTN_3:
-    LOG_DBG("Button 3 pressed! (internal)");
-    {
-      // Publish to button event channel on ZBUS
-      btn_event_msg_t msg = { .event = BUTTON_3_PRESSED };
-      zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
-    }
-    break;
-  case BTN_4:
-    LOG_DBG("Button 4 pressed! (internal)");
-    {
-      // Publish to button event channel on ZBUS
-      btn_event_msg_t msg = { .event = BUTTON_4_PRESSED };
       zbus_chan_pub(&btn_event_chan, &msg, K_NO_WAIT);
     }
     break;
@@ -349,15 +305,6 @@ static void btn_debounce_handler(struct k_work* work)
   case BTN_1:
     btn_idx = 0;
     break;
-  case BTN_2:
-    btn_idx = 1;
-    break;
-  case BTN_3:
-    btn_idx = 2;
-    break;
-  case BTN_4:
-    btn_idx = 3;
-    break;
   default:
     return; // Not a button event
   }
@@ -423,27 +370,6 @@ static void button1_pressed(const struct device* dev, struct gpio_callback* cb, 
   // Check if button is already being processed (debounce)
   if (atomic_cas(&btn_pressed[0], 0, 1)) {
     schedule_debounce(BTN_1);
-  }
-}
-
-static void button2_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins)
-{
-  if (atomic_cas(&btn_pressed[1], 0, 1)) {
-    schedule_debounce(BTN_2);
-  }
-}
-
-static void button3_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins)
-{
-  if (atomic_cas(&btn_pressed[2], 0, 1)) {
-    schedule_debounce(BTN_3);
-  }
-}
-
-static void button4_pressed(const struct device* dev, struct gpio_callback* cb, uint32_t pins)
-{
-  if (atomic_cas(&btn_pressed[3], 0, 1)) {
-    schedule_debounce(BTN_4);
   }
 }
 
@@ -530,15 +456,12 @@ int peripheral_set_led(enum led_t led, led_state_t state)
 
   switch (led) {
   case LED_1:
-    ret = gpio_pin_set_dt(&led0, state);
-    break;
-  case LED_2:
     ret = gpio_pin_set_dt(&led1, state);
     break;
-  case LED_3:
+  case LED_2:
     ret = gpio_pin_set_dt(&led2, state);
     break;
-  case LED_4:
+  case LED_3:
     ret = gpio_pin_set_dt(&led3, state);
     break;
   }
@@ -792,56 +715,31 @@ int peripheral_init(void)
   }
 
   // Setup LEDs with proper error handling
-  ret = setup_led(&led0);
-  if (ret < 0) {
-    LOG_ERR("Failed to setup LED 1: %d", ret);
-    return ret;
-  }
-  peripheral_set_led(LED_1, LED_OFF);
-
   ret = setup_led(&led1);
   if (ret < 0) {
     LOG_ERR("Failed to setup LED 2: %d", ret);
     return ret;
   }
-  peripheral_set_led(LED_2, LED_OFF);
+  peripheral_set_led(LED_1, LED_OFF);
 
   ret = setup_led(&led2);
   if (ret < 0) {
     LOG_ERR("Failed to setup LED 3: %d", ret);
     return ret;
   }
-  peripheral_set_led(LED_3, LED_OFF);
+  peripheral_set_led(LED_2, LED_OFF);
 
   ret = setup_led(&led3);
   if (ret < 0) {
     LOG_ERR("Failed to setup LED 4: %d", ret);
     return ret;
   }
-  peripheral_set_led(LED_4, LED_OFF);
+  peripheral_set_led(LED_3, LED_OFF);
 
   // Setup buttons with interrupt handlers
   ret = setup_button(&button1, &btn1_cb, button1_pressed);
   if (ret < 0) {
     LOG_ERR("Failed to setup button 1: %d", ret);
-    return ret;
-  }
-
-  ret = setup_button(&button2, &btn2_cb, button2_pressed);
-  if (ret < 0) {
-    LOG_ERR("Failed to setup button 2: %d", ret);
-    return ret;
-  }
-
-  ret = setup_button(&button3, &btn3_cb, button3_pressed);
-  if (ret < 0) {
-    LOG_ERR("Failed to setup button 3: %d", ret);
-    return ret;
-  }
-
-  ret = setup_button(&button4, &btn4_cb, button4_pressed);
-  if (ret < 0) {
-    LOG_ERR("Failed to setup button 4: %d", ret);
     return ret;
   }
 

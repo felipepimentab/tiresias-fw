@@ -1,6 +1,7 @@
 #include "audio_codec.h"
 #include "../utils/macros_common.h"
 #include "drivers/adau1787.h"
+#include "modules/i2s/i2s_control.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
@@ -96,6 +97,10 @@ static void handle_state_off(codec_cmd cmd)
     return;
   }
 #endif
+
+  ret = audio_i2s_init();
+
+  ERR_CHK(ret);
 
   set_codec_state(CODEC_STATE_IDLE);
 };
