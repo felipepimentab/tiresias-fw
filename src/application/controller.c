@@ -32,7 +32,6 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
     if (ret != 0) {                                                                                                    \
       LOG_ERR(msg " :%d", ret);                                                                                        \
       set_controller_state(CONTROLLER_STATE_ERROR);                                                                    \
-      BOARD_RED();                                                                                                     \
       return;                                                                                                          \
     }                                                                                                                  \
   } while (0)
@@ -83,7 +82,10 @@ static void set_controller_state(controller_state state)
  *
  * @return controller_state Current state of the controller
  */
-controller_state controller_get_state(void) { return current_state; }
+controller_state controller_get_state(void)
+{
+  return current_state;
+}
 
 /**
  * @brief Check if the controller is in an operational state
@@ -160,7 +162,6 @@ static void handle_state_initializing(struct zbus_channel* chan)
   if (bt_state == BLUETOOTH_STATE_INIT_ERROR) {
     LOG_ERR("Bluetooth initialization failed");
     set_controller_state(CONTROLLER_STATE_ERROR);
-    BOARD_RED();
     (void)zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     (void)zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     return;
@@ -180,7 +181,6 @@ static void handle_state_initializing(struct zbus_channel* chan)
   if (cd_state == CODEC_STATE_ERROR) {
     LOG_ERR("Audio codec initialization failed");
     set_controller_state(CONTROLLER_STATE_ERROR);
-    BOARD_RED();
     (void)zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     (void)zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     return;
@@ -192,7 +192,6 @@ static void handle_state_initializing(struct zbus_channel* chan)
   if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
     LOG_INF("System initialization complete");
     set_controller_state(CONTROLLER_STATE_IDLE);
-    ret = peripheral_publish_led_task(LED_2_BLINK);
 
     /* Unsubscribe from state channels during normal operation */
     (void)zbus_chan_rm_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
@@ -210,24 +209,9 @@ static void handle_state_initializing(struct zbus_channel* chan)
  */
 static void handle_state_idle(struct zbus_channel* chan)
 {
-  int ret;
-
-  /* Handle button events */
-  if (chan == &btn_event_chan) {
-    button_event_t btn_event;
-
-    ret = zbus_chan_read(chan, &btn_event, K_MSEC(ZBUS_TIMEOUT_MS));
-    CONTROLLER_CHECK_ERROR(ret, "Failed to read button event");
-
-    LOG_INF("Button event received: %d", btn_event);
-
-    /* Handle button 3 press - start advertising */
-    if (btn_event == BUTTON_3_PRESSED) {
-      ret = bluetooth_send_command(BLUETOOTH_CMD_ADVERTISE);
-      CONTROLLER_CHECK_ERROR(ret, "Failed to send Bluetooth advertise command");
-      return;
-    }
-  }
+  // int ret;
+  // ret = bluetooth_send_command(BLUETOOTH_CMD_ADVERTISE);
+  // CONTROLLER_CHECK_ERROR(ret, "Failed to send Bluetooth advertise command");
 }
 
 /**
@@ -328,7 +312,6 @@ static void controller_state_machine(struct zbus_channel* chan)
   default:
     LOG_ERR("Unknown controller state: %d", current_state);
     set_controller_state(CONTROLLER_STATE_ERROR);
-    BOARD_RED();
     break;
   }
 }

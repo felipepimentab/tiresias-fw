@@ -230,13 +230,11 @@ static void bluetooth_state_machine(bluetooth_cmd cmd)
 void ble_connected_cb(void)
 {
   set_bluetooth_state(BLUETOOTH_STATE_CONNECTED);
-  BOARD_GREEN();
 }
 
 void ble_disconnected_cb(void)
 {
   set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
-  BOARD_WHITE();
 }
 
 /**
@@ -292,7 +290,6 @@ static void handle_state_not_connected(bluetooth_cmd cmd)
     return;
   }
   set_bluetooth_state(BLUETOOTH_STATE_ADVERTISING);
-  peripheral_publish_led_task(LED_3_BLINK);
 }
 
 static void handle_state_advertising(bluetooth_cmd cmd)
@@ -307,7 +304,6 @@ static void handle_state_advertising(bluetooth_cmd cmd)
     return;
   }
   set_bluetooth_state(BLUETOOTH_STATE_NOT_CONNECTED);
-  peripheral_publish_led_task(LED_1_BLINK);
 }
 
 static void handle_state_connecting(bluetooth_cmd cmd)

@@ -13,7 +13,6 @@
 #include "application/controller.h"
 #include "services/audio_codec/audio_codec.h"
 #include "services/bluetooth/bluetooth.h"
-#include "system_modules/peripheral/peripheral.h"
 #include "system_modules/storage/storage.h"
 #include "utils/macros_common.h"
 #include "version.h"
@@ -24,9 +23,6 @@ int main(void)
 {
   int ret = 0;
   LOG_INF("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
-
-  ret = peripheral_init();
-  ERR_CHK_MSG(ret, "Failed to initialize peripheral module");
 
   ret = controller_init();
   ERR_CHK_MSG(ret, "Failed to initialize controller module");
