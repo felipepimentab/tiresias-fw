@@ -38,7 +38,7 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 
 /* === ZBUS Communication Setup === */
 ZBUS_SUBSCRIBER_DEFINE(controller_sub, 8);
-ZBUS_CHAN_DECLARE(btn_event_chan, bluetooth_state_chan, codec_state_chan);
+ZBUS_CHAN_DECLARE(button_chan, bluetooth_state_chan, codec_state_chan);
 
 ZBUS_CHAN_DEFINE(controller_event_chan, /* Name */
     controller_event_chan_msg, /* Message type */
@@ -125,6 +125,9 @@ static void handle_state_off(struct zbus_channel* chan)
   /* Subscribe to service state channels */
   ret = zbus_chan_add_obs(&bluetooth_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
   CONTROLLER_CHECK_ERROR(ret, "Failed to subscribe to Bluetooth state channel");
+  /* Subscribe to service state channels */
+  ret = zbus_chan_add_obs(&button_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+  CONTROLLER_CHECK_ERROR(ret, "Failed to subscribe to Button event channel");
 
   ret = zbus_chan_add_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
   CONTROLLER_CHECK_ERROR(ret, "Failed to subscribe to codec state channel");

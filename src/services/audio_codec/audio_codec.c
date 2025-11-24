@@ -98,9 +98,9 @@ static void handle_state_off(codec_cmd cmd)
   }
 #endif
 
-  ret = audio_i2s_init();
+  // ret = audio_i2s_init();
 
-  ERR_CHK(ret);
+  // ERR_CHK(ret);
 
   set_codec_state(CODEC_STATE_IDLE);
 };

@@ -1,3 +1,5 @@
+#include "system_modules/peripheral/button.h"
+#include "system_modules/peripheral/led.h"
 #include <ctype.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -23,6 +25,12 @@ int main(void)
 {
   int ret = 0;
   LOG_INF("Tiresias Firmware v%s starting.", TIRESIAS_VERSION_STRING);
+
+  ret = init_button();
+  ERR_CHK(ret);
+
+  ret = init_led();
+  ERR_CHK(ret);
 
   ret = controller_init();
   ERR_CHK_MSG(ret, "Failed to initialize controller module");

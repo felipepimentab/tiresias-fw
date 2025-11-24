@@ -4,4 +4,6 @@
 #include <stdint.h>
 #include <zephyr/drivers/gpio.h>
 
+int init_button();
+
 #endif
