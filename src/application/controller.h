@@ -14,7 +14,6 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "../system_modules/peripheral/peripheral.h"
 #include <stdint.h>
 #include <zephyr/zbus/zbus.h>
 

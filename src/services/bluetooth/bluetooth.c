@@ -1,5 +1,4 @@
 #include "bluetooth.h"
-#include "../system_modules/peripheral/peripheral.h"
 #include "modules/connection/connection.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
