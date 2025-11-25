@@ -31,8 +31,8 @@ ZBUS_SUBSCRIBER_DEFINE(led_sub, LED_SUB_Q_SIZE);
 
 ZBUS_CHAN_DEFINE(led_chan, led_chan_msg_t, NULL, NULL, ZBUS_OBSERVERS(led_sub), ZBUS_MSG_INIT(0));
 
-#define LED_HANDLER_THREAD_STACK_SIZE 450
-#define LED_HANDLER_THREAD_PRIORITY 6
+#define LED_THREAD_STACK_SIZE 450
+#define LED_THREAD_PRIORITY 6
 
 int handle_led_msg(led_chan_msg_t msg)
 {
@@ -68,7 +68,6 @@ int handle_led_msg(led_chan_msg_t msg)
     ERR_CHK(ret);
 
     if (led_states[led_n] == BLINKING) {
-      LOG_INF("Led is blinking");
       k_msleep(BLINK_FREQ_MS);
       struct led_chan_msg_t new_msg = { led_n, TOGGLE };
       ret = zbus_chan_pub(&led_chan, &new_msg, ZBUS_READ_TIMEOUT_MS);
@@ -82,7 +81,7 @@ int handle_led_msg(led_chan_msg_t msg)
   return ret;
 }
 
-void led_handler_thread_fn(void)
+void led_thread(void)
 {
   struct zbus_channel* chan;
   struct led_chan_msg_t msg;
@@ -100,8 +99,7 @@ void led_handler_thread_fn(void)
   }
 }
 
-K_THREAD_DEFINE(led_handler_thread, LED_HANDLER_THREAD_STACK_SIZE, led_handler_thread_fn, NULL, NULL, NULL,
-    LED_HANDLER_THREAD_PRIORITY, 0, 0);
+K_THREAD_DEFINE(led_thread_id, LED_THREAD_STACK_SIZE, led_thread, NULL, NULL, NULL, LED_THREAD_PRIORITY, 0, 0);
 
 int init_led()
 {
