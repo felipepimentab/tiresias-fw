@@ -110,7 +110,7 @@ int init_led()
   }
 
   for (int i = 0; i < N_LEDS; i++) {
-    ret = gpio_pin_configure_dt(leds[i], GPIO_OUTPUT_ACTIVE);
+    ret = gpio_pin_configure_dt(leds[i], GPIO_OUTPUT_INACTIVE);
     ERR_CHK(ret);
   }
 
