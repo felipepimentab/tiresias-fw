@@ -21,7 +21,7 @@ static struct gpio_dt_spec led1 = GPIO_DT_SPEC_GET(LED1_NODE, gpios);
 static struct gpio_dt_spec led2 = GPIO_DT_SPEC_GET(LED2_NODE, gpios);
 static struct gpio_dt_spec led3 = GPIO_DT_SPEC_GET(LED3_NODE, gpios);
 #define N_LEDS 3
-#define BLINK_FREQ_MS K_MSEC(500)
+#define BLINK_FREQ_MS 500
 #define LED_SUB_Q_SIZE 3
 
 static struct gpio_dt_spec* leds[N_LEDS] = { &led1, &led2, &led3 };
@@ -34,7 +34,7 @@ ZBUS_CHAN_DEFINE(led_chan, led_chan_msg_t, NULL, NULL, ZBUS_OBSERVERS(led_sub), 
 #define LED_HANDLER_THREAD_STACK_SIZE 450
 #define LED_HANDLER_THREAD_PRIORITY 6
 
-int set_led(led_chan_msg_t msg)
+int handle_led_msg(led_chan_msg_t msg)
 {
   int ret = 0;
   board_led_t led_n = msg.led;
@@ -58,6 +58,9 @@ int set_led(led_chan_msg_t msg)
 
   case BLINK:
     led_states[led_n] = BLINKING;
+    struct led_chan_msg_t new_msg = { led_n, TOGGLE };
+    ret = zbus_chan_pub(&led_chan, &new_msg, ZBUS_READ_TIMEOUT_MS);
+    ERR_CHK(ret);
     break;
 
   case TOGGLE:
@@ -66,6 +69,10 @@ int set_led(led_chan_msg_t msg)
 
     if (led_states[led_n] == BLINKING) {
       LOG_INF("Led is blinking");
+      k_msleep(BLINK_FREQ_MS);
+      struct led_chan_msg_t new_msg = { led_n, TOGGLE };
+      ret = zbus_chan_pub(&led_chan, &new_msg, ZBUS_READ_TIMEOUT_MS);
+      ERR_CHK(ret);
     }
     break;
 
@@ -88,7 +95,7 @@ void led_handler_thread_fn(void)
     ret = zbus_chan_read(chan, &msg, ZBUS_READ_TIMEOUT_MS);
     ERR_CHK(ret);
 
-    ret = set_led(msg);
+    ret = handle_led_msg(msg);
     ERR_CHK(ret);
   }
 }

@@ -13,7 +13,7 @@
 #include "controller.h"
 #include "../services/audio_codec/audio_codec.h"
 #include "../services/bluetooth/bluetooth.h"
-#include "../system_modules/peripheral/peripheral.h"
+#include "zbus_common.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/util.h>
@@ -38,7 +38,7 @@ LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
 
 /* === ZBUS Communication Setup === */
 ZBUS_SUBSCRIBER_DEFINE(controller_sub, 8);
-ZBUS_CHAN_DECLARE(button_chan, bluetooth_state_chan, codec_state_chan);
+ZBUS_CHAN_DECLARE(button_chan, bluetooth_state_chan, codec_state_chan, led_chan);
 
 ZBUS_CHAN_DEFINE(controller_event_chan, /* Name */
     controller_event_chan_msg, /* Message type */
@@ -215,6 +215,7 @@ static void handle_state_idle(struct zbus_channel* chan)
   // int ret;
   // ret = bluetooth_send_command(BLUETOOTH_CMD_ADVERTISE);
   // CONTROLLER_CHECK_ERROR(ret, "Failed to send Bluetooth advertise command");
+  LOG_INF("Controller State Idle");
 }
 
 /**
