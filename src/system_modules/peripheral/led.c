@@ -1,3 +1,13 @@
+/**
+ * @file
+ * @brief LED peripheral module.
+ *
+ * Implements LED control using a Zbus subscriber. A worker thread waits for
+ * messages on `led_chan` and handles commands (on/off/toggle/blink). GPIOs
+ * are configured during `init_led()` and the module maintains simple state
+ * to support blinking.
+ */
+
 #include "led.h"
 #include "macros_common.h"
 #include "zbus_common.h"
