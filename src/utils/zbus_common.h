@@ -34,25 +34,25 @@ typedef struct led_chan_msg_t {
 
 /* === BLUETOOTH === */
 typedef enum bt_state {
-  BLUETOOTH_STATE_OFF,
-  BLUETOOTH_STATE_INITIALIZING,
-  BLUETOOTH_STATE_NOT_CONNECTED,
-  BLUETOOTH_STATE_INIT_ERROR,
-  BLUETOOTH_STATE_ADVERTISING,
-  BLUETOOTH_STATE_CONNECTING,
-  BLUETOOTH_STATE_CONNECTED,
-  BLUETOOTH_STATE_CONFIG,
-  BLUETOOTH_STATE_STREAMING,
-  BLUETOOTH_STATE_FOTA,
-  BLUETOOTH_STATE_CONNECTION_ERROR,
-  BLUETOOTH_STATE_DISCONNECTING
+  BT_STATE_OFF,
+  BT_STATE_INITIALIZING,
+  BT_STATE_NOT_CONNECTED,
+  BT_STATE_INIT_ERROR,
+  BT_STATE_ADVERTISING,
+  BT_STATE_CONNECTING,
+  BT_STATE_CONNECTED,
+  BT_STATE_CONFIG,
+  BT_STATE_STREAMING,
+  BT_STATE_FOTA,
+  BT_STATE_CONNECTION_ERROR,
+  BT_STATE_DISCONNECTING
 } bt_state;
 typedef enum bt_cmd {
-  BLUETOOTH_CMD_INIT,
-  BLUETOOTH_CMD_ADVERTISE,
-  BLUETOOTH_CMD_CONNECT,
-  BLUETOOTH_CMD_DISCONNECT,
-  BLUETOOTH_CMD_LOW_POWER,
+  BT_CMD_INIT,
+  BT_CMD_ADVERTISE,
+  BT_CMD_CONNECT,
+  BT_CMD_DISCONNECT,
+  BT_CMD_LOW_POWER,
 
 } bt_cmd;
 typedef struct bt_state_chan_msg {
@@ -61,5 +61,27 @@ typedef struct bt_state_chan_msg {
 typedef struct bt_cmd_chan_msg {
   bt_cmd cmd;
 } bt_cmd_chan_msg;
+
+/* === AUDIO CODEC === */
+typedef enum codec_state {
+  CODEC_STATE_OFF,
+  CODEC_STATE_INITIALIZING,
+  CODEC_STATE_IDLE,
+  CODEC_STATE_ERROR,
+  CODEC_STATE_STANDARD,
+  CODEC_STATE_STREAMING,
+} codec_state;
+typedef enum codec_cmd {
+  CODEC_CMD_INIT,
+  CODEC_CMD_START_STANDARD,
+  CODEC_CMD_START_STREAMING,
+  CODEC_CMD_STOP_STREAMING,
+} codec_cmd;
+typedef struct codec_state_chan_msg {
+  codec_state state;
+} codec_state_chan_msg;
+typedef struct codec_cmd_chan_msg {
+  codec_cmd cmd;
+} codec_cmd_chan_msg;
 
 #endif /* ZBUS_COMMON_H_ */

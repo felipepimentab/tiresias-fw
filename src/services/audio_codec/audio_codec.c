@@ -1,61 +1,26 @@
 #include "audio_codec.h"
-#include "../utils/macros_common.h"
 #include "drivers/adau1787.h"
+#include "macros_common.h"
 #include "modules/i2s/i2s_control.h"
+#include "zbus_common.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 
 LOG_MODULE_REGISTER(audio_codec_module, LOG_LEVEL_INF);
 
-/* === Configuration Constants === */
-#define AUDIO_CODEC_STACK_SIZE 2048 /* Stack size for codec thread */
-#define AUDIO_CODEC_PRIORITY 3 /* Thread priority */
+#define CODEC_THREAD_STACK_SIZE 2048
+#define CODEC_THREAD_PRIORITY 3
 
-/* === Zbus Configuration === */
-/* Subscriber for Audio Codec commands channel */
 ZBUS_SUBSCRIBER_DEFINE(codec_cmd_sub, 4);
 
-/* Channel for Audio Codec state updates */
-ZBUS_CHAN_DEFINE(codec_state_chan, struct codec_state_chan_msg, NULL, NULL, ZBUS_OBSERVERS_EMPTY,
-    ZBUS_MSG_INIT(.state = CODEC_STATE_OFF));
+ZBUS_CHAN_DEFINE(codec_state_chan, struct codec_state_chan_msg, NULL, NULL, ZBUS_OBSERVERS_EMPTY, ZBUS_MSG_INIT(0));
 
-/* Channel for Audio Codec commands */
-ZBUS_CHAN_DEFINE(codec_cmd_chan, struct codec_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(codec_cmd_sub),
-    ZBUS_MSG_INIT(.cmd = CODEC_CMD_INIT));
+ZBUS_CHAN_DEFINE(
+    codec_cmd_chan, struct codec_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(codec_cmd_sub), ZBUS_MSG_INIT(0));
 
-/**
- * @brief Public API function to send commands to the Audio Codec service.
- *
- * @param cmd The command to send.
- * @return int 0 on success, negative error code on failure.
- */
-int codec_send_command(codec_cmd cmd)
-{
-  struct codec_cmd_chan_msg msg;
-  msg.cmd = cmd;
-
-  int err = zbus_chan_pub(&codec_cmd_chan, &msg, K_MSEC(100));
-  if (err != 0) {
-    LOG_ERR("Failed to publish codec command message: %d", err);
-    return err;
-  }
-
-  return 0;
-}
-
-/* === State Management === */
-
-/**
- * @brief Current codec state.
- */
 static codec_state current_state = CODEC_STATE_OFF;
 
-/**
- * @brief Set the codec state.
- *
- * @param state The new codec state.
- */
 static void set_codec_state(codec_state state)
 {
   struct codec_state_chan_msg msg;
@@ -67,7 +32,7 @@ static void set_codec_state(codec_state state)
   current_state = state;
   msg.state = state;
 
-  int err = zbus_chan_pub(&codec_state_chan, &msg, K_MSEC(100));
+  int err = zbus_chan_pub(&codec_state_chan, &msg, ZBUS_READ_TIMEOUT_MS);
   if (err != 0) {
     LOG_ERR("Failed to publish codec state message: %d", err);
   }
@@ -75,32 +40,20 @@ static void set_codec_state(codec_state state)
 
 /* === State Handlers === */
 
-/**
- * @brief Handle codec command in state CODEC_STATE_OFF.
- *
- * @param cmd The command to handle.
- */
 static void handle_state_off(codec_cmd cmd)
 {
   if (cmd != CODEC_CMD_INIT) {
     return;
   }
-  int ret = 0;
 
   set_codec_state(CODEC_STATE_INITIALIZING);
 
-#if CONFIG_AUDIO_CODEC_ADAU1787
-  ret = adau1787_init();
-  if (ret != 0) {
-    LOG_ERR("Failed to initialize ADAU1787 codec: %d", ret);
-    set_codec_state(CODEC_STATE_ERROR);
-    return;
-  }
+#if CODEC_ADAU1787
+  int ret = adau1787_init();
+  ERR_CHK(ret);
+  ret = audio_i2s_init();
+  ERR_CHK(ret);
 #endif
-
-  // ret = audio_i2s_init();
-
-  // ERR_CHK(ret);
 
   set_codec_state(CODEC_STATE_IDLE);
 };
@@ -130,13 +83,6 @@ static void handle_state_streaming(codec_cmd cmd)
   LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
 };
 
-/* === State Machine === */
-
-/**
- * @brief Audio codec state machine.
- *
- * @param cmd The command to handle.
- */
 static void codec_state_machine(codec_cmd cmd)
 {
   switch (current_state) {
@@ -166,12 +112,7 @@ static void codec_state_machine(codec_cmd cmd)
 
 /* === Codec Thread Function === */
 
-/**
- * @brief Audio codec control thread
- *
- * Handles audio codec operations directly
- */
-static void audio_codec_thread_fn(void)
+static void audio_codec_thread(void)
 {
   LOG_DBG("Audio codec thread started");
   int ret = 0;
@@ -196,6 +137,5 @@ static void audio_codec_thread_fn(void)
   }
 }
 
-/* Define and automatically start the thread at boot time */
 K_THREAD_DEFINE(
-    audio_codec_thread, AUDIO_CODEC_STACK_SIZE, audio_codec_thread_fn, NULL, NULL, NULL, AUDIO_CODEC_PRIORITY, 0, 0);
+    audio_codec_thread_id, CODEC_THREAD_STACK_SIZE, audio_codec_thread, NULL, NULL, NULL, CODEC_THREAD_PRIORITY, 0, 0);

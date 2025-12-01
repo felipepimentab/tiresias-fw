@@ -1,5 +1,4 @@
 #include "controller.h"
-#include "../services/audio_codec/audio_codec.h"
 #include "macros_common.h"
 #include "zbus_common.h"
 #include <zephyr/kernel.h>
@@ -7,14 +6,14 @@
 #include <zephyr/sys/util.h>
 #include <zephyr/zbus/zbus.h>
 
-LOG_MODULE_REGISTER(controller_module, CONFIG_LOG_DEFAULT_LEVEL);
+LOG_MODULE_REGISTER(controller, CONFIG_LOG_DEFAULT_LEVEL);
 
 #define CONTROLLER_THREAD_STACK_SIZE 1024
 #define CONTROLLER_THREAD_PRIORITY 3
 #define ZBUS_TIMEOUT_MS 100
 
 ZBUS_SUBSCRIBER_DEFINE(controller_sub, 8);
-ZBUS_CHAN_DECLARE(button_chan, bt_cmd_chan, bt_state_chan, codec_state_chan, led_chan);
+ZBUS_CHAN_DECLARE(button_chan, bt_cmd_chan, bt_state_chan, codec_cmd_chan, codec_state_chan, led_chan);
 
 ZBUS_CHAN_DEFINE(controller_event_chan, controller_event_chan_msg, NULL, NULL, ZBUS_OBSERVERS(controller_sub),
     ZBUS_MSG_INIT(.event = CONTROLLER_EVENT_INIT));
@@ -28,7 +27,7 @@ static void set_controller_state(controller_state state)
     return;
   }
 
-  LOG_INF("State transition: %d -> %d", current_state, state);
+  LOG_DBG("State transition: %d -> %d", current_state, state);
   current_state = state;
 }
 
@@ -40,11 +39,12 @@ static void handle_state_off(struct zbus_channel* chan)
 
   LOG_INF("Initializing system services");
 
-  struct bt_cmd_chan_msg new_bt_msg = { BLUETOOTH_CMD_INIT };
+  struct bt_cmd_chan_msg new_bt_msg = { BT_CMD_INIT };
   ret = zbus_chan_pub(&bt_cmd_chan, &new_bt_msg, ZBUS_READ_TIMEOUT_MS);
   ERR_CHK(ret);
 
-  ret = codec_send_command(CODEC_CMD_INIT);
+  struct codec_cmd_chan_msg new_codec_msg = { CODEC_CMD_INIT };
+  ret = zbus_chan_pub(&codec_cmd_chan, &new_codec_msg, ZBUS_READ_TIMEOUT_MS);
   ERR_CHK(ret);
 
   ret = zbus_chan_add_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
@@ -66,12 +66,12 @@ static void handle_state_initializing(struct zbus_channel* chan)
   ret = zbus_chan_read(&bt_state_chan, &bt_state, K_MSEC(ZBUS_TIMEOUT_MS));
   ERR_CHK(ret);
 
-  if (bt_state == BLUETOOTH_STATE_INITIALIZING) {
+  if (bt_state == BT_STATE_INITIALIZING) {
     LOG_DBG("Bluetooth service still initializing");
     return;
   }
 
-  if (bt_state == BLUETOOTH_STATE_INIT_ERROR) {
+  if (bt_state == BT_STATE_INIT_ERROR) {
     LOG_ERR("Bluetooth initialization failed");
     set_controller_state(CONTROLLER_STATE_ERROR);
     (void)zbus_chan_rm_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
@@ -97,7 +97,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
 
   LOG_DBG("Service states - Bluetooth: %d, Codec: %d", bt_state, cd_state);
 
-  if (bt_state == BLUETOOTH_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
+  if (bt_state == BT_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
     LOG_INF("System initialization complete");
     set_controller_state(CONTROLLER_STATE_IDLE);
 
@@ -108,7 +108,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
 
 static void handle_state_idle(struct zbus_channel* chan)
 {
-  struct bt_cmd_chan_msg new_bt_msg = { BLUETOOTH_CMD_ADVERTISE };
+  struct bt_cmd_chan_msg new_bt_msg = { BT_CMD_ADVERTISE };
   int ret = zbus_chan_pub(&bt_cmd_chan, &new_bt_msg, ZBUS_READ_TIMEOUT_MS);
   ERR_CHK(ret);
   LOG_INF("Controller State Idle");

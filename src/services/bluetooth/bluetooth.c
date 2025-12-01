@@ -14,12 +14,12 @@ LOG_MODULE_REGISTER(bluetooth, LOG_LEVEL_INF);
 ZBUS_SUBSCRIBER_DEFINE(bt_cmd_sub, 4);
 
 ZBUS_CHAN_DEFINE(
-    bt_state_chan, bt_state_chan_msg, NULL, NULL, ZBUS_OBSERVERS_EMPTY, ZBUS_MSG_INIT(.state = BLUETOOTH_STATE_OFF));
+    bt_state_chan, bt_state_chan_msg, NULL, NULL, ZBUS_OBSERVERS_EMPTY, ZBUS_MSG_INIT(.state = BT_STATE_OFF));
 
 ZBUS_CHAN_DEFINE(
-    bt_cmd_chan, bt_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(bt_cmd_sub), ZBUS_MSG_INIT(.cmd = BLUETOOTH_CMD_INIT));
+    bt_cmd_chan, bt_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(bt_cmd_sub), ZBUS_MSG_INIT(.cmd = BT_CMD_INIT));
 
-static bt_state current_state = BLUETOOTH_STATE_OFF;
+static bt_state current_state = BT_STATE_OFF;
 
 static void set_bt_state(bt_state new_state)
 {
@@ -40,30 +40,30 @@ static void set_bt_state(bt_state new_state)
 
 void ble_connected_cb(void)
 {
-  set_bt_state(BLUETOOTH_STATE_CONNECTED);
+  set_bt_state(BT_STATE_CONNECTED);
 }
 
 void ble_disconnected_cb(void)
 {
-  set_bt_state(BLUETOOTH_STATE_NOT_CONNECTED);
+  set_bt_state(BT_STATE_NOT_CONNECTED);
 }
 
 static void handle_state_off(bt_cmd cmd)
 {
-  if (cmd != BLUETOOTH_CMD_INIT) {
+  if (cmd != BT_CMD_INIT) {
     LOG_WRN("Command %d not valid in OFF state", cmd);
     return;
   }
 
   LOG_DBG("Initializing Bluetooth");
-  set_bt_state(BLUETOOTH_STATE_INITIALIZING);
+  set_bt_state(BT_STATE_INITIALIZING);
   int ret = ble_init(ble_connected_cb, ble_disconnected_cb);
   if (ret != 0) {
     LOG_ERR("Failed to initialize Bluetooth: %d", ret);
-    set_bt_state(BLUETOOTH_STATE_INIT_ERROR);
+    set_bt_state(BT_STATE_INIT_ERROR);
     return;
   }
-  set_bt_state(BLUETOOTH_STATE_NOT_CONNECTED);
+  set_bt_state(BT_STATE_NOT_CONNECTED);
 }
 
 static void handle_state_initializing(bt_cmd cmd)
@@ -73,7 +73,7 @@ static void handle_state_initializing(bt_cmd cmd)
 
 static void handle_state_not_connected(bt_cmd cmd)
 {
-  if (cmd != BLUETOOTH_CMD_ADVERTISE) {
+  if (cmd != BT_CMD_ADVERTISE) {
     LOG_WRN("Command %d not valid in NOT_CONNECTED state", cmd);
     return;
   }
@@ -84,12 +84,12 @@ static void handle_state_not_connected(bt_cmd cmd)
     LOG_ERR("Failed to start advertising: %d", ret);
     return;
   }
-  set_bt_state(BLUETOOTH_STATE_ADVERTISING);
+  set_bt_state(BT_STATE_ADVERTISING);
 }
 
 static void handle_state_advertising(bt_cmd cmd)
 {
-  if (cmd != BLUETOOTH_CMD_ADVERTISE) {
+  if (cmd != BT_CMD_ADVERTISE) {
     LOG_WRN("Command %d not valid in ADVERTISING state", cmd);
   }
 
@@ -98,16 +98,16 @@ static void handle_state_advertising(bt_cmd cmd)
     LOG_ERR("Failed to stop advertising: %d", ret);
     return;
   }
-  set_bt_state(BLUETOOTH_STATE_NOT_CONNECTED);
+  set_bt_state(BT_STATE_NOT_CONNECTED);
 }
 
 static void handle_state_connecting(bt_cmd cmd)
 {
   switch (cmd) {
-  case BLUETOOTH_CMD_DISCONNECT:
+  case BT_CMD_DISCONNECT:
     LOG_DBG("Cancelling connection attempt");
-    set_bt_state(BLUETOOTH_STATE_DISCONNECTING);
-    set_bt_state(BLUETOOTH_STATE_NOT_CONNECTED);
+    set_bt_state(BT_STATE_DISCONNECTING);
+    set_bt_state(BT_STATE_NOT_CONNECTED);
     break;
   default:
     LOG_WRN("Command %d not valid in CONNECTING state", cmd);
@@ -119,11 +119,11 @@ static void handle_state_connecting(bt_cmd cmd)
 static void handle_state_connected(bt_cmd cmd)
 {
   switch (cmd) {
-  case BLUETOOTH_CMD_DISCONNECT:
+  case BT_CMD_DISCONNECT:
     LOG_DBG("Disconnecting from connected state");
-    set_bt_state(BLUETOOTH_STATE_DISCONNECTING);
+    set_bt_state(BT_STATE_DISCONNECTING);
     /* Add actual disconnection code here */
-    set_bt_state(BLUETOOTH_STATE_NOT_CONNECTED);
+    set_bt_state(BT_STATE_NOT_CONNECTED);
     break;
   default:
     LOG_WRN("Command %d not valid in CONNECTED state", cmd);
@@ -159,34 +159,34 @@ static void bt_state_machine(bt_cmd cmd)
 {
   /* State machine implementation - routes commands to appropriate handler */
   switch (current_state) {
-  case BLUETOOTH_STATE_OFF:
+  case BT_STATE_OFF:
     handle_state_off(cmd);
     break;
-  case BLUETOOTH_STATE_INITIALIZING:
+  case BT_STATE_INITIALIZING:
     handle_state_initializing(cmd);
     break;
-  case BLUETOOTH_STATE_NOT_CONNECTED:
+  case BT_STATE_NOT_CONNECTED:
     handle_state_not_connected(cmd);
     break;
-  case BLUETOOTH_STATE_ADVERTISING:
+  case BT_STATE_ADVERTISING:
     handle_state_advertising(cmd);
     break;
-  case BLUETOOTH_STATE_CONNECTING:
+  case BT_STATE_CONNECTING:
     handle_state_connecting(cmd);
     break;
-  case BLUETOOTH_STATE_CONNECTED:
+  case BT_STATE_CONNECTED:
     handle_state_connected(cmd);
     break;
-  case BLUETOOTH_STATE_CONFIG:
+  case BT_STATE_CONFIG:
     handle_state_config(cmd);
     break;
-  case BLUETOOTH_STATE_STREAMING:
+  case BT_STATE_STREAMING:
     handle_state_streaming(cmd);
     break;
-  case BLUETOOTH_STATE_FOTA:
+  case BT_STATE_FOTA:
     handle_state_fota(cmd);
     break;
-  case BLUETOOTH_STATE_DISCONNECTING:
+  case BT_STATE_DISCONNECTING:
     handle_state_disconnecting(cmd);
     break;
   default:
