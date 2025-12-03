@@ -15,7 +15,7 @@
 
 #define PRINT_FIRMWARE_VERSION()                                                                                       \
   do {                                                                                                                 \
-    printk("Firmware v%s starting.\n\n", APP_VERSION_EXTENDED_STRING);                                                 \
+    printk("v%s\n\n", APP_VERSION_EXTENDED_STRING);                                                                    \
   } while (0)
 
 #endif // PRINT_H

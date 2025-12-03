@@ -101,6 +101,10 @@ static void handle_state_initializing(struct zbus_channel* chan)
     LOG_INF("System initialization complete");
     set_controller_state(CONTROLLER_STATE_IDLE);
 
+    struct bt_cmd_chan_msg new_bt_msg = { BT_CMD_ADVERTISE };
+    ret = zbus_chan_pub(&bt_cmd_chan, &new_bt_msg, ZBUS_READ_TIMEOUT_MS);
+    ERR_CHK(ret);
+
     (void)zbus_chan_rm_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     return;
   }
@@ -108,9 +112,6 @@ static void handle_state_initializing(struct zbus_channel* chan)
 
 static void handle_state_idle(struct zbus_channel* chan)
 {
-  struct bt_cmd_chan_msg new_bt_msg = { BT_CMD_ADVERTISE };
-  int ret = zbus_chan_pub(&bt_cmd_chan, &new_bt_msg, ZBUS_READ_TIMEOUT_MS);
-  ERR_CHK(ret);
   LOG_INF("Controller State Idle");
 }
 
