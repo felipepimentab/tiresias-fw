@@ -1,3 +1,7 @@
+&mx25r16 {
+  status = "okay";
+};
+
 / {
   chosen {
     nordic,pm-ext-flash = &mx25r16;
