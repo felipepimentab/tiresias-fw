@@ -37,11 +37,31 @@ static struct gpio_dt_spec led3 = GPIO_DT_SPEC_GET(LED3_NODE, gpios);
 static struct gpio_dt_spec* leds[N_LEDS] = { &led1, &led2, &led3 };
 static led_state_t led_states[N_LEDS] = { OFF, OFF, OFF };
 
+static bool is_any_led_blinking(void)
+{
+  for (int i = 0; i < N_LEDS; i++) {
+    if (led_states[i] == BLINKING) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static void blink_timer_handler(struct k_timer* timer)
+{
+  for (int i = 0; i < N_LEDS; i++) {
+    if (led_states[i] == BLINKING) {
+      gpio_pin_toggle_dt(leds[i]);
+    }
+  }
+}
+K_TIMER_DEFINE(blink_timer, blink_timer_handler, NULL);
+
 ZBUS_SUBSCRIBER_DEFINE(led_sub, LED_SUB_Q_SIZE);
 
 ZBUS_CHAN_DEFINE(led_chan, led_chan_msg_t, NULL, NULL, ZBUS_OBSERVERS(led_sub), ZBUS_MSG_INIT(0));
 
-#define LED_THREAD_STACK_SIZE 450
+#define LED_THREAD_STACK_SIZE 1024
 #define LED_THREAD_PRIORITY 6
 
 int handle_led_msg(led_chan_msg_t msg)
@@ -55,34 +75,31 @@ int handle_led_msg(led_chan_msg_t msg)
 
   switch (msg.cmd) {
   case TURN_OFF:
+    led_states[led_n] = OFF;
     ret = gpio_pin_set_dt(leds[led_n], GPIO_OUTPUT_INACTIVE);
     ERR_CHK(ret);
-    led_states[led_n] = OFF;
+    if (!is_any_led_blinking()) {
+      k_timer_stop(&blink_timer);
+    }
     break;
 
   case TURN_ON:
+    led_states[led_n] = ON;
     ret = gpio_pin_set_dt(leds[led_n], GPIO_OUTPUT_ACTIVE);
     ERR_CHK(ret);
-    led_states[led_n] = ON;
+    if (!is_any_led_blinking()) {
+      k_timer_stop(&blink_timer);
+    }
     break;
 
   case BLINK:
     led_states[led_n] = BLINKING;
-    struct led_chan_msg_t new_msg = { led_n, TOGGLE };
-    ret = zbus_chan_pub(&led_chan, &new_msg, ZBUS_READ_TIMEOUT_MS);
-    ERR_CHK(ret);
+    k_timer_start(&blink_timer, K_MSEC(BLINK_FREQ_MS), K_MSEC(BLINK_FREQ_MS));
     break;
 
   case TOGGLE:
     ret = gpio_pin_toggle_dt(leds[led_n]);
     ERR_CHK(ret);
-
-    if (led_states[led_n] == BLINKING) {
-      k_msleep(BLINK_FREQ_MS);
-      struct led_chan_msg_t new_msg = { led_n, TOGGLE };
-      ret = zbus_chan_pub(&led_chan, &new_msg, ZBUS_READ_TIMEOUT_MS);
-      ERR_CHK(ret);
-    }
     break;
 
   default:
