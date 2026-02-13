@@ -19,6 +19,8 @@ ZBUS_CHAN_DEFINE(
 ZBUS_CHAN_DEFINE(
     bt_cmd_chan, bt_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(bt_cmd_sub), ZBUS_MSG_INIT(.cmd = BT_CMD_INIT));
 
+ZBUS_CHAN_DECLARE(led_chan);
+
 static bt_state current_state = BT_STATE_OFF;
 
 static void set_bt_state(bt_state new_state)
@@ -32,9 +34,25 @@ static void set_bt_state(bt_state new_state)
   current_state = new_state;
   msg.state = new_state;
 
+  struct led_chan_msg_t led_msg;
+
+  led_msg.led = LED_1;
+  if (new_state == BT_STATE_ADVERTISING) {
+    led_msg.cmd = BLINK;
+  } else if (new_state == BT_STATE_CONNECTED) {
+    led_msg.cmd = TURN_ON;
+  } else {
+    led_msg.cmd = TURN_OFF;
+  }
+
   int err = zbus_chan_pub(&bt_state_chan, &msg, K_MSEC(100));
   if (err) {
     LOG_ERR("Failed to publish Bluetooth state change: %d", err);
+  }
+
+  err = zbus_chan_pub(&led_chan, &led_msg, K_MSEC(100));
+  if (err) {
+    LOG_ERR("Failed to send LED command: %d", err);
   }
 }
 
@@ -45,7 +63,7 @@ void ble_connected_cb(void)
 
 void ble_disconnected_cb(void)
 {
-  set_bt_state(BT_STATE_NOT_CONNECTED);
+  set_bt_state(BT_STATE_ADVERTISING);
 }
 
 static void handle_state_off(bt_cmd cmd)
