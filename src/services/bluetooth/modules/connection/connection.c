@@ -11,6 +11,7 @@ LOG_MODULE_REGISTER(connection, CONFIG_LOG_DEFAULT_LEVEL);
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
+struct bt_conn* my_conn = NULL;
 
 /**
  * @brief Storage for external callback functions
@@ -109,6 +110,7 @@ static void connected_cb(struct bt_conn* conn, uint8_t err)
   } else {
     LOG_INF("Connected");
   }
+  my_conn = bt_conn_ref(conn);
 
   /* Call external callback if provided */
   if (external_connected_cb) {
@@ -136,11 +138,17 @@ static void connected_cb(struct bt_conn* conn, uint8_t err)
 static void disconnected_cb(struct bt_conn* conn, uint8_t reason)
 {
   LOG_INF("Disconnected (reason %u)", reason);
+  bt_conn_unref(my_conn);
 
   /* Call external callback if provided */
   if (external_disconnected_cb) {
     external_disconnected_cb(conn, reason);
   }
+}
+
+static void recycled_cb(void)
+{
+  ble_start_advertising();
 }
 
 /**
@@ -159,6 +167,7 @@ static void disconnected_cb(struct bt_conn* conn, uint8_t reason)
 BT_CONN_CB_DEFINE(conn_callbacks) = {
   .connected = connected_cb,
   .disconnected = disconnected_cb,
+  .recycled = recycled_cb,
 };
 
 /**
