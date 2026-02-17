@@ -1,8 +1,8 @@
 / {
   chosen {
     // nRF5340 DK
-    nordic,pm-ext-flash = &mx25r64;
+    // nordic,pm-ext-flash = &mx25r64;
     // Tiresias DK
-    // nordic,pm-ext-flash = &mx25r16;
+    nordic,pm-ext-flash = &mx25r16;
   };
 };

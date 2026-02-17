@@ -48,7 +48,7 @@ static void handle_state_off(codec_cmd cmd)
 
   set_codec_state(CODEC_STATE_INITIALIZING);
 
-#if CODEC_ADAU1787
+#if CONFIG_AUDIO_CODEC_ADAU1787
   int ret = adau1787_init();
   ERR_CHK(ret);
   ret = audio_i2s_init();

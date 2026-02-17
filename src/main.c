@@ -25,8 +25,8 @@ int main(void)
   ret = init_led();
   ERR_CHK(ret);
 
-  ret = init_storage();
-  ERR_CHK(ret);
+  // ret = init_storage();
+  // ERR_CHK(ret);
 
   ret = controller_init();
   ERR_CHK_MSG(ret, "Failed to initialize controller module");
