@@ -55,5 +55,9 @@ int audio_i2s_init(void)
   ret = nrfx_i2s_init(&i2s_inst, &cfg, i2s_comp_handler);
   __ASSERT_NO_MSG(ret == NRFX_SUCCESS);
 
+  if (ret == NRFX_SUCCESS) {
+    return 0;
+  }
+
   return ret;
 }
