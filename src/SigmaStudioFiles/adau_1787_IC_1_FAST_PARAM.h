@@ -1,7 +1,7 @@
 /*
- * File:           E:\adau-1787-dsp-program\adau_1787_IC_1_FAST_PARAM.h
+ * File:           D:\sstudio-files\adau_1787_IC_1_FAST_PARAM.h
  *
- * Created:        Friday, September 20, 2024 2:49:24 PM
+ * Created:        Wednesday, February 25, 2026 5:12:15 PM
  * Description:    adau_1787:IC 1-Fast parameter RAM definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -14,7 +14,7 @@
  * are intended for resale to audio product end users. This software
  * may not be distributed whole or in any part to third parties.
  *
- * Copyright ©2024 Analog Devices, Inc. All rights reserved.
+ * Copyright ©2026 Analog Devices, Inc. All rights reserved.
  */
 #ifndef __ADAU_1787_IC_1_FAST_PARAM_H__
 #define __ADAU_1787_IC_1_FAST_PARAM_H__

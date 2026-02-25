@@ -1,7 +1,7 @@
 /*
- * File:           E:\adau-1787-dsp-program\adau_1787_IC_1_FAST_REG.h
+ * File:           D:\sstudio-files\adau_1787_IC_1_FAST_REG.h
  *
- * Created:        Friday, September 20, 2024 2:49:24 PM
+ * Created:        Wednesday, February 25, 2026 5:12:15 PM
  * Description:    adau_1787:IC 1-Fast control register definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -14,7 +14,7 @@
  * are intended for resale to audio product end users. This software
  * may not be distributed whole or in any part to third parties.
  *
- * Copyright ©2024 Analog Devices, Inc. All rights reserved.
+ * Copyright ©2026 Analog Devices, Inc. All rights reserved.
  */
 #ifndef __ADAU_1787_IC_1_FAST_REG_H__
 #define __ADAU_1787_IC_1_FAST_REG_H__
@@ -48,7 +48,7 @@
 /* PLL_MB_PGA_PWR  - Registers (IC 1_Fast) */
 #define REG_PLL_MB_PGA_PWR_IC_1_Fast_ADDR         0xC005
 #define REG_PLL_MB_PGA_PWR_IC_1_Fast_BYTE         1
-#define REG_PLL_MB_PGA_PWR_IC_1_Fast_VALUE        0x1
+#define REG_PLL_MB_PGA_PWR_IC_1_Fast_VALUE        0xF
 
 /* DMIC_PWR  - Registers (IC 1_Fast) */
 #define REG_DMIC_PWR_IC_1_Fast_ADDR               0xC006
@@ -58,7 +58,7 @@
 /* SAI_CLK_PWR  - Registers (IC 1_Fast) */
 #define REG_SAI_CLK_PWR_IC_1_Fast_ADDR            0xC007
 #define REG_SAI_CLK_PWR_IC_1_Fast_BYTE            1
-#define REG_SAI_CLK_PWR_IC_1_Fast_VALUE           0x3
+#define REG_SAI_CLK_PWR_IC_1_Fast_VALUE           0x0
 
 /* DSP_PWR  - Registers (IC 1_Fast) */
 #define REG_DSP_PWR_IC_1_Fast_ADDR                0xC008
@@ -93,7 +93,7 @@
 /* CLK_CTRL1  - Registers (IC 1_Fast) */
 #define REG_CLK_CTRL1_IC_1_Fast_ADDR              0xC00E
 #define REG_CLK_CTRL1_IC_1_Fast_BYTE              1
-#define REG_CLK_CTRL1_IC_1_Fast_VALUE             0xC8
+#define REG_CLK_CTRL1_IC_1_Fast_VALUE             0xC0
 
 /* CLK_CTRL2  - Registers (IC 1_Fast) */
 #define REG_CLK_CTRL2_IC_1_Fast_ADDR              0xC00F
@@ -308,12 +308,12 @@
 /* DAC_VOL0  - Registers (IC 1_Fast) */
 #define REG_DAC_VOL0_IC_1_Fast_ADDR               0xC03C
 #define REG_DAC_VOL0_IC_1_Fast_BYTE               1
-#define REG_DAC_VOL0_IC_1_Fast_VALUE              0x50
+#define REG_DAC_VOL0_IC_1_Fast_VALUE              0x40
 
 /* DAC_VOL1  - Registers (IC 1_Fast) */
 #define REG_DAC_VOL1_IC_1_Fast_ADDR               0xC03D
 #define REG_DAC_VOL1_IC_1_Fast_BYTE               1
-#define REG_DAC_VOL1_IC_1_Fast_VALUE              0x50
+#define REG_DAC_VOL1_IC_1_Fast_VALUE              0x40
 
 /* DAC_ROUTE0  - Registers (IC 1_Fast) */
 #define REG_DAC_ROUTE0_IC_1_Fast_ADDR             0xC03E
@@ -328,7 +328,7 @@
 /* HP_CTRL  - Registers (IC 1_Fast) */
 #define REG_HP_CTRL_IC_1_Fast_ADDR                0xC040
 #define REG_HP_CTRL_IC_1_Fast_BYTE                1
-#define REG_HP_CTRL_IC_1_Fast_VALUE               0x0
+#define REG_HP_CTRL_IC_1_Fast_VALUE               0x11
 
 /* FDEC_CTRL1  - Registers (IC 1_Fast) */
 #define REG_FDEC_CTRL1_IC_1_Fast_ADDR             0xC041
@@ -998,7 +998,7 @@
 /* SELFBOOT_CTRL  - Registers (IC 1_Fast) */
 #define REG_SELFBOOT_CTRL_IC_1_Fast_ADDR          0xC0DA
 #define REG_SELFBOOT_CTRL_IC_1_Fast_BYTE          1
-#define REG_SELFBOOT_CTRL_IC_1_Fast_VALUE         0x41
+#define REG_SELFBOOT_CTRL_IC_1_Fast_VALUE         0x40
 
 /* SW_EN_CTRL  - Registers (IC 1_Fast) */
 #define REG_SW_EN_CTRL_IC_1_Fast_ADDR             0xC0DB
@@ -1169,9 +1169,9 @@
 
 /* PLL_MB_PGA_PWR (IC 1_Fast) */
 #define R5_PLL_EN_IC_1_Fast                       0x1    /* 1b	[0] */
-#define R5_XTAL_EN_IC_1_Fast                      0x0    /* 0b	[1] */
-#define R5_MBIAS0_EN_IC_1_Fast                    0x0    /* 0b	[2] */
-#define R5_MBIAS1_EN_IC_1_Fast                    0x0    /* 0b	[3] */
+#define R5_XTAL_EN_IC_1_Fast                      0x1    /* 1b	[1] */
+#define R5_MBIAS0_EN_IC_1_Fast                    0x1    /* 1b	[2] */
+#define R5_MBIAS1_EN_IC_1_Fast                    0x1    /* 1b	[3] */
 #define R5_PGA0_EN_IC_1_Fast                      0x0    /* 0b	[4] */
 #define R5_PGA1_EN_IC_1_Fast                      0x0    /* 0b	[5] */
 #define R5_PGA2_EN_IC_1_Fast                      0x0    /* 0b	[6] */
@@ -1220,8 +1220,8 @@
 #define R6_DMIC7_EN_IC_1_Fast_SHIFT               7
 
 /* SAI_CLK_PWR (IC 1_Fast) */
-#define R7_SPT0_IN_EN_IC_1_Fast                   0x1    /* 1b	[0] */
-#define R7_SPT0_OUT_EN_IC_1_Fast                  0x1    /* 1b	[1] */
+#define R7_SPT0_IN_EN_IC_1_Fast                   0x0    /* 0b	[0] */
+#define R7_SPT0_OUT_EN_IC_1_Fast                  0x0    /* 0b	[1] */
 #define R7_SPT1_IN_EN_IC_1_Fast                   0x0    /* 0b	[2] */
 #define R7_SPT1_OUT_EN_IC_1_Fast                  0x0    /* 0b	[3] */
 #define R7_DMIC_CLK0_EN_IC_1_Fast                 0x0    /* 0b	[4] */
@@ -1358,7 +1358,7 @@
 
 /* CLK_CTRL1 (IC 1_Fast) */
 #define R14_PLL_SOURCE_IC_1_Fast                  0x0    /* 000b	[2:0] */
-#define R14_XTAL_MODE_IC_1_Fast                   0x1    /* 1b	[3] */
+#define R14_XTAL_MODE_IC_1_Fast                   0x0    /* 0b	[3] */
 #define R14_PLL_TYPE_IC_1_Fast                    0x0    /* 0b	[4] */
 #define R14_PLL_BYPASS_IC_1_Fast                  0x0    /* 0b	[5] */
 #define R14_SYNC_SOURCE_IC_1_Fast                 0x3    /* 11b	[7:6] */
@@ -1788,12 +1788,12 @@
 #define R56_DAC1_MUTE_IC_1_Fast_SHIFT             7
 
 /* DAC_VOL0 (IC 1_Fast) */
-#define R57_DAC0_VOL_IC_1_Fast                    0x50   /* 01010000b	[7:0] */
+#define R57_DAC0_VOL_IC_1_Fast                    0x40   /* 01000000b	[7:0] */
 #define R57_DAC0_VOL_IC_1_Fast_MASK               0xFF
 #define R57_DAC0_VOL_IC_1_Fast_SHIFT              0
 
 /* DAC_VOL1 (IC 1_Fast) */
-#define R58_DAC1_VOL_IC_1_Fast                    0x50   /* 01010000b	[7:0] */
+#define R58_DAC1_VOL_IC_1_Fast                    0x40   /* 01000000b	[7:0] */
 #define R58_DAC1_VOL_IC_1_Fast_MASK               0xFF
 #define R58_DAC1_VOL_IC_1_Fast_SHIFT              0
 
@@ -1808,8 +1808,8 @@
 #define R60_DAC1_ROUTE_IC_1_Fast_SHIFT            0
 
 /* HP_CTRL (IC 1_Fast) */
-#define R61_HP0_MODE_IC_1_Fast                    0x0    /* 0b	[0] */
-#define R61_HP1_MODE_IC_1_Fast                    0x0    /* 0b	[4] */
+#define R61_HP0_MODE_IC_1_Fast                    0x1    /* 1b	[0] */
+#define R61_HP1_MODE_IC_1_Fast                    0x1    /* 1b	[4] */
 #define R61_HP0_MODE_IC_1_Fast_MASK               0x1
 #define R61_HP0_MODE_IC_1_Fast_SHIFT              0
 #define R61_HP1_MODE_IC_1_Fast_MASK               0x10
@@ -3072,7 +3072,7 @@
 #define R194_MP12_MODE_IC_1_Fast_SHIFT            0
 
 /* SELFBOOT_CTRL (IC 1_Fast) */
-#define R195_SELFBOOT_DRIVE_IC_1_Fast             0x1    /* 01b	[1:0] */
+#define R195_SELFBOOT_DRIVE_IC_1_Fast             0x0    /* 00b	[1:0] */
 #define R195_SELFBOOT_IS_IC_1_Fast                0x0    /* 0b	[2] */
 #define R195_SELFBOOT_PULL_EN_IC_1_Fast           0x0    /* 0b	[4] */
 #define R195_SELFBOOT_PULL_SEL_IC_1_Fast          0x0    /* 0b	[5] */
