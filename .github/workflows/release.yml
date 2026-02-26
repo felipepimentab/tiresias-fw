@@ -1,0 +1,30 @@
+name: Upload DFU Release Asset
+
+# This workflow runs whenever a new release is 'published'.
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload_asset:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Check out the repository code, which includes the pre-built .zip
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Upload the versioned ZIP file to the GitHub Release
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          # This token is automatically provided by GitHub Actions.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # URL for uploading assets to the release that triggered the workflow
+          upload_url: ${{ github.event.release.upload_url }}
+          # Path to the file in your repository
+          asset_path: ./tiresias-fw/build/dfu_application.zip
+          # Name of the asset as it will appear in the release
+          asset_name: dfu_application.zip
+          # Content type of the asset
+          asset_content_type: application/zip

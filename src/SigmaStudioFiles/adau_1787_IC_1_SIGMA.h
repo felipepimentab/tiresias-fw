@@ -1,7 +1,7 @@
 /*
  * File:           D:\sstudio-files\adau_1787_IC_1_SIGMA.h
  *
- * Created:        Wednesday, February 25, 2026 5:27:28 PM
+ * Created:        Wednesday, February 25, 2026 6:24:29 PM
  * Description:    adau_1787:IC 1-Sigma program data.
  *
  * This software is distributed in the hope that it will be useful,
@@ -44,7 +44,7 @@ ADI_REG_TYPE NON_MODULO_RAM__Data_IC_1_Sigma[NON_MODULO_RAM__SIZE_IC_1_Sigma] = 
 };
 
 /* DSP Program Data */
-#define PROGRAM_SIZE_IC_1_Sigma 300
+#define PROGRAM_SIZE_IC_1_Sigma 280
 #define PROGRAM_ADDR_IC_1_Sigma 20480
 ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x00,
@@ -242,16 +242,6 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x00,
   0xE2,
   0x00,
-  0x80,
-  0x19,
-  0x08,
-  0x20,
-  0x00,
-  0x00,
-  0x20,
-  0x00,
-  0xE2,
-  0x00,
   0x7F,
   0xE0,
   0x0B,
@@ -283,22 +273,12 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x20,
   0x00,
   0x00,
-  0x30,
+  0x20,
   0x00,
   0xE2,
   0x00,
   0x00,
-  0x20,
-  0x0A,
-  0x20,
-  0x00,
-  0x00,
-  0x40,
-  0x00,
-  0xE2,
-  0x00,
-  0x00,
-  0x39,
+  0x29,
   0x08,
   0x20,
   0x00,
@@ -308,7 +288,7 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0xE2,
   0x00,
   0x00,
-  0x49,
+  0x29,
   0x08,
   0x20,
   0x00,
