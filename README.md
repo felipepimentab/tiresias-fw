@@ -66,6 +66,12 @@ The firmware implements an event-driven, state-machine based layered architectur
 
 ...
 
+## Versioning
+
+This project uses [Zephyr's application version management system](https://docs.zephyrproject.org/latest/build/version/index.html) as a base alongside GitHub releases to share the compiled application binary used for DFU over BLE.
+
+For more details, see [versioning.md](versioning.md).
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
