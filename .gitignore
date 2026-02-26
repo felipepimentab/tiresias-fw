@@ -1,3 +1,2 @@
-build/*
-!build/dfu_application.zip
+build*
 .DS_Store
