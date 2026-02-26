@@ -36,7 +36,7 @@ static void set_bt_state(bt_state new_state)
 
   struct led_chan_msg_t led_msg;
 
-  led_msg.led = LED_1;
+  led_msg.led = LED_2;
   if (new_state == BT_STATE_ADVERTISING) {
     led_msg.cmd = BLINK;
   } else if (new_state == BT_STATE_CONNECTED) {
