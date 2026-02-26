@@ -50,6 +50,8 @@ sh scripts/version.sh patch
 
 This updates the `VERSION` file, resetting lower-order components as appropriate and keeping `EXTRAVERSION` unchanged.
 
+After bumping the version perform the build again so that the version string on the firmware are properly updated.
+
 ### Create and Push a Tag
 
 Create an annotated tag from the current `VERSION` contents and push it (also commits the `VERSION` change if needed):
