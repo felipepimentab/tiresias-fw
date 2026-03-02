@@ -49,7 +49,7 @@ Clone the board files repository:
 
 ```sh
 # inside tiresias-workspace
-git clone https://github.com/felipepimentab/boards.git
+git clone https://github.com/felipepimentab/tiresias-boards.git
 ```
 
 ### Hardware overview
