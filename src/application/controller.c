@@ -106,6 +106,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
     ERR_CHK(ret);
 
     (void)zbus_chan_rm_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+    (void)zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     return;
   }
 }
