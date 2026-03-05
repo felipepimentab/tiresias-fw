@@ -1,9 +1,10 @@
 # Tiresias Firmware
 
+<img align="right" alt="Tiresias Logo" height="160px" src="https://tiresias-website.vercel.app/tiresias-icon-full.png" />
+
 ![USP](https://img.shields.io/badge/research-EESC_USP-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-0.1.0-blue?style=for-the-badge)
-![GitHub contributors](https://img.shields.io/github/contributors/felipepimentab/tiresias-fw?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-0.4.4-blue?style=for-the-badge)
 ![GitHub last commit](https://img.shields.io/github/last-commit/felipepimentab/tiresias-fw?style=for-the-badge)
 
 Source code and associated files for the firmware used in the Tiresias project
