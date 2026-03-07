@@ -114,7 +114,7 @@
             <Address>49157</Address>
             <AddrIncr>0</AddrIncr>
             <Size>1</Size>
-            <Data>0x0E, </Data>
+            <Data>0x0C, </Data>
         </Register>
         <Register>
             <Name>IC 1.CHIP_PWR</Name>
@@ -184,7 +184,7 @@
             <Address>49157</Address>
             <AddrIncr>0</AddrIncr>
             <Size>1</Size>
-            <Data>0x0F, </Data>
+            <Data>0x0D, </Data>
         </Register>
         <Register>
             <Name>IC 1.CLK_CTRL9</Name>
@@ -1552,7 +1552,7 @@
             <Data>0x01, </Data>
         </Register>
         <Module>
-            <CellName>Single 1</CellName>
+            <CellName>Main Volume</CellName>
             <Algorithm>
                 <AlgoName>ALG0</AlgoName>
                 <DetailedName>GainS200AlgGrowDP1</DetailedName>

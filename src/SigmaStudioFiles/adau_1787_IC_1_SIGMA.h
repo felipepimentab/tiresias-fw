@@ -1,7 +1,7 @@
 /*
- * File:           D:\sstudio-files\adau_1787_IC_1_SIGMA.h
+ * File:           D:\tiresias-adau1787\adau_1787_IC_1_SIGMA.h
  *
- * Created:        Wednesday, February 25, 2026 6:24:29 PM
+ * Created:        Saturday, March 7, 2026 12:13:01 PM
  * Description:    adau_1787:IC 1-Sigma program data.
  *
  * This software is distributed in the hope that it will be useful,
@@ -396,7 +396,7 @@ ADI_REG_TYPE R2_DAC_VOL1_IC_1_Sigma_Default[REG_DAC_VOL1_IC_1_Sigma_BYTE] = { 0x
 ADI_REG_TYPE R3_ADC_DAC_HP_PWR_IC_1_Sigma_Default[REG_ADC_DAC_HP_PWR_IC_1_Sigma_BYTE] = { 0x00 };
 
 /* Register Default - IC 1.PLL_MB_PGA_PWR */
-ADI_REG_TYPE R4_PLL_MB_PGA_PWR_IC_1_Sigma_Default[REG_PLL_MB_PGA_PWR_IC_1_Sigma_BYTE] = { 0x0E };
+ADI_REG_TYPE R4_PLL_MB_PGA_PWR_IC_1_Sigma_Default[REG_PLL_MB_PGA_PWR_IC_1_Sigma_BYTE] = { 0x0C };
 
 /* Register Default - IC 1.CHIP_PWR */
 ADI_REG_TYPE R5_CHIP_PWR_IC_1_Sigma_Default[REG_CHIP_PWR_IC_1_Sigma_BYTE] = { 0x17 };
@@ -426,7 +426,7 @@ ADI_REG_TYPE R12_CLK_CTRL7_IC_1_Sigma_Default[REG_CLK_CTRL7_IC_1_Sigma_BYTE] = {
 ADI_REG_TYPE R13_CLK_CTRL9_IC_1_Sigma_Default[REG_CLK_CTRL9_IC_1_Sigma_BYTE] = { 0x01 };
 
 /* Register Default - IC 1.PLL_MB_PGA_PWR */
-ADI_REG_TYPE R14_PLL_MB_PGA_PWR_IC_1_Sigma_Default[REG_PLL_MB_PGA_PWR_IC_1_Sigma_BYTE] = { 0x0F };
+ADI_REG_TYPE R14_PLL_MB_PGA_PWR_IC_1_Sigma_Default[REG_PLL_MB_PGA_PWR_IC_1_Sigma_BYTE] = { 0x0D };
 
 /* Register Default - IC 1.CLK_CTRL9 */
 ADI_REG_TYPE R15_CLK_CTRL9_IC_1_Sigma_Default[REG_CLK_CTRL9_IC_1_Sigma_BYTE] = { 0x00 };

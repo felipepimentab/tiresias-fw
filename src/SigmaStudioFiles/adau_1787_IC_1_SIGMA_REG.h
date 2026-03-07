@@ -1,7 +1,7 @@
 /*
- * File:           D:\sstudio-files\adau_1787_IC_1_SIGMA_REG.h
+ * File:           D:\tiresias-adau1787\adau_1787_IC_1_SIGMA_REG.h
  *
- * Created:        Wednesday, February 25, 2026 6:24:29 PM
+ * Created:        Saturday, March 7, 2026 12:13:01 PM
  * Description:    adau_1787:IC 1-Sigma control register definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -48,7 +48,7 @@
 /* PLL_MB_PGA_PWR  - Registers (IC 1_Sigma) */
 #define REG_PLL_MB_PGA_PWR_IC_1_Sigma_ADDR        0xC005
 #define REG_PLL_MB_PGA_PWR_IC_1_Sigma_BYTE        1
-#define REG_PLL_MB_PGA_PWR_IC_1_Sigma_VALUE       0xF
+#define REG_PLL_MB_PGA_PWR_IC_1_Sigma_VALUE       0xD
 
 /* DMIC_PWR  - Registers (IC 1_Sigma) */
 #define REG_DMIC_PWR_IC_1_Sigma_ADDR              0xC006
@@ -1169,7 +1169,7 @@
 
 /* PLL_MB_PGA_PWR (IC 1_Sigma) */
 #define R5_PLL_EN_IC_1_Sigma                      0x1    /* 1b	[0] */
-#define R5_XTAL_EN_IC_1_Sigma                     0x1    /* 1b	[1] */
+#define R5_XTAL_EN_IC_1_Sigma                     0x0    /* 0b	[1] */
 #define R5_MBIAS0_EN_IC_1_Sigma                   0x1    /* 1b	[2] */
 #define R5_MBIAS1_EN_IC_1_Sigma                   0x1    /* 1b	[3] */
 #define R5_PGA0_EN_IC_1_Sigma                     0x0    /* 0b	[4] */
