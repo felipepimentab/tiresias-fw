@@ -1,5 +1,15 @@
+/*
+@file: bluetooth.c
+@name: Bluetooth manager
+@purpose: Central point for BLE functionality
+@responsibilities:
+- Init BLE stack
+- Init all BLE modules
+- Keep and manage BLE state
+*/
+
 #include "bluetooth.h"
-#include "modules/connection/connection.h"
+#include "modules/connection.h"
 #include "zbus_common.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
