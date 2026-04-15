@@ -17,13 +17,10 @@
 LOG_MODULE_REGISTER(adau1787_driver, LOG_LEVEL_INF);
 
 /** @brief I2C Device Tree Specification for ADAU1787 */
-#define I2C_NODE DT_NODELABEL(adau_1787)
-
-/** @brief Enable passthrough mode for debug */
-#define SSTUDIO_DEFAULT_DOWNLOAD true
+#define ADAU_I2C_NODE DT_NODELABEL(adau_1787)
 
 /** @brief I2C device configuration structure for ADAU1787 */
-const struct i2c_dt_spec adau1787_i2c = I2C_DT_SPEC_GET(I2C_NODE);
+const struct i2c_dt_spec adau1787_i2c = I2C_DT_SPEC_GET(ADAU_I2C_NODE);
 
 static int adau_init_error = 0;
 
@@ -144,14 +141,6 @@ int adau1787_read_register(sub_addr_t reg_addr, reg_word_t* value)
     return -1;
   }
   return adau1787_read(reg_addr, value, ADAU1787_CTRL_REG_WIDTH_BYTES);
-}
-
-// Other
-
-int adau1787_mute(bool mute)
-{
-  // Not yet implemented
-  return 0;
 }
 
 // Conversions

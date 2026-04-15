@@ -57,7 +57,7 @@
 /** @brief Program RAM width (40 bits) */
 #define ADAU1787_PROG_RAM_WIDTH_BYTES 5
 /** @brief Data RAM width (40 bits) */
-#define ADAU1787_DATA_RAM_WIDTH_BYTES 4
+#define ADAU1787_DATA_RAM_WIDTH_BYTES 5
 
 /** @brief Register word (8 bits) */
 typedef uint8_t reg_word_t;
@@ -127,6 +127,20 @@ int adau1787_write_register(sub_addr_t reg_addr, reg_word_t* data);
 int adau1787_safeload_write(sub_addr_t target_addr, uint8_t* data, size_t num_words);
 
 /**
+ * @brief Read data from the ADAU1787.
+ *
+ * Read operations use burst mode: the master provides a starting internal
+ * address and the ADAU1787 auto-increments the address for each subsequent
+ * byte, allowing continuous reads without re-sending addresses.
+ *
+ * @param start_addr The internal address to start reading from.
+ * @param value Pointer to the buffer where the read bytes will be stored.
+ * @param len Number of bytes to read.
+ * @return 0 if successful, negative error code otherwise.
+ */
+int adau1787_read(sub_addr_t start_addr, uint8_t* value, size_t len);
+
+/**
  * @brief Read a register from the ADAU1787.
  *
  * @param reg_addr The register address to read from.
@@ -134,16 +148,6 @@ int adau1787_safeload_write(sub_addr_t target_addr, uint8_t* data, size_t num_wo
  * @return 0 if successful, negative error code otherwise.
  */
 int adau1787_read_register(sub_addr_t reg_addr, reg_word_t* value);
-
-/**
- * @brief Mute or unmute the ADAU1787.
- *
- * @param mute True to mute, false to unmute.
- * @return 0 if successful, negative error code otherwise.
- *
- * @note Not yet implemented
- */
-int adau1787_mute(bool mute);
 
 /**
  * @brief Convert a 16-bit address into two bytes.
