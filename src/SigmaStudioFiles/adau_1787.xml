@@ -527,7 +527,7 @@
             <Address>49216</Address>
             <AddrIncr>0</AddrIncr>
             <Size>1</Size>
-            <Data>0x11, </Data>
+            <Data>0x00, </Data>
         </Register>
         <Register>
             <Name>IC 1.FDEC_CTRL1 Register</Name>

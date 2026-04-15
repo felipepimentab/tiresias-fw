@@ -1,7 +1,7 @@
 /*
  * File:           D:\tiresias-adau1787\adau_1787_IC_1_SIGMA.h
  *
- * Created:        Saturday, March 7, 2026 12:13:01 PM
+ * Created:        Monday, March 23, 2026 4:37:32 PM
  * Description:    adau_1787:IC 1-Sigma program data.
  *
  * This software is distributed in the hope that it will be useful,
@@ -24,10 +24,6 @@
 
 #define DEVICE_ARCHITECTURE_IC_1_SIGMA "ADAU1787S"
 #define DEVICE_ADDR_IC_1_SIGMA 0x50
-
-#ifndef REG_POWER_EN_DELAY_IC_1_Sigma_BYTE
-#define REG_POWER_EN_DELAY_IC_1_Sigma_BYTE 1
-#endif
 
 /* DSP Ram Data */
 #define NON_MODULO_RAM__SIZE_IC_1_Sigma 8
@@ -331,7 +327,7 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
 
 /* DSP Parameter (Coefficient) Data */
 #define PARAM_SIZE_IC_1_Sigma 48
-#define PARAM_ADDR_IC_1_Sigma 0
+#define PARAM_ADDR_IC_1_Sigma 8192
 ADI_REG_TYPE Param_Data_IC_1_Sigma[PARAM_SIZE_IC_1_Sigma] = {
   0x00,
   0x00,
@@ -573,7 +569,7 @@ ADI_REG_TYPE R61_DAC_ROUTE0_IC_1_Sigma_Default[REG_DAC_ROUTE0_IC_1_Sigma_BYTE] =
 ADI_REG_TYPE R62_DAC_ROUTE1_IC_1_Sigma_Default[REG_DAC_ROUTE1_IC_1_Sigma_BYTE] = { 0x31 };
 
 /* Register Default - IC 1.HP_CTRL Register */
-ADI_REG_TYPE R63_HP_CTRL_IC_1_Sigma_Default[REG_HP_CTRL_IC_1_Sigma_BYTE] = { 0x11 };
+ADI_REG_TYPE R63_HP_CTRL_IC_1_Sigma_Default[REG_HP_CTRL_IC_1_Sigma_BYTE] = { 0x00 };
 
 /* Register Default - IC 1.FDEC_CTRL1 Register */
 ADI_REG_TYPE R64_FDEC_CTRL1_IC_1_Sigma_Default[REG_FDEC_CTRL1_IC_1_Sigma_BYTE] = { 0x25 };

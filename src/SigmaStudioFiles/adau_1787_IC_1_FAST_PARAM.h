@@ -1,7 +1,7 @@
 /*
  * File:           D:\tiresias-adau1787\adau_1787_IC_1_FAST_PARAM.h
  *
- * Created:        Saturday, March 7, 2026 12:13:01 PM
+ * Created:        Monday, March 23, 2026 4:37:32 PM
  * Description:    adau_1787:IC 1-Fast parameter RAM definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -18,6 +18,5 @@
  */
 #ifndef __ADAU_1787_IC_1_FAST_PARAM_H__
 #define __ADAU_1787_IC_1_FAST_PARAM_H__
-
 
 #endif

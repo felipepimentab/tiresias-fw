@@ -75,6 +75,11 @@ typedef uint16_t sub_addr_t;
 /** @brief Checks if the given address is a register address */
 #define IS_REG_ADDR(addr) ((addr) >= 0xC000 && (addr) <= 0xC0E1)
 
+// Prevent build errors
+#ifndef REG_POWER_EN_DELAY_IC_1_Sigma_BYTE
+#define REG_POWER_EN_DELAY_IC_1_Sigma_BYTE 1
+#endif
+
 /**
  * @brief Initialize the ADAU1787 DSP.
  *
