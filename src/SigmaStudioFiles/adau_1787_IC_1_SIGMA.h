@@ -1,7 +1,7 @@
 /*
- * File:           D:\tiresias-adau1787\adau_1787_IC_1_SIGMA.h
+ * File:           C:\users\crossover\Desktop\exports\adau_1787_IC_1_SIGMA.h
  *
- * Created:        Monday, March 23, 2026 4:37:32 PM
+ * Created:        Tuesday, April 28, 2026 12:16:52 PM
  * Description:    adau_1787:IC 1-Sigma program data.
  *
  * This software is distributed in the hope that it will be useful,
@@ -26,9 +26,17 @@
 #define DEVICE_ADDR_IC_1_SIGMA 0x50
 
 /* DSP Ram Data */
-#define NON_MODULO_RAM__SIZE_IC_1_Sigma 8
+#define NON_MODULO_RAM__SIZE_IC_1_Sigma 16
 #define NON_MODULO_RAM__ADDR_IC_1_Sigma 32756
 ADI_REG_TYPE NON_MODULO_RAM__Data_IC_1_Sigma[NON_MODULO_RAM__SIZE_IC_1_Sigma] = {
+  0x00,
+  0x7F,
+  0xF2,
+  0x59,
+  0x00,
+  0x00,
+  0x0D,
+  0xA7,
   0x00,
   0x7F,
   0xF2,
@@ -40,7 +48,7 @@ ADI_REG_TYPE NON_MODULO_RAM__Data_IC_1_Sigma[NON_MODULO_RAM__SIZE_IC_1_Sigma] = 
 };
 
 /* DSP Program Data */
-#define PROGRAM_SIZE_IC_1_Sigma 280
+#define PROGRAM_SIZE_IC_1_Sigma 375
 #define PROGRAM_ADDR_IC_1_Sigma 20480
 ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x00,
@@ -238,18 +246,38 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x00,
   0xE2,
   0x00,
+  0x82,
+  0x09,
+  0x08,
+  0x20,
+  0x00,
+  0x00,
+  0x20,
+  0x00,
+  0xE2,
+  0x00,
+  0x82,
+  0x19,
+  0x08,
+  0x20,
+  0x00,
+  0x00,
+  0x30,
+  0x00,
+  0xE2,
+  0x00,
   0x7F,
-  0xE0,
+  0xC0,
   0x0B,
   0x20,
   0x00,
   0x7F,
-  0xE0,
+  0xC0,
   0x0A,
   0x34,
   0x00,
   0x7F,
-  0xF0,
+  0xD0,
   0x09,
   0x22,
   0x00,
@@ -264,17 +292,92 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x12,
   0x00,
   0x00,
-  0x10,
+  0x20,
   0x0A,
   0x20,
   0x00,
   0x00,
-  0x20,
+  0x40,
   0x00,
   0xE2,
   0x00,
   0x00,
-  0x29,
+  0x30,
+  0x0A,
+  0x20,
+  0x00,
+  0x00,
+  0x50,
+  0x00,
+  0xE2,
+  0x00,
+  0x7F,
+  0xE0,
+  0x0E,
+  0x20,
+  0x00,
+  0x7F,
+  0xE0,
+  0x0D,
+  0x34,
+  0x00,
+  0x7F,
+  0xF0,
+  0x0C,
+  0x22,
+  0x00,
+  0xFF,
+  0xB0,
+  0x0D,
+  0x02,
+  0x00,
+  0xFF,
+  0xB0,
+  0x0E,
+  0x12,
+  0x00,
+  0x00,
+  0x10,
+  0x0D,
+  0x20,
+  0x00,
+  0x00,
+  0x60,
+  0x00,
+  0xE2,
+  0x00,
+  0x00,
+  0x10,
+  0x0D,
+  0x20,
+  0x00,
+  0x00,
+  0x70,
+  0x00,
+  0xE2,
+  0x00,
+  0x00,
+  0x59,
+  0x08,
+  0x20,
+  0x00,
+  0x84,
+  0xB0,
+  0x00,
+  0xE2,
+  0x00,
+  0x00,
+  0x49,
+  0x08,
+  0x20,
+  0x00,
+  0x84,
+  0xA0,
+  0x00,
+  0xE2,
+  0x00,
+  0x00,
+  0x69,
   0x08,
   0x20,
   0x00,
@@ -284,7 +387,7 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0xE2,
   0x00,
   0x00,
-  0x29,
+  0x79,
   0x08,
   0x20,
   0x00,
@@ -326,13 +429,13 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
 };
 
 /* DSP Parameter (Coefficient) Data */
-#define PARAM_SIZE_IC_1_Sigma 48
-#define PARAM_ADDR_IC_1_Sigma 8192
+#define PARAM_SIZE_IC_1_Sigma 60
+#define PARAM_ADDR_IC_1_Sigma 0
 ADI_REG_TYPE Param_Data_IC_1_Sigma[PARAM_SIZE_IC_1_Sigma] = {
   0x00,
   0x00,
   0x07,
-  0xFE,
+  0xFC,
   0x00,
   0x00,
   0x00,
@@ -365,6 +468,18 @@ ADI_REG_TYPE Param_Data_IC_1_Sigma[PARAM_SIZE_IC_1_Sigma] = {
   0x00,
   0x20,
   0x04,
+  0x00,
+  0x80,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
   0x00,
   0x80,
   0x00,
@@ -437,7 +552,7 @@ ADI_REG_TYPE R17_DSP_PWR_IC_1_Sigma_Default[REG_DSP_PWR_IC_1_Sigma_BYTE] = { 0x1
 ADI_REG_TYPE R18_DMIC_PWR_IC_1_Sigma_Default[REG_DMIC_PWR_IC_1_Sigma_BYTE] = { 0x00 };
 
 /* Register Default - IC 1.SAI_CLK_PWR Register */
-ADI_REG_TYPE R19_SAI_CLK_PWR_IC_1_Sigma_Default[REG_SAI_CLK_PWR_IC_1_Sigma_BYTE] = { 0x00 };
+ADI_REG_TYPE R19_SAI_CLK_PWR_IC_1_Sigma_Default[REG_SAI_CLK_PWR_IC_1_Sigma_BYTE] = { 0x03 };
 
 /* Register Default - IC 1.ASRC_PWR Register */
 ADI_REG_TYPE R20_ASRC_PWR_IC_1_Sigma_Default[REG_ASRC_PWR_IC_1_Sigma_BYTE] = { 0x00 };
@@ -560,7 +675,7 @@ ADI_REG_TYPE R58_DMIC_VOL7_IC_1_Sigma_Default[REG_DMIC_VOL7_IC_1_Sigma_BYTE] = {
 ADI_REG_TYPE R59_DAC_CTRL1_IC_1_Sigma_Default[REG_DAC_CTRL1_IC_1_Sigma_BYTE] = { 0x02 };
 
 /* Register Default - IC 1.DAC_CTRL2 Register */
-ADI_REG_TYPE R60_DAC_CTRL2_IC_1_Sigma_Default[REG_DAC_CTRL2_IC_1_Sigma_BYTE] = { 0x00 };
+ADI_REG_TYPE R60_DAC_CTRL2_IC_1_Sigma_Default[REG_DAC_CTRL2_IC_1_Sigma_BYTE] = { 0x30 };
 
 /* Register Default - IC 1.DAC_ROUTE0 Register */
 ADI_REG_TYPE R61_DAC_ROUTE0_IC_1_Sigma_Default[REG_DAC_ROUTE0_IC_1_Sigma_BYTE] = { 0x30 };
@@ -569,7 +684,7 @@ ADI_REG_TYPE R61_DAC_ROUTE0_IC_1_Sigma_Default[REG_DAC_ROUTE0_IC_1_Sigma_BYTE] =
 ADI_REG_TYPE R62_DAC_ROUTE1_IC_1_Sigma_Default[REG_DAC_ROUTE1_IC_1_Sigma_BYTE] = { 0x31 };
 
 /* Register Default - IC 1.HP_CTRL Register */
-ADI_REG_TYPE R63_HP_CTRL_IC_1_Sigma_Default[REG_HP_CTRL_IC_1_Sigma_BYTE] = { 0x00 };
+ADI_REG_TYPE R63_HP_CTRL_IC_1_Sigma_Default[REG_HP_CTRL_IC_1_Sigma_BYTE] = { 0x11 };
 
 /* Register Default - IC 1.FDEC_CTRL1 Register */
 ADI_REG_TYPE R64_FDEC_CTRL1_IC_1_Sigma_Default[REG_FDEC_CTRL1_IC_1_Sigma_BYTE] = { 0x25 };
@@ -875,10 +990,10 @@ ADI_REG_TYPE R158_SPT0_CTRL1_IC_1_Sigma_Default[REG_SPT0_CTRL1_IC_1_Sigma_BYTE] 
 ADI_REG_TYPE R159_SPT0_CTRL2_IC_1_Sigma_Default[REG_SPT0_CTRL2_IC_1_Sigma_BYTE] = { 0x00 };
 
 /* Register Default - IC 1.SPT0_ROUTE0 Register */
-ADI_REG_TYPE R160_SPT0_ROUTE0_IC_1_Sigma_Default[REG_SPT0_ROUTE0_IC_1_Sigma_BYTE] = { 0x10 };
+ADI_REG_TYPE R160_SPT0_ROUTE0_IC_1_Sigma_Default[REG_SPT0_ROUTE0_IC_1_Sigma_BYTE] = { 0x12 };
 
 /* Register Default - IC 1.SPT0_ROUTE1 Register */
-ADI_REG_TYPE R161_SPT0_ROUTE1_IC_1_Sigma_Default[REG_SPT0_ROUTE1_IC_1_Sigma_BYTE] = { 0x11 };
+ADI_REG_TYPE R161_SPT0_ROUTE1_IC_1_Sigma_Default[REG_SPT0_ROUTE1_IC_1_Sigma_BYTE] = { 0x13 };
 
 /* Register Default - IC 1.SPT0_ROUTE2 Register */
 ADI_REG_TYPE R162_SPT0_ROUTE2_IC_1_Sigma_Default[REG_SPT0_ROUTE2_IC_1_Sigma_BYTE] = { 0x3F };
@@ -980,7 +1095,7 @@ ADI_REG_TYPE R193_SPT1_ROUTE15_IC_1_Sigma_Default[REG_SPT1_ROUTE15_IC_1_Sigma_BY
 ADI_REG_TYPE R194_MP_CTRL10_IC_1_Sigma_Default[REG_MP_CTRL10_IC_1_Sigma_BYTE] = { 0x00 };
 
 /* Register Default - IC 1.SELFBOOT_CTRL Register */
-ADI_REG_TYPE R195_SELFBOOT_CTRL_IC_1_Sigma_Default[REG_SELFBOOT_CTRL_IC_1_Sigma_BYTE] = { 0x40 };
+ADI_REG_TYPE R195_SELFBOOT_CTRL_IC_1_Sigma_Default[REG_SELFBOOT_CTRL_IC_1_Sigma_BYTE] = { 0x41 };
 
 /* Register Default - IC 1.SW_EN_CTRL Register */
 ADI_REG_TYPE R196_SW_EN_CTRL_IC_1_Sigma_Default[REG_SW_EN_CTRL_IC_1_Sigma_BYTE] = { 0x41 };

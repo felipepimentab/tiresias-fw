@@ -1,7 +1,7 @@
 /*
- * File:           D:\tiresias-adau1787\adau_1787_IC_1_FAST_REG.h
+ * File:           C:\users\crossover\Desktop\exports\adau_1787_IC_1_FAST_REG.h
  *
- * Created:        Monday, March 23, 2026 4:37:32 PM
+ * Created:        Tuesday, April 28, 2026 12:16:52 PM
  * Description:    adau_1787:IC 1-Fast control register definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -57,7 +57,7 @@
 /* SAI_CLK_PWR  - Registers (IC 1_Fast) */
 #define REG_SAI_CLK_PWR_IC_1_Fast_ADDR 0xC007
 #define REG_SAI_CLK_PWR_IC_1_Fast_BYTE 1
-#define REG_SAI_CLK_PWR_IC_1_Fast_VALUE 0x0
+#define REG_SAI_CLK_PWR_IC_1_Fast_VALUE 0x3
 
 /* DSP_PWR  - Registers (IC 1_Fast) */
 #define REG_DSP_PWR_IC_1_Fast_ADDR 0xC008
@@ -302,7 +302,7 @@
 /* DAC_CTRL2  - Registers (IC 1_Fast) */
 #define REG_DAC_CTRL2_IC_1_Fast_ADDR 0xC03B
 #define REG_DAC_CTRL2_IC_1_Fast_BYTE 1
-#define REG_DAC_CTRL2_IC_1_Fast_VALUE 0x0
+#define REG_DAC_CTRL2_IC_1_Fast_VALUE 0x30
 
 /* DAC_VOL0  - Registers (IC 1_Fast) */
 #define REG_DAC_VOL0_IC_1_Fast_ADDR 0xC03C
@@ -327,7 +327,7 @@
 /* HP_CTRL  - Registers (IC 1_Fast) */
 #define REG_HP_CTRL_IC_1_Fast_ADDR 0xC040
 #define REG_HP_CTRL_IC_1_Fast_BYTE 1
-#define REG_HP_CTRL_IC_1_Fast_VALUE 0x0
+#define REG_HP_CTRL_IC_1_Fast_VALUE 0x11
 
 /* FDEC_CTRL1  - Registers (IC 1_Fast) */
 #define REG_FDEC_CTRL1_IC_1_Fast_ADDR 0xC041
@@ -822,12 +822,12 @@
 /* SPT0_ROUTE0  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE0_IC_1_Fast_ADDR 0xC0B7
 #define REG_SPT0_ROUTE0_IC_1_Fast_BYTE 1
-#define REG_SPT0_ROUTE0_IC_1_Fast_VALUE 0x10
+#define REG_SPT0_ROUTE0_IC_1_Fast_VALUE 0x12
 
 /* SPT0_ROUTE1  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE1_IC_1_Fast_ADDR 0xC0B8
 #define REG_SPT0_ROUTE1_IC_1_Fast_BYTE 1
-#define REG_SPT0_ROUTE1_IC_1_Fast_VALUE 0x11
+#define REG_SPT0_ROUTE1_IC_1_Fast_VALUE 0x13
 
 /* SPT0_ROUTE2  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE2_IC_1_Fast_ADDR 0xC0B9
@@ -997,7 +997,7 @@
 /* SELFBOOT_CTRL  - Registers (IC 1_Fast) */
 #define REG_SELFBOOT_CTRL_IC_1_Fast_ADDR 0xC0DA
 #define REG_SELFBOOT_CTRL_IC_1_Fast_BYTE 1
-#define REG_SELFBOOT_CTRL_IC_1_Fast_VALUE 0x40
+#define REG_SELFBOOT_CTRL_IC_1_Fast_VALUE 0x41
 
 /* SW_EN_CTRL  - Registers (IC 1_Fast) */
 #define REG_SW_EN_CTRL_IC_1_Fast_ADDR 0xC0DB
@@ -1218,8 +1218,8 @@
 #define R6_DMIC7_EN_IC_1_Fast_SHIFT 7
 
 /* SAI_CLK_PWR (IC 1_Fast) */
-#define R7_SPT0_IN_EN_IC_1_Fast 0x0 /* 0b	[0] */
-#define R7_SPT0_OUT_EN_IC_1_Fast 0x0 /* 0b	[1] */
+#define R7_SPT0_IN_EN_IC_1_Fast 0x1 /* 1b	[0] */
+#define R7_SPT0_OUT_EN_IC_1_Fast 0x1 /* 1b	[1] */
 #define R7_SPT1_IN_EN_IC_1_Fast 0x0 /* 0b	[2] */
 #define R7_SPT1_OUT_EN_IC_1_Fast 0x0 /* 0b	[3] */
 #define R7_DMIC_CLK0_EN_IC_1_Fast 0x0 /* 0b	[4] */
@@ -1764,8 +1764,8 @@
 #define R56_DAC_HARD_VOL_IC_1_Fast 0x0 /* 0b	[1] */
 #define R56_DAC_VOL_ZC_IC_1_Fast 0x0 /* 0b	[2] */
 #define R56_DAC_LPM_II_IC_1_Fast 0x0 /* 0b	[3] */
-#define R56_DAC0_HPF_EN_IC_1_Fast 0x0 /* 0b	[4] */
-#define R56_DAC1_HPF_EN_IC_1_Fast 0x0 /* 0b	[5] */
+#define R56_DAC0_HPF_EN_IC_1_Fast 0x1 /* 1b	[4] */
+#define R56_DAC1_HPF_EN_IC_1_Fast 0x1 /* 1b	[5] */
 #define R56_DAC0_MUTE_IC_1_Fast 0x0 /* 0b	[6] */
 #define R56_DAC1_MUTE_IC_1_Fast 0x0 /* 0b	[7] */
 #define R56_DAC_VOL_LINK_IC_1_Fast_MASK 0x1
@@ -1806,8 +1806,8 @@
 #define R60_DAC1_ROUTE_IC_1_Fast_SHIFT 0
 
 /* HP_CTRL (IC 1_Fast) */
-#define R61_HP0_MODE_IC_1_Fast 0x0 /* 0b	[0] */
-#define R61_HP1_MODE_IC_1_Fast 0x0 /* 0b	[4] */
+#define R61_HP0_MODE_IC_1_Fast 0x1 /* 1b	[0] */
+#define R61_HP1_MODE_IC_1_Fast 0x1 /* 1b	[4] */
 #define R61_HP0_MODE_IC_1_Fast_MASK 0x1
 #define R61_HP0_MODE_IC_1_Fast_SHIFT 0
 #define R61_HP1_MODE_IC_1_Fast_MASK 0x10
@@ -2877,12 +2877,12 @@
 #define R159_SPT0_LRCLK_POL_IC_1_Fast_SHIFT 7
 
 /* SPT0_ROUTE0 (IC 1_Fast) */
-#define R160_SPT0_OUT_ROUTE0_IC_1_Fast 0x10 /* 010000b	[5:0] */
+#define R160_SPT0_OUT_ROUTE0_IC_1_Fast 0x12 /* 010010b	[5:0] */
 #define R160_SPT0_OUT_ROUTE0_IC_1_Fast_MASK 0x3F
 #define R160_SPT0_OUT_ROUTE0_IC_1_Fast_SHIFT 0
 
 /* SPT0_ROUTE1 (IC 1_Fast) */
-#define R161_SPT0_OUT_ROUTE1_IC_1_Fast 0x11 /* 010001b	[5:0] */
+#define R161_SPT0_OUT_ROUTE1_IC_1_Fast 0x13 /* 010011b	[5:0] */
 #define R161_SPT0_OUT_ROUTE1_IC_1_Fast_MASK 0x3F
 #define R161_SPT0_OUT_ROUTE1_IC_1_Fast_SHIFT 0
 
@@ -3070,7 +3070,7 @@
 #define R194_MP12_MODE_IC_1_Fast_SHIFT 0
 
 /* SELFBOOT_CTRL (IC 1_Fast) */
-#define R195_SELFBOOT_DRIVE_IC_1_Fast 0x0 /* 00b	[1:0] */
+#define R195_SELFBOOT_DRIVE_IC_1_Fast 0x1 /* 01b	[1:0] */
 #define R195_SELFBOOT_IS_IC_1_Fast 0x0 /* 0b	[2] */
 #define R195_SELFBOOT_PULL_EN_IC_1_Fast 0x0 /* 0b	[4] */
 #define R195_SELFBOOT_PULL_SEL_IC_1_Fast 0x0 /* 0b	[5] */
