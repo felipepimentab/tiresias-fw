@@ -1,7 +1,7 @@
 /*
  * File:           C:\users\crossover\Desktop\exports\adau_1787_IC_1_SIGMA_REG.h
  *
- * Created:        Tuesday, April 28, 2026 12:16:52 PM
+ * Created:        Tuesday, April 28, 2026 2:34:12 PM
  * Description:    adau_1787:IC 1-Sigma control register definitions.
  *
  * This software is distributed in the hope that it will be useful,

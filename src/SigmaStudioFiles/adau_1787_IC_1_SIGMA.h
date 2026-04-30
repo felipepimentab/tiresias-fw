@@ -1,7 +1,7 @@
 /*
  * File:           C:\users\crossover\Desktop\exports\adau_1787_IC_1_SIGMA.h
  *
- * Created:        Tuesday, April 28, 2026 12:16:52 PM
+ * Created:        Tuesday, April 28, 2026 2:34:12 PM
  * Description:    adau_1787:IC 1-Sigma program data.
  *
  * This software is distributed in the hope that it will be useful,
@@ -357,22 +357,12 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0xE2,
   0x00,
   0x00,
-  0x59,
-  0x08,
-  0x20,
-  0x00,
-  0x84,
-  0xB0,
-  0x00,
-  0xE2,
-  0x00,
-  0x00,
   0x49,
   0x08,
   0x20,
   0x00,
   0x84,
-  0xA0,
+  0x90,
   0x00,
   0xE2,
   0x00,
@@ -392,7 +382,17 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x20,
   0x00,
   0x84,
-  0x90,
+  0xA0,
+  0x00,
+  0xE2,
+  0x00,
+  0x00,
+  0x79,
+  0x08,
+  0x20,
+  0x00,
+  0x84,
+  0xB0,
   0x00,
   0xE2,
   0x00,
