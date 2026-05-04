@@ -1,5 +1,4 @@
 #include "adau1787.h"
-#include "../../../utils/macros_common.h"
 #include "SigmaStudioFW.h"
 #include "adau_1787_IC_1_FAST.h"
 #include "adau_1787_IC_1_FAST_PARAM.h"
@@ -7,6 +6,7 @@
 #include "adau_1787_IC_1_SIGMA.h"
 #include "adau_1787_IC_1_SIGMA_PARAM.h"
 #include "adau_1787_IC_1_SIGMA_REG.h"
+#include "macros_common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

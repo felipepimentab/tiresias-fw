@@ -13,14 +13,15 @@ zephyr_library_include_directories(
   include
   src/application
   src/system_modules
-  src/services
-  src/services/audio_codec/drivers
+  src/bluetooth
+  src/audio
   src/SigmaStudioFiles
   src/utils
 )
 
 add_subdirectory(src/application)
 add_subdirectory(src/system_modules)
-add_subdirectory(src/services)
+add_subdirectory(src/bluetooth)
+add_subdirectory(src/audio)
 add_subdirectory(src/SigmaStudioFiles)
 add_subdirectory(src/utils)
