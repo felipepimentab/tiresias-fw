@@ -84,4 +84,44 @@ typedef struct codec_cmd_chan_msg {
   codec_cmd cmd;
 } codec_cmd_chan_msg;
 
+/* === IMU === */
+
+typedef enum imu_state {
+  IMU_STATE_OFF,
+  IMU_STATE_INITIALIZING,
+  IMU_STATE_IDLE,
+  IMU_STATE_STREAMING,
+  IMU_STATE_ERROR,
+} imu_state;
+
+typedef enum imu_cmd {
+  IMU_CMD_INIT,
+  IMU_CMD_START_STREAMING,
+  IMU_CMD_STOP_STREAMING,
+} imu_cmd;
+
+typedef struct imu_state_chan_msg {
+  imu_state state;
+} imu_state_chan_msg;
+
+typedef struct imu_cmd_chan_msg {
+  imu_cmd cmd;
+} imu_cmd_chan_msg;
+
+typedef struct imu_data_chan_msg {
+  float ax;
+  float ay;
+  float az;
+  float gx;
+  float gy;
+  float gz;
+} imu_data_chan_msg;
+
+typedef struct orientation_chan_msg {
+  float q0;
+  float q1;
+  float q2;
+  float q3;
+} orientation_chan_msg;
+
 #endif /* ZBUS_COMMON_H_ */

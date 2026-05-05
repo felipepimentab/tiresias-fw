@@ -12,6 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 zephyr_library_include_directories(
   include
   src/application
+  src/modules
   src/system_modules
   src/services
   src/services/audio_codec/drivers
@@ -20,6 +21,7 @@ zephyr_library_include_directories(
 )
 
 add_subdirectory(src/application)
+add_subdirectory(src/modules)
 add_subdirectory(src/system_modules)
 add_subdirectory(src/services)
 add_subdirectory(src/SigmaStudioFiles)

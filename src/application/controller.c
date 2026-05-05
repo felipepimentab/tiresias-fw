@@ -13,7 +13,7 @@ LOG_MODULE_REGISTER(controller, CONFIG_LOG_DEFAULT_LEVEL);
 #define ZBUS_TIMEOUT_MS 100
 
 ZBUS_SUBSCRIBER_DEFINE(controller_sub, 8);
-ZBUS_CHAN_DECLARE(button_chan, bt_cmd_chan, bt_state_chan, codec_cmd_chan, codec_state_chan, led_chan);
+ZBUS_CHAN_DECLARE(button_chan, bt_cmd_chan, bt_state_chan, codec_cmd_chan, codec_state_chan, imu_cmd_chan, imu_state_chan,led_chan);
 
 ZBUS_CHAN_DEFINE(controller_event_chan, controller_event_chan_msg, NULL, NULL, ZBUS_OBSERVERS(controller_sub),
     ZBUS_MSG_INIT(.event = CONTROLLER_EVENT_INIT));
@@ -47,11 +47,17 @@ static void handle_state_off(struct zbus_channel* chan)
   ret = zbus_chan_pub(&codec_cmd_chan, &new_codec_msg, ZBUS_READ_TIMEOUT_MS);
   ERR_CHK(ret);
 
+  struct imu_cmd_chan_msg new_imu_msg = { IMU_CMD_INIT };
+  ret = zbus_chan_pub(&imu_cmd_chan, &new_imu_msg, ZBUS_READ_TIMEOUT_MS);
+  ERR_CHK(ret);
+
   ret = zbus_chan_add_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
   ERR_CHK(ret);
   ret = zbus_chan_add_obs(&button_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
   ERR_CHK(ret);
   ret = zbus_chan_add_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+  ERR_CHK(ret);
+  ret = zbus_chan_add_obs(&imu_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
   ERR_CHK(ret);
 
   set_controller_state(CONTROLLER_STATE_INITIALIZING);
@@ -61,10 +67,13 @@ static void handle_state_initializing(struct zbus_channel* chan)
 {
   bt_state bt_state;
   codec_state cd_state;
+  imu_state imu_st;
   int ret;
 
   ret = zbus_chan_read(&bt_state_chan, &bt_state, K_MSEC(ZBUS_TIMEOUT_MS));
   ERR_CHK(ret);
+
+  LOG_DBG("States -> BT: %d | CODEC: %d | IMU: %d", bt_state, cd_state, imu_st);
 
   if (bt_state == BT_STATE_INITIALIZING) {
     LOG_DBG("Bluetooth service still initializing");
@@ -76,6 +85,7 @@ static void handle_state_initializing(struct zbus_channel* chan)
     set_controller_state(CONTROLLER_STATE_ERROR);
     (void)zbus_chan_rm_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     (void)zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+    (void)zbus_chan_rm_obs(&imu_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     return;
   }
 
@@ -92,21 +102,45 @@ static void handle_state_initializing(struct zbus_channel* chan)
     set_controller_state(CONTROLLER_STATE_ERROR);
     (void)zbus_chan_rm_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     (void)zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+    (void)zbus_chan_rm_obs(&imu_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     return;
   }
 
-  LOG_DBG("Service states - Bluetooth: %d, Codec: %d", bt_state, cd_state);
+  ret = zbus_chan_read(&imu_state_chan, &imu_st, K_MSEC(ZBUS_TIMEOUT_MS));
+  ERR_CHK(ret);
 
-  if (bt_state == BT_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE) {
+  if (imu_st == IMU_STATE_INITIALIZING) {
+    LOG_DBG("IMU service still initializing");
+    return;
+  }
+
+  if (imu_st == IMU_STATE_ERROR) {
+    LOG_ERR("IMU initialization failed");
+    set_controller_state(CONTROLLER_STATE_ERROR);
+
+    (void)zbus_chan_rm_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+    (void)zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+    (void)zbus_chan_rm_obs(&imu_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+    return;
+  }
+
+  if (bt_state == BT_STATE_NOT_CONNECTED && cd_state == CODEC_STATE_IDLE && imu_st == IMU_STATE_IDLE) {
     LOG_INF("System initialization complete");
     set_controller_state(CONTROLLER_STATE_IDLE);
 
+    /* === START BLE STREAMING === */
     struct bt_cmd_chan_msg new_bt_msg = { BT_CMD_ADVERTISE };
     ret = zbus_chan_pub(&bt_cmd_chan, &new_bt_msg, ZBUS_READ_TIMEOUT_MS);
     ERR_CHK(ret);
 
+    /* === START IMU STREAMING === */
+    struct imu_cmd_chan_msg imu_start = { IMU_CMD_START_STREAMING };
+    ret = zbus_chan_pub(&imu_cmd_chan, &imu_start, ZBUS_READ_TIMEOUT_MS);
+    ERR_CHK(ret);
+
     (void)zbus_chan_rm_obs(&bt_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     (void)zbus_chan_rm_obs(&codec_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
+    (void)zbus_chan_rm_obs(&imu_state_chan, &controller_sub, K_MSEC(ZBUS_TIMEOUT_MS));
     return;
   }
 }
