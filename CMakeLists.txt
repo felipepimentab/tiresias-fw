@@ -15,6 +15,7 @@ zephyr_library_include_directories(
   src/system_modules
   src/bluetooth
   src/audio
+  src/audio/drivers
   src/SigmaStudioFiles
   src/utils
 )
