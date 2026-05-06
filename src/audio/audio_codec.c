@@ -1,7 +1,7 @@
 #include "audio_codec.h"
 #include "drivers/adau1787.h"
 #include "macros_common.h"
-#include "modules/i2s/i2s_control.h"
+#include "modules/audio_i2s.h"
 #include "zbus_common.h"
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -51,7 +51,7 @@ static void handle_state_off(codec_cmd cmd)
 #if CONFIG_AUDIO_CODEC_ADAU1787
   int ret = adau1787_init();
   ERR_CHK(ret);
-  ret = audio_i2s_init();
+  audio_i2s_init();
   ERR_CHK(ret);
 #endif
 

@@ -25,7 +25,7 @@ enum audio_i2s_state {
 static enum audio_i2s_state state = AUDIO_I2S_STATE_UNINIT;
 
 PINCTRL_DT_DEFINE(I2S_NL);
-
+// < MCLK/LRCLK ratio -> LRCLOCK (sample rate) = 48kHz
 #if CONFIG_AUDIO_SAMPLE_RATE_16000_HZ
 #define CONFIG_AUDIO_RATIO NRF_I2S_RATIO_384X
 #elif CONFIG_AUDIO_SAMPLE_RATE_24000_HZ
@@ -60,6 +60,9 @@ static nrfx_i2s_config_t cfg = {
   .enable_bypass = false,
 };
 
+/**
+ * Function pointer for external callback that's called when a block is completed
+ */
 static i2s_blk_comp_callback_t i2s_blk_comp_callback;
 
 static void i2s_comp_handler(nrfx_i2s_buffers_t const* released_bufs, uint32_t status)
@@ -73,13 +76,8 @@ static void i2s_comp_handler(nrfx_i2s_buffers_t const* released_bufs, uint32_t s
 void audio_i2s_set_next_buf(const uint8_t* tx_buf, uint32_t* rx_buf)
 {
   __ASSERT_NO_MSG(state == AUDIO_I2S_STATE_STARTED);
-  if (IS_ENABLED(CONFIG_STREAM_BIDIRECTIONAL) || (CONFIG_AUDIO_DEV == GATEWAY)) {
-    __ASSERT_NO_MSG(rx_buf != NULL);
-  }
-
-  if (IS_ENABLED(CONFIG_STREAM_BIDIRECTIONAL) || (CONFIG_AUDIO_DEV == HEADSET)) {
-    __ASSERT_NO_MSG(tx_buf != NULL);
-  }
+  __ASSERT_NO_MSG(rx_buf != NULL);
+  __ASSERT_NO_MSG(tx_buf != NULL);
 
   const nrfx_i2s_buffers_t i2s_buf
       = { .p_rx_buffer = rx_buf, .p_tx_buffer = (uint32_t*)tx_buf, .buffer_size = I2S_SAMPLES_NUM };
@@ -93,13 +91,8 @@ void audio_i2s_set_next_buf(const uint8_t* tx_buf, uint32_t* rx_buf)
 void audio_i2s_start(const uint8_t* tx_buf, uint32_t* rx_buf)
 {
   __ASSERT_NO_MSG(state == AUDIO_I2S_STATE_IDLE);
-  if (IS_ENABLED(CONFIG_STREAM_BIDIRECTIONAL) || (CONFIG_AUDIO_DEV == GATEWAY)) {
-    __ASSERT_NO_MSG(rx_buf != NULL);
-  }
-
-  if (IS_ENABLED(CONFIG_STREAM_BIDIRECTIONAL) || (CONFIG_AUDIO_DEV == HEADSET)) {
-    __ASSERT_NO_MSG(tx_buf != NULL);
-  }
+  __ASSERT_NO_MSG(rx_buf != NULL);
+  __ASSERT_NO_MSG(tx_buf != NULL);
 
   const nrfx_i2s_buffers_t i2s_buf
       = { .p_rx_buffer = rx_buf, .p_tx_buffer = (uint32_t*)tx_buf, .buffer_size = I2S_SAMPLES_NUM };
@@ -122,6 +115,9 @@ void audio_i2s_stop(void)
   state = AUDIO_I2S_STATE_IDLE;
 }
 
+/**
+ * Stores the caller’s function pointer into `i2s_blk_comp_callback` .
+ */
 void audio_i2s_blk_comp_cb_register(i2s_blk_comp_callback_t blk_comp_callback)
 {
   i2s_blk_comp_callback = blk_comp_callback;
@@ -133,7 +129,7 @@ void audio_i2s_init(void)
 
   nrfx_err_t ret;
 
-  nrfx_clock_hfclkaudio_config_set(HFCLKAUDIO_12_288_MHZ);
+  nrfx_clock_hfclkaudio_config_set(HFCLKAUDIO_12_165_MHZ);
 
   NRF_CLOCK->TASKS_HFCLKAUDIOSTART = 1;
 

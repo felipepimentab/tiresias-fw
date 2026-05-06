@@ -1,6 +1,7 @@
 set(SRCS
   # I2S module files
-  ${CMAKE_CURRENT_SOURCE_DIR}/modules/i2s/i2s_control.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/audio_i2s.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/modules/audio_sync_timer.c
   # Main audio codec files
   ${CMAKE_CURRENT_SOURCE_DIR}/audio_codec.c
 )

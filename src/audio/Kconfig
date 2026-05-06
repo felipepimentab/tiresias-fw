@@ -1,0 +1,121 @@
+menu "Audio"
+
+config AUDIO_SYNC_TIMER_USES_RTC
+	bool
+	default y
+	select NRFX_RTC0
+
+choice AUDIO_SYSTEM_SAMPLE_RATE
+	prompt "System audio sample rate"
+	default AUDIO_SAMPLE_RATE_48000_HZ
+	help
+	  This configuration reflects the system sample rate, but the audio data may be resampled to
+	  another sample rate before encoding, and after decoding.
+
+config AUDIO_SAMPLE_RATE_16000_HZ
+	bool "16 kHz"
+	help
+	  Sample rate of 16kHz is currently only valid for I2S/line-in.
+
+config AUDIO_SAMPLE_RATE_24000_HZ
+	bool "24 kHz"
+	help
+	  Sample rate of 24kHz is currently only valid for I2S/line-in.
+
+config AUDIO_SAMPLE_RATE_48000_HZ
+	bool "48 kHz"
+	help
+	  Sample rate of 48kHz is valid for both I2S/line-in and USB.
+endchoice
+
+config AUDIO_SAMPLE_RATE_HZ
+	int
+	default 16000 if AUDIO_SAMPLE_RATE_16000_HZ
+	default 24000 if AUDIO_SAMPLE_RATE_24000_HZ
+	default 48000 if AUDIO_SAMPLE_RATE_48000_HZ
+	help
+	  I2S supports 16, 24, and 48 kHz sample rates for both input and output.
+	  USB supports only 48 kHz for input.
+
+choice AUDIO_BIT_DEPTH
+	prompt "Audio bit depth"
+	default AUDIO_BIT_DEPTH_16
+	help
+	  Select the bit depth for audio.
+
+config AUDIO_BIT_DEPTH_16
+	bool "16 bit audio"
+
+config AUDIO_BIT_DEPTH_32
+	bool "32 bit audio"
+endchoice
+
+config AUDIO_BIT_DEPTH_BITS
+	int
+	default 16 if AUDIO_BIT_DEPTH_16
+	default 32 if AUDIO_BIT_DEPTH_32
+	help
+	  Bit depth of one sample in storage.
+
+config AUDIO_BIT_DEPTH_OCTETS
+	int
+	default 2 if AUDIO_BIT_DEPTH_16
+	default 4 if AUDIO_BIT_DEPTH_32
+	help
+	  Bit depth of one sample in storage given in octets.
+
+#----------------------------------------------------------------------------#
+
+menu "FIFO"
+
+config FIFO_FRAME_SPLIT_NUM
+	int "Number of blocks to make up one frame of audio data"
+	default 10
+	help
+	  Easy DMA in I2S requires two buffers to be filled before I2S
+	  transmission will begin. In order to reduce latency, an audio
+	  frame can be split into multiple blocks with this parameter. USB
+	  sends data in 1 ms blocks, so we need the split to match that.
+	  Since we set frame size to 10 ms for USB, 10 is selected as
+	  FRAME_SPLIT_NUM
+
+config FIFO_TX_FRAME_COUNT
+	int "Max number of audio frames in TX slab"
+	default 3
+	help
+	  FIFO_TX is the buffer that holds decoded audio data before it
+	  is sent to either I2S or USB
+
+config FIFO_RX_FRAME_COUNT
+	int "Max number of audio frames in RX slab"
+	default 1
+	help
+	  FIFO_RX is the buffer that holds uncompressed audio data coming
+	  from either I2S or USB
+
+endmenu # FIFO
+
+#----------------------------------------------------------------------------#
+
+menu "I2S"
+
+config I2S_LRCK_FREQ_HZ
+	int
+	default AUDIO_SAMPLE_RATE_HZ
+	help
+	 The sample rate of I2S. For now this is tied directly to
+	 AUDIO_SAMPLE_RATE_HZ
+	 Note that this setting is only valid in I2S master mode.
+
+config I2S_CH_NUM
+	int
+	default 2
+	help
+	 The I2S driver itself supports both mono and stereo.
+	 Parts of the implementation are configured for only stereo.
+
+endmenu # I2S
+
+#----------------------------------------------------------------------------#
+
+endmenu # Audio

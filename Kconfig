@@ -2,6 +2,8 @@
 
 menu "Tiresias"
 
+menu "Base"
+
 choice AUDIO_CODEC
 	prompt "Choose which audio codec is connected to the board"
 	default AUDIO_CODEC_ADAU1787
@@ -17,6 +19,10 @@ config AUDIO_CODEC_ADAU1787
      ADAU1787 audio codec enabled.
 
 endchoice
+
+endmenu # Base
+
+rsource "src/audio/Kconfig"
 
 endmenu # Tiresias
 
