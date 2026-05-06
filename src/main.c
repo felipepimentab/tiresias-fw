@@ -25,6 +25,9 @@ int main(void)
   ret = init_led();
   ERR_CHK(ret);
 
+  ret = orientation_init();
+  ERR_CHK(ret);
+
   // ret = init_storage();
   // ERR_CHK(ret);
 

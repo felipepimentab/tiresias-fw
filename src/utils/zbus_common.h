@@ -124,4 +124,10 @@ typedef struct orientation_chan_msg {
   float q3;
 } orientation_chan_msg;
 
+// struct orientation_chan_msg {
+//     float roll;
+//     float pitch;
+//     float yaw;
+// };
+
 #endif /* ZBUS_COMMON_H_ */

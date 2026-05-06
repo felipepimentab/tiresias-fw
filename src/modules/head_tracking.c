@@ -15,7 +15,7 @@ ZBUS_SUBSCRIBER_DEFINE(ht_sub, 4);
 ZBUS_CHAN_DECLARE(imu_data_chan);
 
 /* output */
-ZBUS_CHAN_DEFINE(orientation_chan, struct orientation_chan_msg, NULL, NULL, ZBUS_OBSERVERS_EMPTY, ZBUS_MSG_INIT(0));
+ZBUS_CHAN_DEFINE(orientation_chan, struct orientation_chan_msg, NULL, NULL, ZBUS_OBSERVERS(orientation_ble_sub), ZBUS_MSG_INIT(0));
 
 /* === Madgwick params === */
 static float beta = 0.1f; // tuning
@@ -28,6 +28,39 @@ static float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;
 
 /* sample freq */
 #define SAMPLE_FREQ 100.0f
+
+// /* Euler structure */ 
+// typedef struct {
+//     float roll;   // graus, -180..180
+//     float pitch;  // graus, -90..90
+//     float yaw;    // graus, 0..360
+// } euler_t;
+
+// /* Euler helper function */
+// static euler_t quaternion_to_euler(float q0, float q1, float q2, float q3)
+// {
+//     euler_t euler;
+
+//     // Roll (x-axis rotation)
+//     float sinr_cosp = 2.0f * (q0 * q1 + q2 * q3);
+//     float cosr_cosp = 1.0f - 2.0f * (q1 * q1 + q2 * q2);
+//     euler.roll = atan2f(sinr_cosp, cosr_cosp) * 180.0f / M_PI;
+
+//     // Pitch (y-axis rotation)
+//     float sinp = 2.0f * (q0 * q2 - q3 * q1);
+//     if (fabsf(sinp) >= 1.0f)
+//         euler.pitch = copysignf(90.0f, sinp); // use 90° se ultrapassar
+//     else
+//         euler.pitch = asinf(sinp) * 180.0f / M_PI;
+
+//     // Yaw (z-axis rotation)
+//     float siny_cosp = 2.0f * (q0 * q3 + q1 * q2);
+//     float cosy_cosp = 1.0f - 2.0f * (q2 * q2 + q3 * q3);
+//     euler.yaw = atan2f(siny_cosp, cosy_cosp) * 180.0f / M_PI;
+//     if (euler.yaw < 0) euler.yaw += 360.0f;
+
+//     return euler;
+// }
 
 /* === Madgwick update (gyro + accel) === */
 
@@ -125,8 +158,33 @@ static void head_tracking_thread(void)
         /* === aqui entra o Madgwick === */
         madgwick_update(gx, gy, gz, ax, ay, az);
 
+        // /* now to euler */
+        // euler_t euler = quaternion_to_euler(q0, q1, q2, q3);
+        
+        // struct orientation_chan_msg msg = {
+        //     .roll = euler.roll,
+        //     .pitch = euler.pitch,
+        //     .yaw = euler.yaw
+        // };
+
+        struct orientation_chan_msg msg = {
+            .q0 = q0,
+            .q1 = q1,
+            .q2 = q2,
+            .q3 = q3
+        };
+
+        ret = zbus_chan_pub(&orientation_chan, &msg, K_NO_WAIT);
+
+        // ret = zbus_chan_pub(&orientation_chan, &msg, K_SECONDS(1));
+        if (ret != 0) {
+            LOG_ERR("Failed to publish orientation: %d", ret);
+        } else {
+            LOG_DBG("Orientation published");
+        }
+
         /* opcional: log */
-        LOG_INF("HT update gx=%f gy=%f gz=%f", gx, gy, gz);
+        // LOG_INF("HT update gx=%f gy=%f gz=%f", gx, gy, gz);
     }
   }
 }

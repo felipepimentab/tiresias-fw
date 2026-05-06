@@ -207,11 +207,11 @@ static void imu_thread(void)
         .gz = sensor_value_to_double(&gyro[2]),
       };
 
-      if (cnt++ % 20 == 0) {
-        LOG_INF("IMU sample: ax=%.2f ay=%.2f az=%.2f, gx=%.2f gy=%.2f gz=%.2f", 
-          data_msg.ax, data_msg.ay, data_msg.az, 
-          data_msg.gx, data_msg.gy, data_msg.gz);
-      }  
+      // if (cnt++ % 20 == 0) {
+      //   LOG_INF("IMU sample: ax=%.2f ay=%.2f az=%.2f, gx=%.2f gy=%.2f gz=%.2f", 
+      //     data_msg.ax, data_msg.ay, data_msg.az, 
+      //     data_msg.gx, data_msg.gy, data_msg.gz);
+      // }  
 
       ret = zbus_chan_pub(&imu_data_chan, &data_msg, K_NO_WAIT);
       if (ret != 0) {
