@@ -77,7 +77,14 @@ static void notify_handler(struct k_work *work)
 {
     ARG_UNUSED(work);
 
+    static int cnt = 0;
+
     orientation_value = last_msg;
+
+    /* reduz taxa (~5 Hz se base ~100 Hz) */
+    if (cnt++ % 20 != 0) {
+        return;
+    }
 
     int ret = bt_gatt_notify(NULL,
                              orientation_attr,
