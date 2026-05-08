@@ -4,6 +4,11 @@
 #include <app_version.h>
 #include <zephyr/sys/printk.h>
 
+#define PRINT_TIRESIAS_TEXT()                                                                                          \
+  do {                                                                                                                 \
+    printk("Tireisas ");                                                                                               \
+  } while (0)
+
 #define PRINT_TIRESIAS_BANNER()                                                                                        \
   do {                                                                                                                 \
     printk(" _____ _               _            \n");                                                                  \

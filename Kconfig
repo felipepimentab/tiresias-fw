@@ -4,6 +4,12 @@ menu "Tiresias"
 
 menu "Base"
 
+config PRINT_BANNER
+	bool "Print Tiresias banner on the console"
+	default y
+	help
+	  Prints the full Tiresias ASCII banner on the console (takes more lines).
+
 choice AUDIO_CODEC
 	prompt "Choose which audio codec is connected to the board"
 	default AUDIO_CODEC_ADAU1787

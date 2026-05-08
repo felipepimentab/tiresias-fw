@@ -16,7 +16,11 @@ LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
 int main(void)
 {
   int ret = 0;
+#if IS_ENABLED(CONFIG_PRINT_BANNER)
   PRINT_TIRESIAS_BANNER();
+#else
+  PRINT_TIRESIAS_TEXT();
+#endif
   PRINT_FIRMWARE_VERSION();
 
   ret = init_button();
