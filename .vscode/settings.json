@@ -28,7 +28,7 @@
     "__config": "cpp",
     "ostream": "cpp",
     "streambuf": "cpp",
-    "audio_codec.h": "c",
+    "audio_control.h": "c",
     "bluetooth.h": "c",
     "ble.h": "c",
     "storage.h": "c",

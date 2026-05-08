@@ -1,4 +1,4 @@
-#include "audio_codec.h"
+#include "audio_control.h"
 #include "drivers/adau1787.h"
 #include "macros_common.h"
 #include "modules/audio_i2s.h"
@@ -7,7 +7,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/zbus/zbus.h>
 
-LOG_MODULE_REGISTER(audio_codec_module, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(audio_control_module, LOG_LEVEL_INF);
 
 #define CODEC_THREAD_STACK_SIZE 2048
 #define CODEC_THREAD_PRIORITY 3
@@ -112,7 +112,7 @@ static void codec_state_machine(codec_cmd cmd)
 
 /* === Codec Thread Function === */
 
-static void audio_codec_thread(void)
+static void audio_control_thread(void)
 {
   LOG_DBG("Audio codec thread started");
   int ret = 0;
@@ -137,5 +137,5 @@ static void audio_codec_thread(void)
   }
 }
 
-K_THREAD_DEFINE(
-    audio_codec_thread_id, CODEC_THREAD_STACK_SIZE, audio_codec_thread, NULL, NULL, NULL, CODEC_THREAD_PRIORITY, 0, 0);
+K_THREAD_DEFINE(audio_control_thread_id, CODEC_THREAD_STACK_SIZE, audio_control_thread, NULL, NULL, NULL,
+    CODEC_THREAD_PRIORITY, 0, 0);

@@ -1,5 +1,5 @@
 #include "application/controller.h"
-#include "audio/audio_codec.h"
+#include "audio/audio_control.h"
 #include "bluetooth/bluetooth.h"
 #include "print_version.h"
 #include "system_modules/peripheral/button.h"
