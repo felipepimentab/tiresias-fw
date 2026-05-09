@@ -82,7 +82,7 @@ static void notify_handler(struct k_work *work)
     orientation_value = last_msg;
 
     /* reduz taxa (~5 Hz se base ~100 Hz) */
-    if (cnt++ % 20 != 0) {
+    if (cnt++ % 2 != 0) {
         return;
     }
 
