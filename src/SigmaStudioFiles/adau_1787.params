@@ -1,6 +1,6 @@
 Cell Name         = Final Volume
 Parameter Name    = GainS200AlgGrowDP1gain_target
-Parameter Address = 8240
+Parameter Address = 8228
 Parameter Value   = 1
 Parameter Data :
 0x00, 0x80, 0x00, 0x00, 
@@ -10,24 +10,6 @@ Parameter Data :
 Cell Name         = Final Volume
 Parameter Name    = GainS200AlgGrowDP1alpha
 Parameter Address = 38904
-Parameter Data :
-0x00, 0x7F, 0xF2, 0x59, 
-0x00, 0x00, 0x0D, 0xA7, 
-
-
-
-Cell Name         = Single 1_2
-Parameter Name    = GainS200AlgGrowDP2gain_target
-Parameter Address = 8228
-Parameter Value   = 1
-Parameter Data :
-0x00, 0x80, 0x00, 0x00, 
-
-
-
-Cell Name         = Single 1_2
-Parameter Name    = GainS200AlgGrowDP2alpha
-Parameter Address = 38896
 Parameter Data :
 0x00, 0x7F, 0xF2, 0x59, 
 0x00, 0x00, 0x0D, 0xA7, 
@@ -100,9 +82,9 @@ Parameter Data :
 Cell Name         = None - Framework
 Parameter Name    = NonModRamAlloc
 Parameter Address = 8192
-Parameter Value   = 2044
+Parameter Value   = 2046
 Parameter Data :
-0x00, 0x00, 0x07, 0xFC, 
+0x00, 0x00, 0x07, 0xFE, 
 
 
 
@@ -129,14 +111,8 @@ See also adau_1787.hex file
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
-0x00 , 	0x00 , 	0x00 , 	0x00 , 	
-0x00 , 	0x00 , 	0x00 , 	0x00 , 	
-0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 
 Parameter data for: IC 1-Sigma (Binary format starting at parameter address 0)
-00000000	00000000	00000000	00000000	
-00000000	00000000	00000000	00000000	
-00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	

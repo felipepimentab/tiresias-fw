@@ -1,7 +1,7 @@
 /*
  * File:           C:\users\crossover\Desktop\exports\adau_1787_IC_1_SIGMA.h
  *
- * Created:        Tuesday, April 28, 2026 2:34:12 PM
+ * Created:        Monday, May 18, 2026 11:16:45 PM
  * Description:    adau_1787:IC 1-Sigma program data.
  *
  * This software is distributed in the hope that it will be useful,
@@ -26,17 +26,9 @@
 #define DEVICE_ADDR_IC_1_SIGMA 0x50
 
 /* DSP Ram Data */
-#define NON_MODULO_RAM__SIZE_IC_1_Sigma 16
+#define NON_MODULO_RAM__SIZE_IC_1_Sigma 8
 #define NON_MODULO_RAM__ADDR_IC_1_Sigma 32756
 ADI_REG_TYPE NON_MODULO_RAM__Data_IC_1_Sigma[NON_MODULO_RAM__SIZE_IC_1_Sigma] = {
-  0x00,
-  0x7F,
-  0xF2,
-  0x59,
-  0x00,
-  0x00,
-  0x0D,
-  0xA7,
   0x00,
   0x7F,
   0xF2,
@@ -48,7 +40,7 @@ ADI_REG_TYPE NON_MODULO_RAM__Data_IC_1_Sigma[NON_MODULO_RAM__SIZE_IC_1_Sigma] = 
 };
 
 /* DSP Program Data */
-#define PROGRAM_SIZE_IC_1_Sigma 375
+#define PROGRAM_SIZE_IC_1_Sigma 330
 #define PROGRAM_ADDR_IC_1_Sigma 20480
 ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x00,
@@ -266,18 +258,28 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x00,
   0xE2,
   0x00,
+  0x00,
+  0x39,
+  0x08,
+  0x20,
+  0x00,
+  0x84,
+  0x80,
+  0x00,
+  0xE2,
+  0x00,
   0x7F,
-  0xC0,
+  0xE0,
   0x0B,
   0x20,
   0x00,
   0x7F,
-  0xC0,
+  0xE0,
   0x0A,
   0x34,
   0x00,
   0x7F,
-  0xD0,
+  0xF0,
   0x09,
   0x22,
   0x00,
@@ -292,7 +294,7 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0x12,
   0x00,
   0x00,
-  0x20,
+  0x10,
   0x0A,
   0x20,
   0x00,
@@ -302,57 +304,12 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0xE2,
   0x00,
   0x00,
-  0x30,
+  0x10,
   0x0A,
   0x20,
   0x00,
   0x00,
   0x50,
-  0x00,
-  0xE2,
-  0x00,
-  0x7F,
-  0xE0,
-  0x0E,
-  0x20,
-  0x00,
-  0x7F,
-  0xE0,
-  0x0D,
-  0x34,
-  0x00,
-  0x7F,
-  0xF0,
-  0x0C,
-  0x22,
-  0x00,
-  0xFF,
-  0xB0,
-  0x0D,
-  0x02,
-  0x00,
-  0xFF,
-  0xB0,
-  0x0E,
-  0x12,
-  0x00,
-  0x00,
-  0x10,
-  0x0D,
-  0x20,
-  0x00,
-  0x00,
-  0x60,
-  0x00,
-  0xE2,
-  0x00,
-  0x00,
-  0x10,
-  0x0D,
-  0x20,
-  0x00,
-  0x00,
-  0x70,
   0x00,
   0xE2,
   0x00,
@@ -367,17 +324,7 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0xE2,
   0x00,
   0x00,
-  0x69,
-  0x08,
-  0x20,
-  0x00,
-  0x84,
-  0x80,
-  0x00,
-  0xE2,
-  0x00,
-  0x00,
-  0x79,
+  0x59,
   0x08,
   0x20,
   0x00,
@@ -387,7 +334,7 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
   0xE2,
   0x00,
   0x00,
-  0x79,
+  0x59,
   0x08,
   0x20,
   0x00,
@@ -429,13 +376,13 @@ ADI_REG_TYPE Program_Data_IC_1_Sigma[PROGRAM_SIZE_IC_1_Sigma] = {
 };
 
 /* DSP Parameter (Coefficient) Data */
-#define PARAM_SIZE_IC_1_Sigma 60
+#define PARAM_SIZE_IC_1_Sigma 48
 #define PARAM_ADDR_IC_1_Sigma 0
 ADI_REG_TYPE Param_Data_IC_1_Sigma[PARAM_SIZE_IC_1_Sigma] = {
   0x00,
   0x00,
   0x07,
-  0xFC,
+  0xFE,
   0x00,
   0x00,
   0x00,
@@ -480,18 +427,6 @@ ADI_REG_TYPE Param_Data_IC_1_Sigma[PARAM_SIZE_IC_1_Sigma] = {
   0x00,
   0x00,
   0x00,
-  0x00,
-  0x80,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
-  0x00,
 };
 
 /* Register Default - IC 1.SDSP_CTRL2 */
@@ -510,13 +445,13 @@ ADI_REG_TYPE R3_ADC_DAC_HP_PWR_IC_1_Sigma_Default[REG_ADC_DAC_HP_PWR_IC_1_Sigma_
 ADI_REG_TYPE R4_PLL_MB_PGA_PWR_IC_1_Sigma_Default[REG_PLL_MB_PGA_PWR_IC_1_Sigma_BYTE] = { 0x0C };
 
 /* Register Default - IC 1.CHIP_PWR */
-ADI_REG_TYPE R5_CHIP_PWR_IC_1_Sigma_Default[REG_CHIP_PWR_IC_1_Sigma_BYTE] = { 0x17 };
+ADI_REG_TYPE R5_CHIP_PWR_IC_1_Sigma_Default[REG_CHIP_PWR_IC_1_Sigma_BYTE] = { 0x27 };
 
 /* Register Default - IC 1.Power En Delay */
 ADI_REG_TYPE R6_POWER_EN_DELAY_IC_1_Sigma_Default[REG_POWER_EN_DELAY_IC_1_Sigma_BYTE] = { 0x00, 0x23 };
 
 /* Register Default - IC 1.CHIP_PWR */
-ADI_REG_TYPE R7_CHIP_PWR_IC_1_Sigma_Default[REG_CHIP_PWR_IC_1_Sigma_BYTE] = { 0x17 };
+ADI_REG_TYPE R7_CHIP_PWR_IC_1_Sigma_Default[REG_CHIP_PWR_IC_1_Sigma_BYTE] = { 0x27 };
 
 /* Register Default - IC 1.CLK_CTRL1 */
 ADI_REG_TYPE R8_CLK_CTRL1_IC_1_Sigma_Default[REG_CLK_CTRL1_IC_1_Sigma_BYTE] = { 0xC0 };
@@ -984,7 +919,7 @@ ADI_REG_TYPE R156_IRQ2_STATUS2_IC_1_Sigma_Default[REG_IRQ2_STATUS2_IC_1_Sigma_BY
 ADI_REG_TYPE R157_IRQ2_STATUS3_IC_1_Sigma_Default[REG_IRQ2_STATUS3_IC_1_Sigma_BYTE] = { 0x00 };
 
 /* Register Default - IC 1.SPT0_CTRL1 Register */
-ADI_REG_TYPE R158_SPT0_CTRL1_IC_1_Sigma_Default[REG_SPT0_CTRL1_IC_1_Sigma_BYTE] = { 0x00 };
+ADI_REG_TYPE R158_SPT0_CTRL1_IC_1_Sigma_Default[REG_SPT0_CTRL1_IC_1_Sigma_BYTE] = { 0x10 };
 
 /* Register Default - IC 1.SPT0_CTRL2 Register */
 ADI_REG_TYPE R159_SPT0_CTRL2_IC_1_Sigma_Default[REG_SPT0_CTRL2_IC_1_Sigma_BYTE] = { 0x00 };
@@ -1008,10 +943,10 @@ ADI_REG_TYPE R164_SPT0_ROUTE4_IC_1_Sigma_Default[REG_SPT0_ROUTE4_IC_1_Sigma_BYTE
 ADI_REG_TYPE R165_SPT0_ROUTE5_IC_1_Sigma_Default[REG_SPT0_ROUTE5_IC_1_Sigma_BYTE] = { 0x3F };
 
 /* Register Default - IC 1.SPT0_ROUTE6 Register */
-ADI_REG_TYPE R166_SPT0_ROUTE6_IC_1_Sigma_Default[REG_SPT0_ROUTE6_IC_1_Sigma_BYTE] = { 0x3F };
+ADI_REG_TYPE R166_SPT0_ROUTE6_IC_1_Sigma_Default[REG_SPT0_ROUTE6_IC_1_Sigma_BYTE] = { 0x3E };
 
 /* Register Default - IC 1.SPT0_ROUTE7 Register */
-ADI_REG_TYPE R167_SPT0_ROUTE7_IC_1_Sigma_Default[REG_SPT0_ROUTE7_IC_1_Sigma_BYTE] = { 0x3F };
+ADI_REG_TYPE R167_SPT0_ROUTE7_IC_1_Sigma_Default[REG_SPT0_ROUTE7_IC_1_Sigma_BYTE] = { 0x3E };
 
 /* Register Default - IC 1.SPT0_ROUTE8 Register */
 ADI_REG_TYPE R168_SPT0_ROUTE8_IC_1_Sigma_Default[REG_SPT0_ROUTE8_IC_1_Sigma_BYTE] = { 0x3F };
@@ -1038,16 +973,16 @@ ADI_REG_TYPE R174_SPT0_ROUTE14_IC_1_Sigma_Default[REG_SPT0_ROUTE14_IC_1_Sigma_BY
 ADI_REG_TYPE R175_SPT0_ROUTE15_IC_1_Sigma_Default[REG_SPT0_ROUTE15_IC_1_Sigma_BYTE] = { 0x3F };
 
 /* Register Default - IC 1.SPT1_CTRL1 Register */
-ADI_REG_TYPE R176_SPT1_CTRL1_IC_1_Sigma_Default[REG_SPT1_CTRL1_IC_1_Sigma_BYTE] = { 0x00 };
+ADI_REG_TYPE R176_SPT1_CTRL1_IC_1_Sigma_Default[REG_SPT1_CTRL1_IC_1_Sigma_BYTE] = { 0x1E };
 
 /* Register Default - IC 1.SPT1_CTRL2 Register */
 ADI_REG_TYPE R177_SPT1_CTRL2_IC_1_Sigma_Default[REG_SPT1_CTRL2_IC_1_Sigma_BYTE] = { 0x00 };
 
 /* Register Default - IC 1.SPT1_ROUTE0 Register */
-ADI_REG_TYPE R178_SPT1_ROUTE0_IC_1_Sigma_Default[REG_SPT1_ROUTE0_IC_1_Sigma_BYTE] = { 0x10 };
+ADI_REG_TYPE R178_SPT1_ROUTE0_IC_1_Sigma_Default[REG_SPT1_ROUTE0_IC_1_Sigma_BYTE] = { 0x3E };
 
 /* Register Default - IC 1.SPT1_ROUTE1 Register */
-ADI_REG_TYPE R179_SPT1_ROUTE1_IC_1_Sigma_Default[REG_SPT1_ROUTE1_IC_1_Sigma_BYTE] = { 0x11 };
+ADI_REG_TYPE R179_SPT1_ROUTE1_IC_1_Sigma_Default[REG_SPT1_ROUTE1_IC_1_Sigma_BYTE] = { 0x3E };
 
 /* Register Default - IC 1.SPT1_ROUTE2 Register */
 ADI_REG_TYPE R180_SPT1_ROUTE2_IC_1_Sigma_Default[REG_SPT1_ROUTE2_IC_1_Sigma_BYTE] = { 0x3F };
@@ -1065,7 +1000,7 @@ ADI_REG_TYPE R183_SPT1_ROUTE5_IC_1_Sigma_Default[REG_SPT1_ROUTE5_IC_1_Sigma_BYTE
 ADI_REG_TYPE R184_SPT1_ROUTE6_IC_1_Sigma_Default[REG_SPT1_ROUTE6_IC_1_Sigma_BYTE] = { 0x3F };
 
 /* Register Default - IC 1.SPT1_ROUTE7 Register */
-ADI_REG_TYPE R185_SPT1_ROUTE7_IC_1_Sigma_Default[REG_SPT1_ROUTE7_IC_1_Sigma_BYTE] = { 0x3F };
+ADI_REG_TYPE R185_SPT1_ROUTE7_IC_1_Sigma_Default[REG_SPT1_ROUTE7_IC_1_Sigma_BYTE] = { 0x3E };
 
 /* Register Default - IC 1.SPT1_ROUTE8 Register */
 ADI_REG_TYPE R186_SPT1_ROUTE8_IC_1_Sigma_Default[REG_SPT1_ROUTE8_IC_1_Sigma_BYTE] = { 0x3F };
@@ -1074,7 +1009,7 @@ ADI_REG_TYPE R186_SPT1_ROUTE8_IC_1_Sigma_Default[REG_SPT1_ROUTE8_IC_1_Sigma_BYTE
 ADI_REG_TYPE R187_SPT1_ROUTE9_IC_1_Sigma_Default[REG_SPT1_ROUTE9_IC_1_Sigma_BYTE] = { 0x3F };
 
 /* Register Default - IC 1.SPT1_ROUTE10 Register */
-ADI_REG_TYPE R188_SPT1_ROUTE10_IC_1_Sigma_Default[REG_SPT1_ROUTE10_IC_1_Sigma_BYTE] = { 0x3F };
+ADI_REG_TYPE R188_SPT1_ROUTE10_IC_1_Sigma_Default[REG_SPT1_ROUTE10_IC_1_Sigma_BYTE] = { 0x3E };
 
 /* Register Default - IC 1.SPT1_ROUTE11 Register */
 ADI_REG_TYPE R189_SPT1_ROUTE11_IC_1_Sigma_Default[REG_SPT1_ROUTE11_IC_1_Sigma_BYTE] = { 0x3F };

@@ -1,7 +1,7 @@
 /*
  * File:           C:\users\crossover\Desktop\exports\adau_1787_IC_1_FAST_REG.h
  *
- * Created:        Tuesday, April 28, 2026 2:34:12 PM
+ * Created:        Monday, May 18, 2026 11:16:45 PM
  * Description:    adau_1787:IC 1-Fast control register definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -87,7 +87,7 @@
 /* CHIP_PWR  - Registers (IC 1_Fast) */
 #define REG_CHIP_PWR_IC_1_Fast_ADDR 0xC00D
 #define REG_CHIP_PWR_IC_1_Fast_BYTE 1
-#define REG_CHIP_PWR_IC_1_Fast_VALUE 0x17
+#define REG_CHIP_PWR_IC_1_Fast_VALUE 0x27
 
 /* CLK_CTRL1  - Registers (IC 1_Fast) */
 #define REG_CLK_CTRL1_IC_1_Fast_ADDR 0xC00E
@@ -812,7 +812,7 @@
 /* SPT0_CTRL1  - Registers (IC 1_Fast) */
 #define REG_SPT0_CTRL1_IC_1_Fast_ADDR 0xC0B5
 #define REG_SPT0_CTRL1_IC_1_Fast_BYTE 1
-#define REG_SPT0_CTRL1_IC_1_Fast_VALUE 0x0
+#define REG_SPT0_CTRL1_IC_1_Fast_VALUE 0x10
 
 /* SPT0_CTRL2  - Registers (IC 1_Fast) */
 #define REG_SPT0_CTRL2_IC_1_Fast_ADDR 0xC0B6
@@ -852,12 +852,12 @@
 /* SPT0_ROUTE6  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE6_IC_1_Fast_ADDR 0xC0BD
 #define REG_SPT0_ROUTE6_IC_1_Fast_BYTE 1
-#define REG_SPT0_ROUTE6_IC_1_Fast_VALUE 0x3F
+#define REG_SPT0_ROUTE6_IC_1_Fast_VALUE 0x3E
 
 /* SPT0_ROUTE7  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE7_IC_1_Fast_ADDR 0xC0BE
 #define REG_SPT0_ROUTE7_IC_1_Fast_BYTE 1
-#define REG_SPT0_ROUTE7_IC_1_Fast_VALUE 0x3F
+#define REG_SPT0_ROUTE7_IC_1_Fast_VALUE 0x3E
 
 /* SPT0_ROUTE8  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE8_IC_1_Fast_ADDR 0xC0BF
@@ -902,7 +902,7 @@
 /* SPT1_CTRL1  - Registers (IC 1_Fast) */
 #define REG_SPT1_CTRL1_IC_1_Fast_ADDR 0xC0C7
 #define REG_SPT1_CTRL1_IC_1_Fast_BYTE 1
-#define REG_SPT1_CTRL1_IC_1_Fast_VALUE 0x0
+#define REG_SPT1_CTRL1_IC_1_Fast_VALUE 0x1E
 
 /* SPT1_CTRL2  - Registers (IC 1_Fast) */
 #define REG_SPT1_CTRL2_IC_1_Fast_ADDR 0xC0C8
@@ -912,12 +912,12 @@
 /* SPT1_ROUTE0  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE0_IC_1_Fast_ADDR 0xC0C9
 #define REG_SPT1_ROUTE0_IC_1_Fast_BYTE 1
-#define REG_SPT1_ROUTE0_IC_1_Fast_VALUE 0x10
+#define REG_SPT1_ROUTE0_IC_1_Fast_VALUE 0x3E
 
 /* SPT1_ROUTE1  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE1_IC_1_Fast_ADDR 0xC0CA
 #define REG_SPT1_ROUTE1_IC_1_Fast_BYTE 1
-#define REG_SPT1_ROUTE1_IC_1_Fast_VALUE 0x11
+#define REG_SPT1_ROUTE1_IC_1_Fast_VALUE 0x3E
 
 /* SPT1_ROUTE2  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE2_IC_1_Fast_ADDR 0xC0CB
@@ -947,7 +947,7 @@
 /* SPT1_ROUTE7  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE7_IC_1_Fast_ADDR 0xC0D0
 #define REG_SPT1_ROUTE7_IC_1_Fast_BYTE 1
-#define REG_SPT1_ROUTE7_IC_1_Fast_VALUE 0x3F
+#define REG_SPT1_ROUTE7_IC_1_Fast_VALUE 0x3E
 
 /* SPT1_ROUTE8  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE8_IC_1_Fast_ADDR 0xC0D1
@@ -962,7 +962,7 @@
 /* SPT1_ROUTE10  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE10_IC_1_Fast_ADDR 0xC0D3
 #define REG_SPT1_ROUTE10_IC_1_Fast_BYTE 1
-#define REG_SPT1_ROUTE10_IC_1_Fast_VALUE 0x3F
+#define REG_SPT1_ROUTE10_IC_1_Fast_VALUE 0x3E
 
 /* SPT1_ROUTE11  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE11_IC_1_Fast_ADDR 0xC0D4
@@ -1344,7 +1344,7 @@
 #define R13_POWER_EN_IC_1_Fast 0x1 /* 1b	[0] */
 #define R13_MASTER_BLOCK_EN_IC_1_Fast 0x1 /* 1b	[1] */
 #define R13_CM_STARTUP_OVER_IC_1_Fast 0x1 /* 1b	[2] */
-#define R13_DLDO_CTRL_IC_1_Fast 0x1 /* 01b	[5:4] */
+#define R13_DLDO_CTRL_IC_1_Fast 0x2 /* 10b	[5:4] */
 #define R13_POWER_EN_IC_1_Fast_MASK 0x1
 #define R13_POWER_EN_IC_1_Fast_SHIFT 0
 #define R13_MASTER_BLOCK_EN_IC_1_Fast_MASK 0x2
@@ -2851,7 +2851,7 @@
 /* SPT0_CTRL1 (IC 1_Fast) */
 #define R158_SPT0_SAI_MODE_IC_1_Fast 0x0 /* 0b	[0] */
 #define R158_SPT0_DATA_FORMAT_IC_1_Fast 0x0 /* 000b	[3:1] */
-#define R158_SPT0_SLOT_WIDTH_IC_1_Fast 0x0 /* 00b	[5:4] */
+#define R158_SPT0_SLOT_WIDTH_IC_1_Fast 0x1 /* 01b	[5:4] */
 #define R158_SPT0_TRI_STATE_IC_1_Fast 0x0 /* 0b	[6] */
 #define R158_SPT0_SAI_MODE_IC_1_Fast_MASK 0x1
 #define R158_SPT0_SAI_MODE_IC_1_Fast_SHIFT 0
@@ -2907,12 +2907,12 @@
 #define R165_SPT0_OUT_ROUTE5_IC_1_Fast_SHIFT 0
 
 /* SPT0_ROUTE6 (IC 1_Fast) */
-#define R166_SPT0_OUT_ROUTE6_IC_1_Fast 0x3F /* 111111b	[5:0] */
+#define R166_SPT0_OUT_ROUTE6_IC_1_Fast 0x3E /* 111110b	[5:0] */
 #define R166_SPT0_OUT_ROUTE6_IC_1_Fast_MASK 0x3F
 #define R166_SPT0_OUT_ROUTE6_IC_1_Fast_SHIFT 0
 
 /* SPT0_ROUTE7 (IC 1_Fast) */
-#define R167_SPT0_OUT_ROUTE7_IC_1_Fast 0x3F /* 111111b	[5:0] */
+#define R167_SPT0_OUT_ROUTE7_IC_1_Fast 0x3E /* 111110b	[5:0] */
 #define R167_SPT0_OUT_ROUTE7_IC_1_Fast_MASK 0x3F
 #define R167_SPT0_OUT_ROUTE7_IC_1_Fast_SHIFT 0
 
@@ -2958,8 +2958,8 @@
 
 /* SPT1_CTRL1 (IC 1_Fast) */
 #define R176_SPT1_SAI_MODE_IC_1_Fast 0x0 /* 0b	[0] */
-#define R176_SPT1_DATA_FORMAT_IC_1_Fast 0x0 /* 000b	[3:1] */
-#define R176_SPT1_SLOT_WIDTH_IC_1_Fast 0x0 /* 00b	[5:4] */
+#define R176_SPT1_DATA_FORMAT_IC_1_Fast 0x7 /* 111b	[3:1] */
+#define R176_SPT1_SLOT_WIDTH_IC_1_Fast 0x1 /* 01b	[5:4] */
 #define R176_SPT1_TRI_STATE_IC_1_Fast 0x0 /* 0b	[6] */
 #define R176_SPT1_SAI_MODE_IC_1_Fast_MASK 0x1
 #define R176_SPT1_SAI_MODE_IC_1_Fast_SHIFT 0
@@ -2985,12 +2985,12 @@
 #define R177_SPT1_LRCLK_POL_IC_1_Fast_SHIFT 7
 
 /* SPT1_ROUTE0 (IC 1_Fast) */
-#define R178_SPT1_OUT_ROUTE0_IC_1_Fast 0x10 /* 010000b	[5:0] */
+#define R178_SPT1_OUT_ROUTE0_IC_1_Fast 0x3E /* 111110b	[5:0] */
 #define R178_SPT1_OUT_ROUTE0_IC_1_Fast_MASK 0x3F
 #define R178_SPT1_OUT_ROUTE0_IC_1_Fast_SHIFT 0
 
 /* SPT1_ROUTE1 (IC 1_Fast) */
-#define R179_SPT1_OUT_ROUTE1_IC_1_Fast 0x11 /* 010001b	[5:0] */
+#define R179_SPT1_OUT_ROUTE1_IC_1_Fast 0x3E /* 111110b	[5:0] */
 #define R179_SPT1_OUT_ROUTE1_IC_1_Fast_MASK 0x3F
 #define R179_SPT1_OUT_ROUTE1_IC_1_Fast_SHIFT 0
 
@@ -3020,7 +3020,7 @@
 #define R184_SPT1_OUT_ROUTE6_IC_1_Fast_SHIFT 0
 
 /* SPT1_ROUTE7 (IC 1_Fast) */
-#define R185_SPT1_OUT_ROUTE7_IC_1_Fast 0x3F /* 111111b	[5:0] */
+#define R185_SPT1_OUT_ROUTE7_IC_1_Fast 0x3E /* 111110b	[5:0] */
 #define R185_SPT1_OUT_ROUTE7_IC_1_Fast_MASK 0x3F
 #define R185_SPT1_OUT_ROUTE7_IC_1_Fast_SHIFT 0
 
@@ -3035,7 +3035,7 @@
 #define R187_SPT1_OUT_ROUTE9_IC_1_Fast_SHIFT 0
 
 /* SPT1_ROUTE10 (IC 1_Fast) */
-#define R188_SPT1_OUT_ROUTE10_IC_1_Fast 0x3F /* 111111b	[5:0] */
+#define R188_SPT1_OUT_ROUTE10_IC_1_Fast 0x3E /* 111110b	[5:0] */
 #define R188_SPT1_OUT_ROUTE10_IC_1_Fast_MASK 0x3F
 #define R188_SPT1_OUT_ROUTE10_IC_1_Fast_SHIFT 0
 
