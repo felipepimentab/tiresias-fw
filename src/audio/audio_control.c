@@ -1,6 +1,7 @@
 #include "audio_control.h"
 #include "drivers/adau1787.h"
 #include "macros_common.h"
+#include "modules/audio_datapath.h"
 #include "modules/audio_i2s.h"
 #include "zbus_common.h"
 #include <zephyr/kernel.h>
@@ -9,7 +10,7 @@
 
 LOG_MODULE_REGISTER(audio_control_module, LOG_LEVEL_INF);
 
-#define CODEC_THREAD_STACK_SIZE 2048
+#define CODEC_THREAD_STACK_SIZE 8192
 #define CODEC_THREAD_PRIORITY 3
 
 ZBUS_SUBSCRIBER_DEFINE(codec_cmd_sub, 4);
@@ -42,18 +43,19 @@ static void set_codec_state(codec_state state)
 
 static void handle_state_off(codec_cmd cmd)
 {
+  int ret;
   if (cmd != CODEC_CMD_INIT) {
     return;
   }
 
   set_codec_state(CODEC_STATE_INITIALIZING);
 
-#if CONFIG_AUDIO_CODEC_ADAU1787
-  int ret = adau1787_init();
+  ret = audio_datapath_init();
   ERR_CHK(ret);
-  audio_i2s_init();
+  ret = audio_datapath_start(NULL);
   ERR_CHK(ret);
-#endif
+  ret = adau1787_init();
+  ERR_CHK(ret);
 
   set_codec_state(CODEC_STATE_IDLE);
 };
