@@ -1,7 +1,7 @@
 /*
  * File:           C:\users\crossover\Desktop\exports\adau_1787_IC_1_FAST_REG.h
  *
- * Created:        Wednesday, May 20, 2026 10:09:56 PM
+ * Created:        Friday, May 22, 2026 12:46:14 PM
  * Description:    adau_1787:IC 1-Fast control register definitions.
  *
  * This software is distributed in the hope that it will be useful,
@@ -48,7 +48,7 @@
 /* PLL_MB_PGA_PWR  - Registers (IC 1_Fast) */
 #define REG_PLL_MB_PGA_PWR_IC_1_Fast_ADDR         0xC005
 #define REG_PLL_MB_PGA_PWR_IC_1_Fast_BYTE         1
-#define REG_PLL_MB_PGA_PWR_IC_1_Fast_VALUE        0xD
+#define REG_PLL_MB_PGA_PWR_IC_1_Fast_VALUE        0x3D
 
 /* DMIC_PWR  - Registers (IC 1_Fast) */
 #define REG_DMIC_PWR_IC_1_Fast_ADDR               0xC006
@@ -68,7 +68,7 @@
 /* ASRC_PWR  - Registers (IC 1_Fast) */
 #define REG_ASRC_PWR_IC_1_Fast_ADDR               0xC009
 #define REG_ASRC_PWR_IC_1_Fast_BYTE               1
-#define REG_ASRC_PWR_IC_1_Fast_VALUE              0x3
+#define REG_ASRC_PWR_IC_1_Fast_VALUE              0x33
 
 /* FINT_PWR  - Registers (IC 1_Fast) */
 #define REG_FINT_PWR_IC_1_Fast_ADDR               0xC00A
@@ -473,22 +473,22 @@
 /* ASRCO_ROUTE0  - Registers (IC 1_Fast) */
 #define REG_ASRCO_ROUTE0_IC_1_Fast_ADDR           0xC05D
 #define REG_ASRCO_ROUTE0_IC_1_Fast_BYTE           1
-#define REG_ASRCO_ROUTE0_IC_1_Fast_VALUE          0x10
+#define REG_ASRCO_ROUTE0_IC_1_Fast_VALUE          0x12
 
 /* ASRCO_ROUTE1  - Registers (IC 1_Fast) */
 #define REG_ASRCO_ROUTE1_IC_1_Fast_ADDR           0xC05E
 #define REG_ASRCO_ROUTE1_IC_1_Fast_BYTE           1
-#define REG_ASRCO_ROUTE1_IC_1_Fast_VALUE          0x11
+#define REG_ASRCO_ROUTE1_IC_1_Fast_VALUE          0x13
 
 /* ASRCO_ROUTE2  - Registers (IC 1_Fast) */
 #define REG_ASRCO_ROUTE2_IC_1_Fast_ADDR           0xC05F
 #define REG_ASRCO_ROUTE2_IC_1_Fast_BYTE           1
-#define REG_ASRCO_ROUTE2_IC_1_Fast_VALUE          0x12
+#define REG_ASRCO_ROUTE2_IC_1_Fast_VALUE          0x0
 
 /* ASRCO_ROUTE3  - Registers (IC 1_Fast) */
 #define REG_ASRCO_ROUTE3_IC_1_Fast_ADDR           0xC060
 #define REG_ASRCO_ROUTE3_IC_1_Fast_BYTE           1
-#define REG_ASRCO_ROUTE3_IC_1_Fast_VALUE          0x13
+#define REG_ASRCO_ROUTE3_IC_1_Fast_VALUE          0x1
 
 /* FDSP_RUN  - Registers (IC 1_Fast) */
 #define REG_FDSP_RUN_IC_1_Fast_ADDR               0xC061
@@ -513,7 +513,7 @@
 /* FDSP_CTRL4  - Registers (IC 1_Fast) */
 #define REG_FDSP_CTRL4_IC_1_Fast_ADDR             0xC065
 #define REG_FDSP_CTRL4_IC_1_Fast_BYTE             1
-#define REG_FDSP_CTRL4_IC_1_Fast_VALUE            0x1
+#define REG_FDSP_CTRL4_IC_1_Fast_VALUE            0x0
 
 /* FDSP_CTRL5  - Registers (IC 1_Fast) */
 #define REG_FDSP_CTRL5_IC_1_Fast_ADDR             0xC066
@@ -568,7 +568,7 @@
 /* SDSP_CTRL1  - Registers (IC 1_Fast) */
 #define REG_SDSP_CTRL1_IC_1_Fast_ADDR             0xC080
 #define REG_SDSP_CTRL1_IC_1_Fast_BYTE             1
-#define REG_SDSP_CTRL1_IC_1_Fast_VALUE            0x1
+#define REG_SDSP_CTRL1_IC_1_Fast_VALUE            0x0
 
 /* SDSP_CTRL2  - Registers (IC 1_Fast) */
 #define REG_SDSP_CTRL2_IC_1_Fast_ADDR             0xC081
@@ -608,17 +608,17 @@
 /* MP_CTRL2  - Registers (IC 1_Fast) */
 #define REG_MP_CTRL2_IC_1_Fast_ADDR               0xC08C
 #define REG_MP_CTRL2_IC_1_Fast_BYTE               1
-#define REG_MP_CTRL2_IC_1_Fast_VALUE              0x0
+#define REG_MP_CTRL2_IC_1_Fast_VALUE              0x30
 
 /* MP_CTRL3  - Registers (IC 1_Fast) */
 #define REG_MP_CTRL3_IC_1_Fast_ADDR               0xC08D
 #define REG_MP_CTRL3_IC_1_Fast_BYTE               1
-#define REG_MP_CTRL3_IC_1_Fast_VALUE              0x0
+#define REG_MP_CTRL3_IC_1_Fast_VALUE              0x33
 
 /* MP_CTRL4  - Registers (IC 1_Fast) */
 #define REG_MP_CTRL4_IC_1_Fast_ADDR               0xC08E
 #define REG_MP_CTRL4_IC_1_Fast_BYTE               1
-#define REG_MP_CTRL4_IC_1_Fast_VALUE              0x0
+#define REG_MP_CTRL4_IC_1_Fast_VALUE              0x3
 
 /* MP_CTRL5  - Registers (IC 1_Fast) */
 #define REG_MP_CTRL5_IC_1_Fast_ADDR               0xC08F
@@ -823,12 +823,12 @@
 /* SPT0_ROUTE0  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE0_IC_1_Fast_ADDR            0xC0B7
 #define REG_SPT0_ROUTE0_IC_1_Fast_BYTE            1
-#define REG_SPT0_ROUTE0_IC_1_Fast_VALUE           0x12
+#define REG_SPT0_ROUTE0_IC_1_Fast_VALUE           0x20
 
 /* SPT0_ROUTE1  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE1_IC_1_Fast_ADDR            0xC0B8
 #define REG_SPT0_ROUTE1_IC_1_Fast_BYTE            1
-#define REG_SPT0_ROUTE1_IC_1_Fast_VALUE           0x13
+#define REG_SPT0_ROUTE1_IC_1_Fast_VALUE           0x21
 
 /* SPT0_ROUTE2  - Registers (IC 1_Fast) */
 #define REG_SPT0_ROUTE2_IC_1_Fast_ADDR            0xC0B9
@@ -903,12 +903,12 @@
 /* SPT1_CTRL1  - Registers (IC 1_Fast) */
 #define REG_SPT1_CTRL1_IC_1_Fast_ADDR             0xC0C7
 #define REG_SPT1_CTRL1_IC_1_Fast_BYTE             1
-#define REG_SPT1_CTRL1_IC_1_Fast_VALUE            0x1E
+#define REG_SPT1_CTRL1_IC_1_Fast_VALUE            0x3E
 
 /* SPT1_CTRL2  - Registers (IC 1_Fast) */
 #define REG_SPT1_CTRL2_IC_1_Fast_ADDR             0xC0C8
 #define REG_SPT1_CTRL2_IC_1_Fast_BYTE             1
-#define REG_SPT1_CTRL2_IC_1_Fast_VALUE            0x0
+#define REG_SPT1_CTRL2_IC_1_Fast_VALUE            0x7
 
 /* SPT1_ROUTE0  - Registers (IC 1_Fast) */
 #define REG_SPT1_ROUTE0_IC_1_Fast_ADDR            0xC0C9
@@ -1172,8 +1172,8 @@
 #define R5_XTAL_EN_IC_1_Fast                      0x0    /* 0b	[1] */
 #define R5_MBIAS0_EN_IC_1_Fast                    0x1    /* 1b	[2] */
 #define R5_MBIAS1_EN_IC_1_Fast                    0x1    /* 1b	[3] */
-#define R5_PGA0_EN_IC_1_Fast                      0x0    /* 0b	[4] */
-#define R5_PGA1_EN_IC_1_Fast                      0x0    /* 0b	[5] */
+#define R5_PGA0_EN_IC_1_Fast                      0x1    /* 1b	[4] */
+#define R5_PGA1_EN_IC_1_Fast                      0x1    /* 1b	[5] */
 #define R5_PGA2_EN_IC_1_Fast                      0x0    /* 0b	[6] */
 #define R5_PGA3_EN_IC_1_Fast                      0x0    /* 0b	[7] */
 #define R5_PLL_EN_IC_1_Fast_MASK                  0x1
@@ -1258,8 +1258,8 @@
 #define R9_ASRCI1_EN_IC_1_Fast                    0x1    /* 1b	[1] */
 #define R9_ASRCI2_EN_IC_1_Fast                    0x0    /* 0b	[2] */
 #define R9_ASRCI3_EN_IC_1_Fast                    0x0    /* 0b	[3] */
-#define R9_ASRCO0_EN_IC_1_Fast                    0x0    /* 0b	[4] */
-#define R9_ASRCO1_EN_IC_1_Fast                    0x0    /* 0b	[5] */
+#define R9_ASRCO0_EN_IC_1_Fast                    0x1    /* 1b	[4] */
+#define R9_ASRCO1_EN_IC_1_Fast                    0x1    /* 1b	[5] */
 #define R9_ASRCO2_EN_IC_1_Fast                    0x0    /* 0b	[6] */
 #define R9_ASRCO3_EN_IC_1_Fast                    0x0    /* 0b	[7] */
 #define R9_ASRCI0_EN_IC_1_Fast_MASK               0x1
@@ -2016,22 +2016,22 @@
 #define R89_ASRCO_MORE_FILT_IC_1_Fast_SHIFT       7
 
 /* ASRCO_ROUTE0 (IC 1_Fast) */
-#define R90_ASRCO0_ROUTE_IC_1_Fast                0x10   /* 010000b	[5:0] */
+#define R90_ASRCO0_ROUTE_IC_1_Fast                0x12   /* 010010b	[5:0] */
 #define R90_ASRCO0_ROUTE_IC_1_Fast_MASK           0x3F
 #define R90_ASRCO0_ROUTE_IC_1_Fast_SHIFT          0
 
 /* ASRCO_ROUTE1 (IC 1_Fast) */
-#define R91_ASRCO1_ROUTE_IC_1_Fast                0x11   /* 010001b	[5:0] */
+#define R91_ASRCO1_ROUTE_IC_1_Fast                0x13   /* 010011b	[5:0] */
 #define R91_ASRCO1_ROUTE_IC_1_Fast_MASK           0x3F
 #define R91_ASRCO1_ROUTE_IC_1_Fast_SHIFT          0
 
 /* ASRCO_ROUTE2 (IC 1_Fast) */
-#define R92_ASRCO2_ROUTE_IC_1_Fast                0x12   /* 010010b	[5:0] */
+#define R92_ASRCO2_ROUTE_IC_1_Fast                0x0    /* 000000b	[5:0] */
 #define R92_ASRCO2_ROUTE_IC_1_Fast_MASK           0x3F
 #define R92_ASRCO2_ROUTE_IC_1_Fast_SHIFT          0
 
 /* ASRCO_ROUTE3 (IC 1_Fast) */
-#define R93_ASRCO3_ROUTE_IC_1_Fast                0x13   /* 010011b	[5:0] */
+#define R93_ASRCO3_ROUTE_IC_1_Fast                0x1    /* 000001b	[5:0] */
 #define R93_ASRCO3_ROUTE_IC_1_Fast_MASK           0x3F
 #define R93_ASRCO3_ROUTE_IC_1_Fast_SHIFT          0
 
@@ -2080,7 +2080,7 @@
 #define R97_FDSP_COPY_CB_IC_1_Fast_SHIFT          5
 
 /* FDSP_CTRL4 (IC 1_Fast) */
-#define R98_FDSP_RATE_SOURCE_IC_1_Fast            0x1    /* 0001b	[3:0] */
+#define R98_FDSP_RATE_SOURCE_IC_1_Fast            0x0    /* 0000b	[3:0] */
 #define R98_FDSP_EXP_ATK_SPEED_IC_1_Fast          0x0    /* 0b	[4] */
 #define R98_FDSP_RATE_SOURCE_IC_1_Fast_MASK       0xF
 #define R98_FDSP_RATE_SOURCE_IC_1_Fast_SHIFT      0
@@ -2159,7 +2159,7 @@
 #define R108_FDSP_SL_UPDATE_IC_1_Fast_SHIFT       0
 
 /* SDSP_CTRL1 (IC 1_Fast) */
-#define R109_SDSP_RATE_SOURCE_IC_1_Fast           0x1    /* 0001b	[3:0] */
+#define R109_SDSP_RATE_SOURCE_IC_1_Fast           0x0    /* 0000b	[3:0] */
 #define R109_SDSP_SPEED_IC_1_Fast                 0x0    /* 0b	[4] */
 #define R109_SDSP_RATE_SOURCE_IC_1_Fast_MASK      0xF
 #define R109_SDSP_RATE_SOURCE_IC_1_Fast_SHIFT     0
@@ -2218,22 +2218,22 @@
 
 /* MP_CTRL2 (IC 1_Fast) */
 #define R117_MP2_MODE_IC_1_Fast                   0x0    /* 0000b	[3:0] */
-#define R117_MP3_MODE_IC_1_Fast                   0x0    /* 0000b	[7:4] */
+#define R117_MP3_MODE_IC_1_Fast                   0x3    /* 0011b	[7:4] */
 #define R117_MP2_MODE_IC_1_Fast_MASK              0xF
 #define R117_MP2_MODE_IC_1_Fast_SHIFT             0
 #define R117_MP3_MODE_IC_1_Fast_MASK              0xF0
 #define R117_MP3_MODE_IC_1_Fast_SHIFT             4
 
 /* MP_CTRL3 (IC 1_Fast) */
-#define R118_MP4_MODE_IC_1_Fast                   0x0    /* 0000b	[3:0] */
-#define R118_MP5_MODE_IC_1_Fast                   0x0    /* 0000b	[7:4] */
+#define R118_MP4_MODE_IC_1_Fast                   0x3    /* 0011b	[3:0] */
+#define R118_MP5_MODE_IC_1_Fast                   0x3    /* 0011b	[7:4] */
 #define R118_MP4_MODE_IC_1_Fast_MASK              0xF
 #define R118_MP4_MODE_IC_1_Fast_SHIFT             0
 #define R118_MP5_MODE_IC_1_Fast_MASK              0xF0
 #define R118_MP5_MODE_IC_1_Fast_SHIFT             4
 
 /* MP_CTRL4 (IC 1_Fast) */
-#define R119_MP6_MODE_IC_1_Fast                   0x0    /* 0000b	[3:0] */
+#define R119_MP6_MODE_IC_1_Fast                   0x3    /* 0011b	[3:0] */
 #define R119_MP7_MODE_IC_1_Fast                   0x0    /* 0000b	[7:4] */
 #define R119_MP6_MODE_IC_1_Fast_MASK              0xF
 #define R119_MP6_MODE_IC_1_Fast_SHIFT             0
@@ -2879,12 +2879,12 @@
 #define R159_SPT0_LRCLK_POL_IC_1_Fast_SHIFT       7
 
 /* SPT0_ROUTE0 (IC 1_Fast) */
-#define R160_SPT0_OUT_ROUTE0_IC_1_Fast            0x12   /* 010010b	[5:0] */
+#define R160_SPT0_OUT_ROUTE0_IC_1_Fast            0x20   /* 100000b	[5:0] */
 #define R160_SPT0_OUT_ROUTE0_IC_1_Fast_MASK       0x3F
 #define R160_SPT0_OUT_ROUTE0_IC_1_Fast_SHIFT      0
 
 /* SPT0_ROUTE1 (IC 1_Fast) */
-#define R161_SPT0_OUT_ROUTE1_IC_1_Fast            0x13   /* 010011b	[5:0] */
+#define R161_SPT0_OUT_ROUTE1_IC_1_Fast            0x21   /* 100001b	[5:0] */
 #define R161_SPT0_OUT_ROUTE1_IC_1_Fast_MASK       0x3F
 #define R161_SPT0_OUT_ROUTE1_IC_1_Fast_SHIFT      0
 
@@ -2961,7 +2961,7 @@
 /* SPT1_CTRL1 (IC 1_Fast) */
 #define R176_SPT1_SAI_MODE_IC_1_Fast              0x0    /* 0b	[0] */
 #define R176_SPT1_DATA_FORMAT_IC_1_Fast           0x7    /* 111b	[3:1] */
-#define R176_SPT1_SLOT_WIDTH_IC_1_Fast            0x1    /* 01b	[5:4] */
+#define R176_SPT1_SLOT_WIDTH_IC_1_Fast            0x3    /* 11b	[5:4] */
 #define R176_SPT1_TRI_STATE_IC_1_Fast             0x0    /* 0b	[6] */
 #define R176_SPT1_SAI_MODE_IC_1_Fast_MASK         0x1
 #define R176_SPT1_SAI_MODE_IC_1_Fast_SHIFT        0
@@ -2973,7 +2973,7 @@
 #define R176_SPT1_TRI_STATE_IC_1_Fast_SHIFT       6
 
 /* SPT1_CTRL2 (IC 1_Fast) */
-#define R177_SPT1_BCLK_SRC_IC_1_Fast              0x0    /* 000b	[2:0] */
+#define R177_SPT1_BCLK_SRC_IC_1_Fast              0x7    /* 111b	[2:0] */
 #define R177_SPT1_BCLK_POL_IC_1_Fast              0x0    /* 0b	[3] */
 #define R177_SPT1_LRCLK_SRC_IC_1_Fast             0x0    /* 000b	[6:4] */
 #define R177_SPT1_LRCLK_POL_IC_1_Fast             0x0    /* 0b	[7] */
