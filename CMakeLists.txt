@@ -2,6 +2,10 @@
 
 cmake_minimum_required(VERSION 3.20.0)
 
+# Flag which defines whether application is compiled as gateway/dongle or headset
+add_compile_definitions(HEADSET=1)
+add_compile_definitions(GATEWAY=2)
+
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(tiresias-fw)
 

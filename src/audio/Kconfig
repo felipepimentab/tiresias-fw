@@ -5,6 +5,43 @@ config AUDIO_SYNC_TIMER_USES_RTC
 	default y
 	select NRFX_RTC0
 
+choice AUDIO_FRAME_DURATION
+	prompt "Select frame duration - 7.5 ms frame duration is not tested"
+	default AUDIO_FRAME_DURATION_10_MS
+	help
+	  LC3 supports frame duration of 7.5 and 10 ms.
+	  If USB is selected as audio source, we should
+	  have a frame duration of 10 ms since USB sends 1ms at a time.
+
+config AUDIO_FRAME_DURATION_7_5_MS
+	bool "7.5 ms"
+
+config AUDIO_FRAME_DURATION_10_MS
+	bool "10 ms"
+endchoice
+
+config AUDIO_FRAME_DURATION_US
+	int
+	default 7500 if AUDIO_FRAME_DURATION_7_5_MS
+	default 10000 if AUDIO_FRAME_DURATION_10_MS
+	help
+	  Audio frame duration in µs.
+
+config AUDIO_MIN_PRES_DLY_US
+	int "The minimum presentation delay"
+	default 5000 if STREAM_BIDIRECTIONAL
+	default 3000
+	help
+	  The minimum allowable presentation delay in microseconds.
+	  This needs to allow time for decoding and internal routing.
+
+config AUDIO_MAX_PRES_DLY_US
+	int "The maximum presentation delay"
+	default 60000
+	help
+	  The maximum allowable presentation delay in microseconds.
+	  Increasing this will also increase the FIFO buffers to allow buffering.
+
 choice AUDIO_SYSTEM_SAMPLE_RATE
 	prompt "System audio sample rate"
 	default AUDIO_SAMPLE_RATE_48000_HZ
@@ -63,6 +100,50 @@ config AUDIO_BIT_DEPTH_OCTETS
 	default 4 if AUDIO_BIT_DEPTH_32
 	help
 	  Bit depth of one sample in storage given in octets.
+
+choice AUDIO_SOURCE_GATEWAY
+	prompt "Audio source for gateway"
+	default AUDIO_SOURCE_I2S
+	help
+	  Select audio source for the gateway.
+
+config AUDIO_SOURCE_USB
+	bool "Use USB as audio source"
+	help
+	  Set USB as audio source. Note that this forces the
+	  stream to be unidirectional because of CPU load.
+
+config AUDIO_SOURCE_I2S
+	bool "Use I2S as audio source"
+endchoice
+
+choice AUDIO_HEADSET_CHANNEL
+	prompt "Headset audio channel assignment"
+	default AUDIO_HEADSET_CHANNEL_RUNTIME
+	help
+	  Set whether audio channel assignment for the headset
+	  should happen at runtime or compile-time.
+
+config AUDIO_HEADSET_CHANNEL_RUNTIME
+	bool "Select at runtime"
+	help
+	  Make channel selection at runtime. Selected value is stored in persistent memory.
+	  Left channel: Hold volume-down button on headset while resetting headset.
+	  Right channel: Hold volume-up button on headset while resetting headset.
+
+config AUDIO_HEADSET_CHANNEL_COMPILE_TIME
+	bool "Set at compile-time"
+	help
+	  Set channel selection at compile-time.
+endchoice
+
+config STREAM_BIDIRECTIONAL
+	depends on TRANSPORT_CIS
+	bool "Bidirectional stream"
+	default y
+	help
+	  Bidirectional stream enables encoder and decoder on both sides,
+	  and one device can both send and receive audio.
 
 #----------------------------------------------------------------------------#
 
