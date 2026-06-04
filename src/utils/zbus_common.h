@@ -84,4 +84,14 @@ typedef struct codec_cmd_chan_msg {
   codec_cmd cmd;
 } codec_cmd_chan_msg;
 
+/**
+ * tx_sync_ts_us	The timestamp from get_tx_sync.
+ * curr_ts_us		The current time. This must be in the controller frame of reference.
+ */
+struct sdu_ref_msg {
+  uint32_t tx_sync_ts_us;
+  uint32_t curr_ts_us;
+  bool adjust;
+};
+
 #endif /* ZBUS_COMMON_H_ */
