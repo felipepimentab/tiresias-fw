@@ -1,9 +1,36 @@
-Cell Name         = Single 1
-Parameter Name    = Gain1940AlgNS1
+Cell Name         = Mute1
+Parameter Name    = MuteNoSlewAlg1mute
+Parameter Address = 8232
+Parameter Value   = 1
+Parameter Data :
+0x00 ,	0x80 ,	0x00 ,	0x00 ,	
+
+
+
+Cell Name         = ReadBack1
+Parameter Name    = ReadBackAlgSigma2001
+Parameter Address = 8236
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
+
+
+
+Cell Name         = DC1
+Parameter Name    = DCInpAlg1
 Parameter Address = 8228
 Parameter Value   = 1
 Parameter Data :
 0x00, 0x80, 0x00, 0x00, 
+
+
+
+Cell Name         = Nx2-1
+Parameter Name    = StMuxSwSlew1coeffname
+Parameter Address = 8240
+Parameter Value   = 0
+Parameter Data :
+0x00, 0x00, 0x00, 0x00, 
 
 
 
@@ -100,8 +127,14 @@ See also adau_1787.hex file
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
+0x00 , 	0x00 , 	0x00 , 	0x00 , 	
 
 Parameter data for: IC 1-Sigma (Binary format starting at parameter address 0)
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
+00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	
 00000000	00000000	00000000	00000000	
