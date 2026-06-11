@@ -1,4 +1,5 @@
 #include "audio_control.h"
+#include "adau_1787_IC_1_SIGMA_PARAM.h"
 #include "drivers/adau1787.h"
 #include "macros_common.h"
 #include "modules/audio_datapath.h"
@@ -21,6 +22,32 @@ ZBUS_CHAN_DEFINE(
     codec_cmd_chan, struct codec_cmd_chan_msg, NULL, NULL, ZBUS_OBSERVERS(codec_cmd_sub), ZBUS_MSG_INIT(0));
 
 static codec_state current_state = CODEC_STATE_OFF;
+
+static uint32_t param_word_to_u32(const param_word_t param_word)
+{
+  return ((uint32_t)param_word[0] << 24) | ((uint32_t)param_word[1] << 16) | ((uint32_t)param_word[2] << 8) |
+         param_word[3];
+}
+
+static void u32_to_param_word(uint32_t value, param_word_t param_word)
+{
+  param_word[0] = (value >> 24) & 0xFF;
+  param_word[1] = (value >> 16) & 0xFF;
+  param_word[2] = (value >> 8) & 0xFF;
+  param_word[3] = value & 0xFF;
+}
+
+static const char* stereo_switch_value_label(uint32_t value)
+{
+  switch (value) {
+  case 0:
+    return "False";
+  case 1:
+    return "True";
+  default:
+    return "Unknown";
+  }
+}
 
 static void set_codec_state(codec_state state)
 {
@@ -67,7 +94,43 @@ static void handle_state_initializing(codec_cmd cmd)
 
 static void handle_state_idle(codec_cmd cmd)
 {
+  int ret;
+  param_word_t codec_param;
+  uint32_t codec_param_value;
+  uint32_t toggled_codec_param_value;
+
   LOG_DBG("Handling codec command %d in state %d", cmd, current_state);
+
+  if (cmd != CODEC_CMD_SWITCH) {
+    return;
+  }
+
+  ret = adau1787_read(MOD_NX2_1_STEREOSWSLEW_ADDR, codec_param, sizeof(codec_param));
+  if (ret != 0) {
+    LOG_ERR("Failed to read codec parameter at 0x%04X: %d", MOD_NX2_1_STEREOSWSLEW_ADDR, ret);
+    return;
+  }
+
+  codec_param_value = param_word_to_u32(codec_param);
+  toggled_codec_param_value = (codec_param_value == 0U) ? 1U : 0U;
+  u32_to_param_word(toggled_codec_param_value, codec_param);
+
+  ret = adau1787_write(MOD_NX2_1_STEREOSWSLEW_ADDR, codec_param, sizeof(codec_param));
+  if (ret != 0) {
+    LOG_ERR("Failed to write codec parameter at 0x%04X: %d", MOD_NX2_1_STEREOSWSLEW_ADDR, ret);
+    return;
+  }
+
+  ret = adau1787_read(MOD_NX2_1_STEREOSWSLEW_ADDR, codec_param, sizeof(codec_param));
+  if (ret != 0) {
+    LOG_ERR("Failed to read toggled codec parameter at 0x%04X: %d", MOD_NX2_1_STEREOSWSLEW_ADDR, ret);
+    return;
+  }
+
+  codec_param_value = param_word_to_u32(codec_param);
+
+  LOG_INF("Stereo Switch Nx2 at 0x%04X toggled to %u (%s), raw=0x%08X", MOD_NX2_1_STEREOSWSLEW_ADDR,
+      codec_param_value, stereo_switch_value_label(codec_param_value), codec_param_value);
 };
 
 static void handle_state_error(codec_cmd cmd)

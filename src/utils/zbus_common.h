@@ -76,6 +76,7 @@ typedef enum codec_cmd {
   CODEC_CMD_START_STANDARD,
   CODEC_CMD_START_STREAMING,
   CODEC_CMD_STOP_STREAMING,
+  CODEC_CMD_SWITCH,
 } codec_cmd;
 typedef struct codec_state_chan_msg {
   codec_state state;

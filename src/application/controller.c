@@ -113,7 +113,25 @@ static void handle_state_initializing(struct zbus_channel* chan)
 
 static void handle_state_idle(struct zbus_channel* chan)
 {
-  LOG_INF("Controller State Idle");
+  int ret;
+  struct btn_chan_msg_t button_msg;
+
+  if (chan != &button_chan) {
+    return;
+  }
+
+  ret = zbus_chan_read(&button_chan, &button_msg, K_MSEC(ZBUS_TIMEOUT_MS));
+  ERR_CHK(ret);
+
+  if (button_msg.event != BUTTON_1_PRESSED) {
+    return;
+  }
+
+  LOG_INF("Button 1 pressed, switching codec");
+
+  struct codec_cmd_chan_msg codec_msg = { CODEC_CMD_SWITCH };
+  ret = zbus_chan_pub(&codec_cmd_chan, &codec_msg, ZBUS_READ_TIMEOUT_MS);
+  ERR_CHK(ret);
 }
 
 static void handle_state_low_power(struct zbus_channel* chan)
