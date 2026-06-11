@@ -19,6 +19,8 @@
 
 LOG_MODULE_REGISTER(audio_datapath, LOG_LEVEL_INF);
 
+#define LOG_TIMER_COUNT 5000
+
 /*
  * Debug I2S transparency datapath.
  *
@@ -72,7 +74,7 @@ static void audio_datapath_i2s_blk_complete(
   }
 
   static uint32_t rx_log_counter;
-  bool log_this_block = ((rx_log_counter++ % 1000) == 0);
+  bool log_this_block = ((rx_log_counter++ % LOG_TIMER_COUNT) == 0);
 
   if (log_this_block) {
     uint32_t nonzero = 0;
