@@ -12,7 +12,7 @@
 #include <zephyr/drivers/pinctrl.h>
 #include <zephyr/kernel.h>
 
-#include "audio_sync_timer.h"
+/* #include "audio_sync_timer.h" */
 
 #define I2S_NL DT_NODELABEL(i2s0)
 
@@ -25,7 +25,7 @@ enum audio_i2s_state {
 static enum audio_i2s_state state = AUDIO_I2S_STATE_UNINIT;
 
 PINCTRL_DT_DEFINE(I2S_NL);
-// < MCLK/LRCLK ratio -> LRCLOCK (sample rate) = 48kHz
+
 #if CONFIG_AUDIO_SAMPLE_RATE_16000_HZ
 #define CONFIG_AUDIO_RATIO NRF_I2S_RATIO_384X
 #elif CONFIG_AUDIO_SAMPLE_RATE_24000_HZ
@@ -60,16 +60,22 @@ static nrfx_i2s_config_t cfg = {
   .enable_bypass = false,
 };
 
-/**
- * Function pointer for external callback that's called when a block is completed
- */
 static i2s_blk_comp_callback_t i2s_blk_comp_callback;
 
 static void i2s_comp_handler(nrfx_i2s_buffers_t const* released_bufs, uint32_t status)
 {
   if ((status == NRFX_I2S_STATUS_NEXT_BUFFERS_NEEDED) && released_bufs && i2s_blk_comp_callback
       && (released_bufs->p_rx_buffer || released_bufs->p_tx_buffer)) {
-    i2s_blk_comp_callback(audio_sync_timer_capture_get(), released_bufs->p_rx_buffer, released_bufs->p_tx_buffer);
+    /*
+     * Original synchronized-audio datapath timestamping:
+     *
+     * i2s_blk_comp_callback(audio_sync_timer_capture_get(), released_bufs->p_rx_buffer, released_bufs->p_tx_buffer);
+     *
+     * The temporary I2S transparency datapath does not use presentation timing
+     * or drift compensation. Avoid querying the sync timer here so hardware
+     * bring-up does not emit "Unable to get new CC value" warnings.
+     */
+    i2s_blk_comp_callback(0, released_bufs->p_rx_buffer, released_bufs->p_tx_buffer);
   }
 }
 
@@ -129,7 +135,7 @@ void audio_i2s_init(void)
 
   nrfx_err_t ret;
 
-  nrfx_clock_hfclkaudio_config_set(HFCLKAUDIO_12_165_MHZ);
+  nrfx_clock_hfclkaudio_config_set(HFCLKAUDIO_12_288_MHZ);
 
   NRF_CLOCK->TASKS_HFCLKAUDIOSTART = 1;
 
