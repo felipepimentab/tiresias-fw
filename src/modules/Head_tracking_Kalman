@@ -1,0 +1,527 @@
+/*
+ * IMU Visualizer - Filtro de Kalman para BMI270 + nRF5340 Audio DK
+ *
+ * DIFERENÇA PRINCIPAL EM RELAÇÃO AO MADGWICK:
+ * - Madgwick usa gradiente descendente (otimização matemática)
+ * - Kalman usa estimativa estatística (modelo de ruído + covariância)
+ * - Kalman é mais preciso mas computacionalmente mais pesado
+ * - Ambos têm a MESMA limitação de yaw sem magnetômetro
+ */
+
+#include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/drivers/sensor.h>
+#include <stdio.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/sys/atomic.h>
+#include <math.h>
+
+#define PI 3.14159265359f
+
+/*Variaveis globais*/
+static int64_t last_time = 0;
+static float last_roll_acc = 0.0f;
+
+/* ===========================================================
+ * PARÂMETROS DO FILTRO DE KALMAN
+ * ===========================================================
+ *
+ * O filtro de Kalman modela dois tipos de incerteza:
+ *
+ * Q_angle  → Ruído do PROCESSO (quanto confiamos no modelo)
+ *            Representa o quanto a orientação real pode mudar
+ *            por fatores que não medimos diretamente.
+ *            Valor alto = desconfiamos do modelo, seguimos mais
+ *            o acelerômetro.
+ *            Valor baixo = confiamos no modelo (giroscópio domina).
+ *
+ * Q_bias   → Ruído do BIAS do giroscópio
+ *            O bias é o erro sistemático do giroscópio (lê um
+ *            valor diferente de zero mesmo parado). O Kalman
+ *            ESTIMA e CORRIGE esse bias automaticamente ao
+ *            longo do tempo — vantagem sobre o Madgwick!
+ *
+ * R_measure → Ruído da MEDIÇÃO do acelerômetro
+ *             Quanto confiamos na leitura do acelerômetro.
+ *             Valor alto = acelerômetro ruidoso, confiamos menos.
+ *             Valor baixo = acelerômetro preciso, confiamos mais.
+ *
+ * AJUSTE PRÁTICO:
+ *   Se o ângulo treme muito parado  → aumente R_measure
+ *   Se o ângulo tem drift lento     → aumente Q_bias
+ *   Se o ângulo responde lento      → diminua R_measure
+ */
+#define Q_ANGLE   0.0001f   /* Ruído do processo — incerteza do modelo     */
+#define Q_BIAS    0.003f   /* Ruído do bias — drift do giroscópio          */
+#define R_MEASURE 0.1f    /* Ruído da medição — ruído do acelerômetro     */
+
+#define DT        0.01f    /* Período de amostragem: 10ms = 100Hz          */
+
+/* ===========================================================
+ * ESTRUTURA DO FILTRO DE KALMAN (1 eixo)
+ * ===========================================================
+ *
+ * Cada eixo (roll, pitch) tem seu próprio filtro independente.
+ * O Kalman mantém internamente um ESTADO ESTIMADO e uma
+ * COVARIÂNCIA que representa a incerteza dessa estimativa.
+ *
+ * Estado:
+ *   angle → ângulo estimado (graus)
+ *   bias  → bias estimado do giroscópio (rad/s)
+ *           O Kalman descobre sozinho o offset do giroscópio!
+ *
+ * Covariância P[2][2]:
+ *   P[0][0] → incerteza do ângulo
+ *   P[0][1] → correlação ângulo-bias
+ *   P[1][0] → correlação bias-ângulo (= P[0][1])
+ *   P[1][1] → incerteza do bias
+ */
+typedef struct {
+    float angle;      /* Ângulo estimado (graus)                     */
+    float bias;       /* Bias do giroscópio estimado (rad/s)         */
+    float P[2][2];    /* Matriz de covariância do erro 2x2           */
+} KalmanFilter;
+
+/* Instâncias para cada eixo */
+static KalmanFilter kf_roll;
+static KalmanFilter kf_pitch;
+
+/* ===========================================================
+ * INICIALIZAÇÃO DO FILTRO DE KALMAN
+ * ===========================================================
+ *
+ * Começa com incerteza zero no ângulo (assumimos que está
+ * calibrado na posição inicial) e covariâncias zeradas.
+ * O filtro vai construindo a incerteza real conforme opera.
+ */
+void kalman_init(KalmanFilter *kf, float initial_angle)
+{
+    kf->angle  = initial_angle;
+    kf->bias   = 0.0f;
+
+    /* Matriz de covariância começa zerada */
+    kf->P[0][0] = 0.0f;
+    kf->P[0][1] = 0.0f;
+    kf->P[1][0] = 0.0f;
+    kf->P[1][1] = 0.0f;
+}
+
+/* ===========================================================
+ * ATUALIZAÇÃO DO FILTRO DE KALMAN
+ * ===========================================================
+ *
+ * Recebe:
+ *   kf         → filtro do eixo
+ *   new_angle  → ângulo medido pelo ACELERÔMETRO (graus)
+ *   new_rate   → velocidade angular do GIROSCÓPIO (rad/s)
+ *   dt         → período de amostragem (s)
+ *
+ * Retorna o ângulo estimado (graus)
+ *
+ * O algoritmo tem 2 etapas clássicas do Kalman:
+ *
+ * ── ETAPA 1: PREDIÇÃO ──────────────────────────────────────
+ * Usa o giroscópio para prever onde o ângulo deve estar agora.
+ * Também atualiza a incerteza (covariância) com os ruídos Q.
+ *
+ * ── ETAPA 2: ATUALIZAÇÃO (CORREÇÃO) ───────────────────────
+ * Usa o acelerômetro para CORRIGIR a predição.
+ * O "Ganho de Kalman" (K) decide quanto confiar no acelerômetro
+ * vs quanto confiar na predição do giroscópio — automaticamente,
+ * baseado nas covariâncias e ruídos definidos.
+ *
+ * Se a incerteza da predição for ALTA → K alto → acelerômetro domina
+ * Se a incerteza da predição for BAIXA → K baixo → giroscópio domina
+ */
+float kalman_update(KalmanFilter *kf, float new_angle, float new_rate, float dt)
+{
+    /* ── ETAPA 1: PREDIÇÃO ─────────────────────────────────
+     *
+     * Subtrai o bias estimado da leitura do giroscópio antes
+     * de integrar — esta é a grande vantagem do Kalman sobre
+     * o Madgwick simples: o bias é corrigido automaticamente!
+     *
+     * angle_pred = angle + (gyro - bias) * dt
+     */
+    float rate = new_rate - kf->bias;
+    kf->angle += dt * rate;
+
+    /* Atualiza a covariância com os ruídos do processo.
+     *
+     * Matematicamente: P = F*P*F^T + Q
+     * onde F é a matriz de transição de estado:
+     * F = [[1, -dt],
+     *      [0,   1]]
+     *
+     * Após a multiplicação, resulta nas equações abaixo:
+     */
+    kf->P[0][0] += dt * (dt * kf->P[1][1]
+                       - kf->P[0][1]
+                       - kf->P[1][0]
+                       + Q_ANGLE);
+    kf->P[0][1] -= dt * kf->P[1][1];
+    kf->P[1][0] -= dt * kf->P[1][1];
+    kf->P[1][1] += Q_BIAS * dt;
+
+    /* ── ETAPA 2: ATUALIZAÇÃO (CORREÇÃO) ───────────────────
+     *
+     * Calcula o Ganho de Kalman K:
+     * K = P * H^T / (H * P * H^T + R)
+     * onde H = [1, 0] (observamos apenas o ângulo, não o bias)
+     *
+     * S = covariância da inovação (incerteza total)
+     * K = ganho → quanto corrigir baseado no acelerômetro
+     */
+    float S = kf->P[0][0] + R_MEASURE;   /* Incerteza total da medição  */
+
+    float K[2];                            /* Ganho de Kalman (2 estados) */
+    K[0] = kf->P[0][0] / S;              /* Ganho para o ângulo         */
+    K[1] = kf->P[1][0] / S;              /* Ganho para o bias           */
+
+    /* Inovação: diferença entre o que o acelerômetro mediu
+     * e o que o giroscópio previu.
+     * Se for zero, nada muda. Se for grande, corrige mais.
+     */
+    float y = new_angle - kf->angle;      /* Inovação (resíduo)          */
+
+    /* Corrige o estado com base na inovação ponderada pelo ganho */
+    kf->angle += K[0] * y;               /* Corrige ângulo              */
+    kf->bias  += K[1] * y;               /* Corrige bias do giroscópio  */
+
+    /* Atualiza a covariância após a correção:
+     * P = (I - K*H) * P
+     * onde I é a matriz identidade e H = [1, 0]
+     */
+    float P00_temp = kf->P[0][0];
+    float P01_temp = kf->P[0][1];
+
+    kf->P[0][0] -= K[0] * P00_temp;
+    kf->P[0][1] -= K[0] * P01_temp;
+    kf->P[1][0] -= K[1] * P00_temp;
+    kf->P[1][1] -= K[1] * P01_temp;
+
+    return kf->angle;
+}
+/*Função para desenrolar ângulos*/
+float unwrap_angle(float new_angle, float last_angle)
+{
+    float diff = new_angle - last_angle;
+
+    // Se o salto for maior que 180°, corrige subtraindo 360°
+    if (diff > 180.0f)  diff -= 360.0f;
+    // Se o salto for menor que -180°, corrige somando 360°
+    if (diff < -180.0f) diff += 360.0f;
+
+    return last_angle + diff;
+}
+
+/* ===========================================================
+ * CONVERSÃO DE ÂNGULOS DE EULER PARA QUATERNION
+ * ===========================================================
+ *
+ * O Madgwick calcula o quaternion diretamente.
+ * O Kalman calcula ângulos de Euler (roll, pitch) e precisamos
+ * converter para quaternion para manter compatibilidade com
+ * o visualizador Python.
+ *
+ * LIMITAÇÃO: sem magnetômetro, o yaw é sempre 0 (sem referência).
+ * Esta é a mesma limitação do Madgwick — confirma que o problema
+ * não é o algoritmo, mas a ausência do magnetômetro.
+ *
+ * Convenção: ZYX (yaw → pitch → roll)
+ *   q = q_z * q_y * q_x
+ */
+typedef struct {
+    float w, x, y, z;
+} Quaternion;
+
+Quaternion euler_to_quaternion(float roll_deg, float pitch_deg, float yaw_deg)
+{
+    float roll  = roll_deg  * PI / 180.0f;
+    float pitch = pitch_deg * PI / 180.0f;
+    float yaw   = yaw_deg   * PI / 180.0f;
+
+    float cy = cosf(yaw   * 0.5f);
+    float sy = sinf(yaw   * 0.5f);
+    float cp = cosf(pitch * 0.5f);
+    float sp = sinf(pitch * 0.5f);
+    float cr = cosf(roll  * 0.5f);
+    float sr = sinf(roll  * 0.5f);
+
+    Quaternion q;
+    q.w = cr * cp * cy + sr * sp * sy;
+    q.x = sr * cp * cy - cr * sp * sy;
+    q.y = cr * sp * cy + sr * cp * sy;
+    q.z = cr * cp * sy - sr * sp * cy;
+
+    return q;
+}
+
+/* ===========================================================
+ * FILTRO PASSA-BAIXA PARA O ACELERÔMETRO
+ * ===========================================================
+ *
+ * Reduz ruído de alta frequência nas leituras do acelerômetro.
+ * ACC_ALPHA controla a suavidade:
+ *   Próximo de 0 → muito suave, resposta lenta
+ *   Próximo de 1 → pouco suave, mais fiel ao dado bruto
+ */
+#define ACC_ALPHA 0.1f
+static float ax_f = 0.0f, ay_f = 0.0f, az_f = 1.0f;
+
+/* ===========================================================
+ * DEADBAND DO GIROSCÓPIO
+ * ===========================================================
+ *
+ * Valores abaixo do threshold são tratados como zero,
+ * evitando integração de ruído residual quando parado.
+ */
+#define GYRO_THRESHOLD 0.03f
+
+float deadband(float v)
+{
+    return (fabsf(v) < GYRO_THRESHOLD) ? 0.0f : v;
+}
+
+/* ===========================================================
+ * CONFIGURAÇÃO DO BOTÃO
+ * ===========================================================
+ */
+#define BUTTON_NODE DT_ALIAS(sw0)
+static atomic_t app_running = ATOMIC_INIT(0);
+K_SEM_DEFINE(run_sem, 0, 1);
+
+#if !DT_NODE_HAS_STATUS(BUTTON_NODE, okay)
+#error "Botão sw0 não encontrado"
+#endif
+
+static const struct gpio_dt_spec button =
+    GPIO_DT_SPEC_GET(BUTTON_NODE, gpios);
+static struct gpio_callback button_cb;
+
+void button_pressed(const struct device *dev,
+                    struct gpio_callback *cb,
+                    uint32_t pins)
+{
+    if (atomic_get(&app_running)) {
+        atomic_set(&app_running, 0);
+    } else {
+        atomic_set(&app_running, 1);
+        printk("START\n");
+        k_sem_give(&run_sem);
+    }
+}
+
+static void button_init(void)
+{
+    gpio_pin_configure_dt(&button, GPIO_INPUT);
+    gpio_pin_interrupt_configure_dt(&button, GPIO_INT_EDGE_TO_ACTIVE);
+    gpio_init_callback(&button_cb, button_pressed, BIT(button.pin));
+    gpio_add_callback(button.port, &button_cb);
+}
+
+/* ===========================================================
+ * CALIBRAÇÃO DO GIROSCÓPIO
+ * ===========================================================
+ *
+ * NOTA: Com o Kalman, esta calibração é menos crítica do que
+ * no Madgwick, pois o filtro estima e corrige o bias
+ * automaticamente via kf->bias.
+ *
+ * Mas ainda é útil para dar um bom ponto de partida ao filtro,
+ * acelerando a convergência inicial.
+ */
+static float gyr_offset_x = 0.0f;
+static float gyr_offset_y = 0.0f;
+static float gyr_offset_z = 0.0f;
+
+void calibrate_gyro(const struct device *dev)
+{
+    struct sensor_value gyr[3];
+    const int N = 200;
+    float sum_x = 0, sum_y = 0, sum_z = 0;
+
+    printk("Calibrando giroscópio, mantenha o sensor parado...\n");
+
+    for (int i = 0; i < N; i++) {
+        sensor_sample_fetch(dev);
+        sensor_channel_get(dev, SENSOR_CHAN_GYRO_XYZ, gyr);
+        sum_x += sensor_value_to_double(&gyr[0]);
+        sum_y += sensor_value_to_double(&gyr[1]);
+        sum_z += sensor_value_to_double(&gyr[2]);
+        k_sleep(K_MSEC(10));
+    }
+
+    gyr_offset_x = sum_x / N;
+    gyr_offset_y = sum_y / N;
+    gyr_offset_z = sum_z / N;
+
+    printk("Offset inicial: x=%.4f y=%.4f z=%.4f\n",
+           gyr_offset_x, gyr_offset_y, gyr_offset_z);
+    printk("(O Kalman vai refinar esses valores automaticamente)\n");
+}
+
+/* ===========================================================
+ * MAIN
+ * ===========================================================
+ */
+int main(void)
+{
+    const struct device *dev = DEVICE_DT_GET_ONE(bosch_bmi270);
+    struct sensor_value acc[3], gyr[3];
+    struct sensor_value full_scale_accel, full_scale_gyro,
+                        sampling_freq, oversampling;
+
+    printk("Aguardando início\n");
+
+    button_init();
+
+    if (!device_is_ready(dev)) {
+        printk("BMI270 não pronto\n");
+        return 0;
+    }
+
+    /* ------ Configurando o sensor ------ */
+    full_scale_accel.val1 = 2;
+    full_scale_accel.val2 = 0;
+    sampling_freq.val1    = 100;
+    sampling_freq.val2    = 0;
+    oversampling.val1     = 1;
+    oversampling.val2     = 0;
+
+    sensor_attr_set(dev, SENSOR_CHAN_ACCEL_XYZ,
+                    SENSOR_ATTR_FULL_SCALE, &full_scale_accel);
+    sensor_attr_set(dev, SENSOR_CHAN_ACCEL_XYZ,
+                    SENSOR_ATTR_OVERSAMPLING, &oversampling);
+    sensor_attr_set(dev, SENSOR_CHAN_ACCEL_XYZ,
+                    SENSOR_ATTR_SAMPLING_FREQUENCY, &sampling_freq);
+
+    full_scale_gyro.val1 = 500;
+    sensor_attr_set(dev, SENSOR_CHAN_GYRO_XYZ,
+                    SENSOR_ATTR_FULL_SCALE, &full_scale_gyro);
+    sensor_attr_set(dev, SENSOR_CHAN_GYRO_XYZ,
+                    SENSOR_ATTR_OVERSAMPLING, &oversampling);
+    sensor_attr_set(dev, SENSOR_CHAN_GYRO_XYZ,
+                    SENSOR_ATTR_SAMPLING_FREQUENCY, &sampling_freq);
+
+    /* Calibração inicial do giroscópio */
+    calibrate_gyro(dev);
+
+    /* ------ Inicialização do Kalman ------
+     *
+     * Faz uma leitura inicial do acelerômetro para inicializar
+     * os filtros no ângulo real atual do sensor, evitando um
+     * "salto" brusco no início da visualização.
+     */
+    sensor_sample_fetch(dev);
+    sensor_channel_get(dev, SENSOR_CHAN_ACCEL_XYZ, acc);
+
+    float ax0 = sensor_value_to_double(&acc[0]);
+    float ay0 = sensor_value_to_double(&acc[1]);
+    float az0 = sensor_value_to_double(&acc[2]);
+
+    float init_roll  = atan2f(ay0, az0) * 180.0f / PI;
+    float init_pitch = atan2f(-ax0, sqrtf(ay0*ay0 + az0*az0)) * 180.0f / PI;
+
+    kalman_init(&kf_roll,  init_roll);
+    kalman_init(&kf_pitch, init_pitch);
+
+    printk("Kalman inicializado: roll=%.2f pitch=%.2f\n",
+           init_roll, init_pitch);
+
+    /* Inicializa filtro passa-baixa do acelerômetro */
+    ax_f = ax0;
+    ay_f = ay0;
+    az_f = az0;
+
+    /* ------ Loop Principal ------ */
+    while (1) {
+
+        /* Bloqueia se pausado */
+        if (!atomic_get(&app_running)) {
+            printk("Aplicação pausada\n");
+            k_sem_take(&run_sem, K_FOREVER);
+            printk("Aplicação retomada\n");
+        }
+
+        /* Lê sensor */
+        sensor_sample_fetch(dev);
+        sensor_channel_get(dev, SENSOR_CHAN_ACCEL_XYZ, acc);
+        sensor_channel_get(dev, SENSOR_CHAN_GYRO_XYZ,  gyr);
+
+        /* Converte acelerômetro */
+        float ax_raw = sensor_value_to_double(&acc[0]);
+        float ay_raw = sensor_value_to_double(&acc[1]);
+        float az_raw = sensor_value_to_double(&acc[2]);
+
+        /* Aplica filtro passa-baixa no acelerômetro */
+        ax_f = ACC_ALPHA * ax_raw + (1.0f - ACC_ALPHA) * ax_f;
+        ay_f = ACC_ALPHA * ay_raw + (1.0f - ACC_ALPHA) * ay_f;
+        az_f = ACC_ALPHA * az_raw + (1.0f - ACC_ALPHA) * az_f;
+
+        /* Converte giroscópio e remove offset da calibração inicial
+         * Obs: o Kalman vai refinar o bias restante automaticamente */
+        float gx = sensor_value_to_double(&gyr[0]) - gyr_offset_x;
+        float gy = sensor_value_to_double(&gyr[1]) - gyr_offset_y;
+        float gz = sensor_value_to_double(&gyr[2]) - gyr_offset_z;
+
+        /* Aplica deadband */
+        gx = deadband(gx);
+        gy = deadband(gy);
+        gz = deadband(gz);
+
+        /* ── CÁLCULO DOS ÂNGULOS PELO ACELERÔMETRO ──────────
+         *
+         * Esses ângulos servem como "medição" (etapa de
+         * atualização) para o filtro de Kalman.
+         * São ruidosos mas têm referência absoluta de gravidade.
+         */
+        float roll_acc_raw  = atan2f(ay_f, az_f) * 180.0f / PI;
+        float pitch_acc_raw = atan2f(-ax_f, sqrtf(ay_f*ay_f + az_f*az_f)) * 180.0f / PI;
+
+        // Corrige saltos bruscos
+        float roll_acc  = unwrap_angle(roll_acc_raw,  last_roll_acc);
+        last_roll_acc   = roll_acc;
+        
+        static float last_pitch_acc = 0.0f;
+        float pitch_acc = unwrap_angle(pitch_acc_raw, last_pitch_acc);
+        last_pitch_acc  = pitch_acc;
+
+        /*Timestamp*/
+        int64_t now = k_uptime_get();
+        float dt_real = (now - last_time) / 1000.0f;  // converte ms para segundos
+        last_time = now;
+
+
+        /* ── ATUALIZAÇÃO DO KALMAN ───────────────────────────
+         *
+         * Passa para cada filtro:
+         *   1. O ângulo medido pelo acelerômetro (referência)
+         *   2. A velocidade angular do giroscópio (predição)
+         *   3. O período de amostragem
+         *
+         * O filtro retorna o ângulo estimado fundindo os dois.
+         * O bias do giroscópio (kf->bias) é atualizado internamente.
+         */
+        float roll  = kalman_update(&kf_roll,  roll_acc,  gx, dt_real);
+        float pitch = kalman_update(&kf_pitch, pitch_acc, gy, dt_real);
+
+        /* Yaw: sem magnetômetro, não temos referência absoluta.
+         * Integramos o giroscópio mas vai acumular drift — igual
+         * ao Madgwick. Esta é a limitação física, não do filtro. */
+        static float yaw = 0.0f;
+        yaw += gz * DT * 180.0f / PI;
+
+        /* ── CONVERSÃO PARA QUATERNION ───────────────────────
+         *
+         * Converte os ângulos de Euler estimados para quaternion
+         * para manter compatibilidade com o visualizador Python.
+         */
+        Quaternion q = euler_to_quaternion(roll, pitch, yaw);
+
+        /* Envia pela serial no mesmo formato do Madgwick */
+        printk("Q:%f,%f,%f,%f\n", q.w, q.x, q.y, q.z);
+
+        k_sleep(K_MSEC(10));
+    }
+}
