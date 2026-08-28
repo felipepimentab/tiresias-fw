@@ -35,6 +35,13 @@ static float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;
 // Valores maiores (0.1 - 0.5) = Correção rápida, mas pode ficar "tremido".
 #define beta 0.03f 
 
+static float yaw_from_quaternion(float qw, float qx, float qy, float qz)
+{
+    float siny_cosp = 2.0f * (qw * qz + qx * qy);
+    float cosy_cosp = 1.0f - 2.0f * (qy * qy + qz * qz);
+    return atan2f(siny_cosp, cosy_cosp) / DEG2RAD;
+}
+
 static void madgwick_update(float gx, float gy, float gz, float ax, float ay, float az, float dt)
 {
     float recipNorm;
@@ -166,10 +173,26 @@ static void head_tracking_thread(void)
         madgwick_update(gx, gy, gz, ax, ay, az, dt);
 
         struct orientation_chan_msg msg = {
-            .q0 = q0,
-            .q1 = q1,
-            .q2 = q2,
-            .q3 = q3
+            .version = ORIENTATION_TELEMETRY_VERSION,
+            .flags = 0,
+            .payload_size = ORIENTATION_TELEMETRY_PAYLOAD_SIZE,
+            .seq = imu_msg.seq,
+            .device_time_ms = imu_msg.device_time_ms,
+            .ax = ax,
+            .ay = ay,
+            .az = az,
+            .gx = gx,
+            .gy = gy,
+            .gz = gz,
+            .qw = q0,
+            .qx = q1,
+            .qy = q2,
+            .qz = q3,
+            .yaw_deg = yaw_from_quaternion(q0, q1, q2, q3),
+            .calibration_state = ORIENTATION_CAL_NONE,
+            .reserved0 = 0,
+            .reserved1 = 0,
+            .reserved2 = 0
         };
 
         ret = zbus_chan_pub(&orientation_chan, &msg, K_NO_WAIT);

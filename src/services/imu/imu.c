@@ -156,6 +156,7 @@ static void imu_thread(void)
   LOG_INF("IMU thread started");
 
   static int cnt = 0; // This is a counter for the log inf
+  static uint32_t sample_seq = 0;
 
   int ret;
   struct imu_cmd_chan_msg cmd_msg;
@@ -185,6 +186,7 @@ static void imu_thread(void)
         set_imu_state(IMU_STATE_ERROR);
         continue;
       }
+      uint32_t sample_time_ms = (uint32_t)k_uptime_get();
 
       ret = sensor_channel_get(imu_dev, SENSOR_CHAN_ACCEL_XYZ, accel);
       if (ret != 0) {
@@ -199,6 +201,8 @@ static void imu_thread(void)
       }
 
       struct imu_data_chan_msg data_msg = {
+        .seq = sample_seq++,
+        .device_time_ms = sample_time_ms,
         .ax = sensor_value_to_double(&accel[0]),
         .ay = sensor_value_to_double(&accel[1]),
         .az = sensor_value_to_double(&accel[2]),

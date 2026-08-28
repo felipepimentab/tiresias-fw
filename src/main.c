@@ -12,6 +12,7 @@
 #include <zephyr/logging/log.h>
 
 LOG_MODULE_REGISTER(Main_app, LOG_LEVEL_INF);
+ZBUS_CHAN_DECLARE(led_chan);
 
 int main(void)
 {
@@ -28,8 +29,18 @@ int main(void)
   ret = orientation_init();
   ERR_CHK(ret);
 
-  // ret = init_storage();
-  // ERR_CHK(ret);
+  ret = init_storage();
+  ERR_CHK(ret);
+
+  struct led_chan_msg_t led_msg;
+
+  led_msg.led = LED_3;
+  led_msg.cmd = TURN_ON;
+  
+  int err = zbus_chan_pub(&led_chan, &led_msg, K_MSEC(100));
+  if (err) {
+    LOG_ERR("Failed to publish Bluetooth state change: %d", err);
+  }
 
   ret = controller_init();
   ERR_CHK_MSG(ret, "Failed to initialize controller module");

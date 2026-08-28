@@ -2,7 +2,9 @@
 #define ZBUS_COMMON_H_
 
 #include <zephyr/kernel.h>
+#include <zephyr/sys/util.h>
 #include <zephyr/zbus/zbus.h>
+#include <stdint.h>
 
 #define ZBUS_READ_TIMEOUT_MS K_MSEC(100)
 #define ZBUS_ADD_OBS_TIMEOUT_MS K_MSEC(200)
@@ -109,6 +111,8 @@ typedef struct imu_cmd_chan_msg {
 } imu_cmd_chan_msg;
 
 typedef struct imu_data_chan_msg {
+  uint32_t seq;
+  uint32_t device_time_ms;
   float ax;
   float ay;
   float az;
@@ -117,12 +121,40 @@ typedef struct imu_data_chan_msg {
   float gz;
 } imu_data_chan_msg;
 
-typedef struct orientation_chan_msg {
-  float q0;
-  float q1;
-  float q2;
-  float q3;
+#define ORIENTATION_TELEMETRY_VERSION 1
+#define ORIENTATION_TELEMETRY_PAYLOAD_SIZE 64
+
+typedef enum orientation_calibration_state {
+  ORIENTATION_CAL_NONE = 0,
+  ORIENTATION_CAL_TARED = 1,
+  ORIENTATION_CAL_GYRO_BIAS_ESTIMATED = 2,
+} orientation_calibration_state;
+
+typedef struct __packed orientation_chan_msg {
+  uint8_t version;
+  uint8_t flags;
+  uint16_t payload_size;
+  uint32_t seq;
+  uint32_t device_time_ms;
+  float ax;
+  float ay;
+  float az;
+  float gx;
+  float gy;
+  float gz;
+  float qw;
+  float qx;
+  float qy;
+  float qz;
+  float yaw_deg;
+  uint8_t calibration_state;
+  uint8_t reserved0;
+  uint16_t reserved1;
+  uint32_t reserved2;
 } orientation_chan_msg;
+
+BUILD_ASSERT(sizeof(orientation_chan_msg) == ORIENTATION_TELEMETRY_PAYLOAD_SIZE,
+             "orientation telemetry packet must remain 64 bytes");
 
 // struct orientation_chan_msg {
 //     float roll;
